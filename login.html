@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Affection Portal · Entrar</title>
+<link rel="icon" type="image/png" href="icons/borboleta.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#532137">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bordo: #532137;
+    --rosa: #dd597d;
+    --creme: #f5ede8;
+    --creme-suave: #cfb8be;
+    --card-bg: #3a1f29;
+    --input-bg: rgba(255,255,255,0.05);
+    --input-border: rgba(245,237,232,0.18);
+    --erro: #fca5a5;
+    --sucesso: #6ee7b7;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: radial-gradient(ellipse at top, #2a0f17 0%, #1a070d 60%, #100509 100%);
+    color: var(--creme);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+    -webkit-font-smoothing: antialiased;
+}
+.card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.5), 0 6px 20px rgba(0,0,0,0.3);
+    padding: 44px 38px;
+    border: 1px solid rgba(245,237,232,0.08);
+    position: relative;
+}
+.card::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 20px;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(245,237,232,0.4) 0%, rgba(221,89,125,0.2) 40%, rgba(83,33,55,0) 80%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+.brand { text-align: center; margin-bottom: 28px; }
+.brand-mark { width: 64px; height: 64px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: center; background: rgba(245,237,232,0.06); border-radius: 16px; border: 1px solid rgba(245,237,232,0.1); }
+.brand-mark svg { width: 28px; height: 28px; color: var(--creme); }
+.brand-titulo { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 600; color: var(--creme); margin-top: 0; line-height: 1; letter-spacing: -0.01em; }
+.brand-sub { font-size: 10px; color: var(--creme-suave); margin-top: 8px; font-weight: 600; letter-spacing: 0.28em; text-transform: uppercase; }
+
+h1 { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 500; color: var(--creme); margin-bottom: 6px; }
+.sub { font-size: 13px; color: var(--creme-suave); margin-bottom: 24px; }
+
+.alerta {
+    padding: 11px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    margin-bottom: 18px;
+    display: none;
+    line-height: 1.5;
+}
+.alerta.erro { background: rgba(252,165,165,0.08); border: 1px solid rgba(252,165,165,0.25); color: var(--erro); display: block; }
+.alerta.sucesso { background: rgba(110,231,183,0.08); border: 1px solid rgba(110,231,183,0.25); color: var(--sucesso); display: block; }
+
+.field { margin-bottom: 16px; }
+label.field-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--creme-suave);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 7px;
+}
+.input-wrap { position: relative; }
+input[type="email"], input[type="password"], input[type="text"] {
+    width: 100%;
+    border: 1px solid var(--input-border);
+    border-radius: 10px;
+    padding: 12px 44px 12px 14px;
+    font-size: 14px;
+    font-family: inherit;
+    background: var(--input-bg);
+    color: var(--creme);
+    transition: all 0.15s;
+}
+input[type="email"] { padding-right: 14px; }
+input::placeholder { color: rgba(245,237,232,0.3); }
+input:focus {
+    outline: none;
+    border-color: var(--rosa);
+    background: rgba(255,255,255,0.08);
+    box-shadow: 0 0 0 4px rgba(221,89,125,0.15);
+}
+
+.toggle-eye {
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    background: transparent; border: none; cursor: pointer; padding: 6px;
+    color: var(--creme-suave); border-radius: 6px;
+    display: inline-flex; align-items: center; justify-content: center;
+}
+.toggle-eye:hover { color: var(--creme); background: rgba(255,255,255,0.06); }
+.toggle-eye svg { width: 18px; height: 18px; }
+
+.btn {
+    width: 100%;
+    padding: 13px 16px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    background: var(--creme);
+    color: #2a0f17;
+    margin-top: 8px;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.btn:hover:not(:disabled) { background: white; transform: translateY(-1px); box-shadow: 0 8px 20px rgba(245,237,232,0.15); }
+.btn:disabled { opacity: 0.5; cursor: wait; transform: none; }
+.btn .spinner {
+    width: 14px; height: 14px;
+    border: 2px solid rgba(42,15,23,0.3);
+    border-top-color: #2a0f17;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    display: none;
+}
+.btn.carregando .spinner { display: inline-block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.link-row { margin-top: 18px; text-align: center; }
+.link-secundario {
+    color: var(--creme-suave);
+    font-size: 12px;
+    text-decoration: none;
+    background: none;
+    border: none;
+    padding: 6px 8px;
+    cursor: pointer;
+    font-family: inherit;
+    border-bottom: 1px dashed rgba(207,184,190,0.4);
+}
+.link-secundario:hover { color: var(--creme); border-bottom-color: var(--creme); }
+
+.seguranca-nota {
+    margin-top: 22px;
+    padding: 10px 12px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(245,237,232,0.08);
+    border-radius: 8px;
+    font-size: 11px;
+    color: var(--creme-suave);
+    text-align: center;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.seguranca-nota svg { width: 12px; height: 12px; color: var(--sucesso); }
+
+.foot {
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(245,237,232,0.08);
+    text-align: center;
+    font-size: 10px;
+    color: rgba(207,184,190,0.5);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+.foot a { color: rgba(207,184,190,0.75); text-decoration: none; }
+.foot a:hover { color: var(--creme); }
+</style>
+</head>
+<body>
+
+<form id="formLogin" class="card" autocomplete="on">
+    <div class="brand">
+        <div class="brand-mark">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div class="brand-titulo">Affection Portal</div>
+        <div class="brand-sub">Sistema Financeiro</div>
+    </div>
+
+    <h1 id="tituloSecao">Entrar</h1>
+    <p class="sub" id="subSecao">Acesse com email e senha cadastrados.</p>
+
+    <div id="alerta" class="alerta" role="alert"></div>
+
+    <div class="field">
+        <label class="field-label" for="email">Email</label>
+        <div class="input-wrap">
+            <input type="email" id="email" required autocomplete="username" placeholder="seu@email.com">
+        </div>
+    </div>
+
+    <div class="field" id="fieldSenha">
+        <label class="field-label" for="senha">Senha</label>
+        <div class="input-wrap">
+            <input type="password" id="senha" required autocomplete="current-password" placeholder="••••••••">
+            <button type="button" id="btnOlho" class="toggle-eye" aria-label="Mostrar senha">
+                <svg id="iconOlhoFechado" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                <svg id="iconOlhoAberto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <button type="submit" id="btnEntrar" class="btn">
+        <span class="spinner"></span>
+        <span id="btnLabel">Entrar</span>
+    </button>
+
+    <div class="link-row">
+        <button type="button" id="linkEsqueci" class="link-secundario">Esqueci minha senha</button>
+    </div>
+
+    <div class="seguranca-nota">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Conexão segura · seus dados são criptografados
+    </div>
+
+    <div class="foot">
+        Affection Consultoria · <a href="https://affectionconsultoria.com.br" target="_blank">affectionconsultoria.com.br</a>
+    </div>
+</form>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
+<script>
+const cfg = window.AFFECTION_CONFIG || {};
+const SB = supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
+
+(async () => {
+    try {
+        const { data: { session } } = await SB.auth.getSession();
+        if (session) window.location.replace('app.html');
+    } catch (e) {}
+})();
+
+const formEl = document.getElementById('formLogin');
+const emailEl = document.getElementById('email');
+const senhaEl = document.getElementById('senha');
+const alertaEl = document.getElementById('alerta');
+const btnEl = document.getElementById('btnEntrar');
+const btnLabel = document.getElementById('btnLabel');
+const tituloSecao = document.getElementById('tituloSecao');
+const subSecao = document.getElementById('subSecao');
+const fieldSenha = document.getElementById('fieldSenha');
+const linkEsqueci = document.getElementById('linkEsqueci');
+const btnOlho = document.getElementById('btnOlho');
+const iconOlhoFechado = document.getElementById('iconOlhoFechado');
+const iconOlhoAberto = document.getElementById('iconOlhoAberto');
+
+let modoAtual = 'entrar';
+
+btnOlho.addEventListener('click', () => {
+    const ehSenha = senhaEl.type === 'password';
+    senhaEl.type = ehSenha ? 'text' : 'password';
+    iconOlhoFechado.style.display = ehSenha ? 'none' : '';
+    iconOlhoAberto.style.display = ehSenha ? '' : 'none';
+    btnOlho.setAttribute('aria-label', ehSenha ? 'Ocultar senha' : 'Mostrar senha');
+});
+
+linkEsqueci.addEventListener('click', () => {
+    alertaEl.className = 'alerta'; alertaEl.textContent = '';
+    if (modoAtual === 'entrar') {
+        modoAtual = 'recuperar';
+        tituloSecao.textContent = 'Recuperar senha';
+        subSecao.textContent = 'Digite seu email. Mandamos um link pra criar nova senha.';
+        fieldSenha.style.display = 'none';
+        senhaEl.removeAttribute('required');
+        btnLabel.textContent = 'Enviar link';
+        linkEsqueci.textContent = 'Voltar pro login';
+    } else {
+        modoAtual = 'entrar';
+        tituloSecao.textContent = 'Entrar';
+        subSecao.textContent = 'Acesse com email e senha cadastrados.';
+        fieldSenha.style.display = '';
+        senhaEl.setAttribute('required', '');
+        btnLabel.textContent = 'Entrar';
+        linkEsqueci.textContent = 'Esqueci minha senha';
+    }
+});
+
+function mostrarAlerta(mensagem, tipo) {
+    alertaEl.className = 'alerta ' + tipo;
+    alertaEl.textContent = mensagem;
+}
+
+formEl.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    alertaEl.className = 'alerta'; alertaEl.textContent = '';
+    const email = emailEl.value.trim();
+
+    if (modoAtual === 'recuperar') {
+        if (!email) { mostrarAlerta('Preencha o email.', 'erro'); return; }
+        btnEl.classList.add('carregando');
+        btnEl.disabled = true;
+        try {
+            const { data, error } = await SB.functions.invoke('recuperar-senha', { body: { email } });
+            if (error) mostrarAlerta('Erro ao enviar: ' + (error.message || error), 'erro');
+            else if (data?.status === 'error') mostrarAlerta(data.message || 'Erro ao enviar.', 'erro');
+            else mostrarAlerta('Link enviado pra ' + email + '. Cheque sua caixa (e o spam).', 'sucesso');
+        } catch (e) { mostrarAlerta('Erro: ' + (e.message || e), 'erro'); }
+        btnEl.classList.remove('carregando');
+        btnEl.disabled = false;
+        return;
+    }
+
+    const senha = senhaEl.value;
+    if (!email || !senha) { mostrarAlerta('Preencha email e senha.', 'erro'); return; }
+
+    btnEl.classList.add('carregando');
+    btnEl.disabled = true;
+    try {
+        const { data, error } = await SB.auth.signInWithPassword({ email, password: senha });
+        if (error) {
+            mostrarAlerta(traduzirErro(error.message), 'erro');
+            btnEl.classList.remove('carregando');
+            btnEl.disabled = false;
+            return;
+        }
+        mostrarAlerta('Entrando...', 'sucesso');
+        setTimeout(() => { window.location.replace('app.html'); }, 300);
+    } catch (e) {
+        mostrarAlerta('Erro inesperado: ' + (e.message || e), 'erro');
+        btnEl.classList.remove('carregando');
+        btnEl.disabled = false;
+    }
+});
+
+function traduzirErro(msg) {
+    const m = String(msg || '').toLowerCase();
+    if (m.includes('invalid login')) return 'Email ou senha incorretos.';
+    if (m.includes('email not confirmed')) return 'Confirme seu email antes de entrar.';
+    if (m.includes('rate')) return 'Muitas tentativas. Espera 1 minuto.';
+    if (m.includes('user not found')) return 'Usuário não encontrado.';
+    return msg || 'Erro ao entrar.';
+}
+</script>
+</body>
+</html>

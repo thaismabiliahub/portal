@@ -3,437 +3,54 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Affection Portal · Entrar</title>
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#532137">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Affection Portal</title>
+<link rel="icon" type="image/png" href="icons/icon-192.png">
 <style>
-:root {
-    --bordo: #532137;
-    --rosa: #dd597d;
-    --amarelo: #f9a01b;
-    --grafite: #2c2c2a;
-    --bg: #f7f5f3;
-    --card: #ffffff;
-    --border: #e9e5e1;
-    --texto-suave: #6b6660;
-    --erro: #b91c1c;
-    --sucesso: #047857;
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; }
-body {
-    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #f7f5f3 0%, #ede4dc 100%);
-    color: var(--grafite);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 24px;
-}
-
-.fraunces { font-family: 'Fraunces', serif; }
-
-.card {
-    background: var(--card);
-    border-radius: 16px;
-    width: 100%;
-    max-width: 420px;
-    box-shadow: 0 20px 60px rgba(83,33,55,0.12), 0 4px 12px rgba(0,0,0,0.04);
-    padding: 40px 36px;
-}
-
-.brand {
-    text-align: center;
-    margin-bottom: 32px;
-}
-.brand-mark {
-    width: 56px;
-    height: 56px;
-    background: var(--bordo);
-    border-radius: 14px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-family: 'Fraunces', serif;
-    font-weight: 600;
-    font-size: 28px;
-    margin-bottom: 14px;
-}
-.brand-title {
-    font-family: 'Fraunces', serif;
-    font-size: 26px;
-    font-weight: 600;
-    color: var(--bordo);
-    letter-spacing: -0.02em;
-}
-.brand-sub {
+html, body { margin: 0; padding: 0; height: 100%; background: #532137; }
+.loader {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.8);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     font-size: 13px;
-    color: var(--texto-suave);
-    margin-top: 4px;
-    font-weight: 400;
-}
-
-h1.welcome {
-    font-family: 'Fraunces', serif;
-    font-size: 22px;
-    font-weight: 500;
-    margin-bottom: 6px;
-    color: var(--grafite);
-    letter-spacing: -0.01em;
-}
-.welcome-sub {
-    font-size: 13px;
-    color: var(--texto-suave);
-    margin-bottom: 24px;
-}
-
-.field {
-    margin-bottom: 16px;
-}
-.field label {
-    display: block;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--texto-suave);
+    letter-spacing: 0.15em;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
-    margin-bottom: 6px;
 }
-.input-wrap {
-    position: relative;
+.spinner {
+    width: 24px; height: 24px;
+    border: 2px solid rgba(255,255,255,0.2);
+    border-top-color: rgba(255,255,255,0.85);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-right: 12px;
 }
-.field input {
-    width: 100%;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px 14px;
-    font-size: 15px;
-    font-family: inherit;
-    background: white;
-    color: var(--grafite);
-    transition: border 0.15s, box-shadow 0.15s;
-}
-.field input:focus {
-    outline: none;
-    border-color: var(--bordo);
-    box-shadow: 0 0 0 4px rgba(83,33,55,0.08);
-}
-.input-wrap input[type="password"],
-.input-wrap input[type="text"][data-pwd] {
-    padding-right: 44px;
-}
-
-/* Olho de senha — SEMPRE visível, conforme regra de UI */
-.toggle-eye {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    padding: 6px;
-    color: var(--texto-suave);
-    border-radius: 6px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-.toggle-eye:hover { color: var(--bordo); background: #f3f0ed; }
-.toggle-eye svg { width: 18px; height: 18px; display: block; }
-
-.btn {
-    width: 100%;
-    padding: 13px 16px;
-    border-radius: 10px;
-    font-family: inherit;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    border: none;
-    transition: all 0.15s;
-}
-.btn-primary {
-    background: var(--bordo);
-    color: white;
-    margin-top: 8px;
-}
-.btn-primary:hover { background: var(--rosa); }
-.btn-primary:disabled { opacity: 0.6; cursor: wait; }
-
-.btn-ghost {
-    background: transparent;
-    color: var(--texto-suave);
-    font-weight: 500;
-    font-size: 13px;
-    padding: 10px;
-}
-.btn-ghost:hover { color: var(--bordo); }
-
-.alerta {
-    padding: 11px 14px;
-    border-radius: 8px;
-    font-size: 13px;
-    margin-bottom: 14px;
-    display: none;
-}
-.alerta.erro {
-    background: #fef2f2;
-    color: var(--erro);
-    border: 1px solid #fecaca;
-    display: block;
-}
-.alerta.sucesso {
-    background: #ecfdf5;
-    color: var(--sucesso);
-    border: 1px solid #a7f3d0;
-    display: block;
-}
-
-.divider {
-    border-top: 1px solid var(--border);
-    margin: 22px 0 18px;
-    position: relative;
-    text-align: center;
-}
-.divider span {
-    position: relative;
-    top: -10px;
-    background: white;
-    padding: 0 12px;
-    font-size: 11px;
-    color: var(--texto-suave);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    font-weight: 600;
-}
-
-.foot {
-    text-align: center;
-    margin-top: 22px;
-    font-size: 12px;
-    color: var(--texto-suave);
-}
-.foot a { color: var(--bordo); text-decoration: none; font-weight: 500; }
-.foot a:hover { text-decoration: underline; }
-
-.tab-bar {
-    display: flex;
-    background: #f3f0ed;
-    border-radius: 10px;
-    padding: 4px;
-    margin-bottom: 20px;
-}
-.tab-btn {
-    flex: 1;
-    padding: 9px;
-    background: transparent;
-    border: none;
-    border-radius: 7px;
-    font-family: inherit;
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--texto-suave);
-    cursor: pointer;
-    transition: all 0.15s;
-}
-.tab-btn.active {
-    background: white;
-    color: var(--bordo);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
-
-<div class="card">
-    <div class="brand">
-        <div class="brand-mark">A</div>
-        <div class="brand-title">Affection Portal</div>
-        <div class="brand-sub">Sistema financeiro</div>
-    </div>
-
-    <div class="tab-bar">
-        <button class="tab-btn active" id="tabEntrar" onclick="trocarTab('entrar')">Entrar</button>
-        <button class="tab-btn" id="tabSolicitar" onclick="trocarTab('solicitar')">Solicitar acesso</button>
-    </div>
-
-    <!-- TELA: ENTRAR -->
-    <div id="painel-entrar">
-        <h1 class="welcome">Bem-vinda de volta</h1>
-        <p class="welcome-sub">Entre com seu email e senha cadastrados.</p>
-
-        <div id="alertaEntrar" class="alerta"></div>
-
-        <form id="formEntrar" onsubmit="return entrar(event)">
-            <div class="field">
-                <label for="email">Email</label>
-                <input type="email" id="email" name="email" required autocomplete="email" placeholder="seu@email.com">
-            </div>
-
-            <div class="field">
-                <label for="senha">Senha</label>
-                <div class="input-wrap">
-                    <input type="password" id="senha" name="senha" required autocomplete="current-password" placeholder="Sua senha">
-                    <button type="button" class="toggle-eye" onclick="alternarSenha('senha', this)" aria-label="Mostrar ou ocultar senha">
-                        <svg id="ico-senha" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                            <circle cx="12" cy="12" r="3"></circle>
-                        </svg>
-                    </button>
-                </div>
-            </div>
-
-            <button type="submit" class="btn btn-primary" id="btnEntrar">Entrar</button>
-
-            <div style="text-align:center; margin-top:14px;">
-                <button type="button" class="btn-ghost" onclick="esqueciSenha()">Esqueci minha senha</button>
-            </div>
-        </form>
-    </div>
-
-    <!-- TELA: SOLICITAR ACESSO -->
-    <div id="painel-solicitar" style="display:none;">
-        <h1 class="welcome">Solicitar acesso</h1>
-        <p class="welcome-sub">Sua solicitação será enviada para aprovação. Você receberá um e-mail quando for liberado.</p>
-
-        <div id="alertaSolicitar" class="alerta"></div>
-
-        <form id="formSolicitar" onsubmit="return solicitar(event)">
-            <div class="field">
-                <label for="solNome">Seu nome</label>
-                <input type="text" id="solNome" required placeholder="Nome completo">
-            </div>
-            <div class="field">
-                <label for="solEmail">Seu email</label>
-                <input type="email" id="solEmail" required placeholder="seu@email.com">
-            </div>
-            <div class="field">
-                <label for="solMotivo">Motivo (opcional)</label>
-                <input type="text" id="solMotivo" placeholder="Ex: sou irmã da Thais">
-            </div>
-
-            <button type="submit" class="btn btn-primary" id="btnSolicitar">Enviar solicitação</button>
-        </form>
-    </div>
-
-    <div class="foot">
-        Affection Consultoria
-    </div>
-</div>
-
+<div class="loader"><div class="spinner"></div>Carregando</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.min.js"></script>
 <script src="config.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const sb = supabase.createClient(
-    window.AFFECTION_CONFIG.SUPABASE_URL,
-    window.AFFECTION_CONFIG.SUPABASE_ANON_KEY
-);
-
-// Se já está logada, manda direto pro app
 (async () => {
-    const { data: { session } } = await sb.auth.getSession();
-    if (session) window.location.href = 'app.html';
+    try {
+        const cfg = window.AFFECTION_CONFIG || {};
+        if (!cfg.SUPABASE_URL || !cfg.SUPABASE_ANON_KEY) {
+            window.location.replace('login.html');
+            return;
+        }
+        const sb = supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
+        const { data: { session } } = await sb.auth.getSession();
+        if (!session) {
+            window.location.replace('login.html');
+            return;
+        }
+        // Sessão válida — redireciona pro app real
+        window.location.replace('app.html');
+    } catch (e) {
+        window.location.replace('login.html');
+    }
 })();
-
-function trocarTab(qual) {
-    document.getElementById('painel-entrar').style.display = qual === 'entrar' ? 'block' : 'none';
-    document.getElementById('painel-solicitar').style.display = qual === 'solicitar' ? 'block' : 'none';
-    document.getElementById('tabEntrar').classList.toggle('active', qual === 'entrar');
-    document.getElementById('tabSolicitar').classList.toggle('active', qual === 'solicitar');
-}
-
-function alternarSenha(inputId, btn) {
-    const inp = document.getElementById(inputId);
-    const isPassword = inp.type === 'password';
-    inp.type = isPassword ? 'text' : 'password';
-    inp.setAttribute('data-pwd', '1');
-    // Troca o ícone (olho aberto vs olho cortado)
-    btn.innerHTML = isPassword
-        ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>'
-        : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>';
-}
-
-function mostrarAlerta(painelId, tipo, texto) {
-    const a = document.getElementById(painelId);
-    a.className = 'alerta ' + tipo;
-    a.textContent = texto;
-    setTimeout(() => { if (tipo === 'sucesso') a.style.display = 'none'; }, 5000);
-}
-
-async function entrar(ev) {
-    ev.preventDefault();
-    const email = document.getElementById('email').value.trim().toLowerCase();
-    const senha = document.getElementById('senha').value;
-    const btn = document.getElementById('btnEntrar');
-    btn.disabled = true; btn.textContent = 'Entrando...';
-
-    const { data, error } = await sb.auth.signInWithPassword({ email, password: senha });
-
-    if (error) {
-        mostrarAlerta('alertaEntrar', 'erro', traduzirErro(error.message));
-        btn.disabled = false; btn.textContent = 'Entrar';
-        return false;
-    }
-
-    btn.textContent = 'Entrou! Carregando...';
-    window.location.href = 'app.html';
-    return false;
-}
-
-async function solicitar(ev) {
-    ev.preventDefault();
-    const nome = document.getElementById('solNome').value.trim();
-    const email = document.getElementById('solEmail').value.trim().toLowerCase();
-    const motivo = document.getElementById('solMotivo').value.trim();
-    const btn = document.getElementById('btnSolicitar');
-    btn.disabled = true; btn.textContent = 'Enviando...';
-
-    const { error } = await sb.from('solicitacoes_acesso').insert({ nome, email, motivo }).select();
-
-    if (error) {
-        mostrarAlerta('alertaSolicitar', 'erro', 'Não consegui enviar agora. Tente em alguns minutos.');
-        btn.disabled = false; btn.textContent = 'Enviar solicitação';
-        return false;
-    }
-
-    mostrarAlerta('alertaSolicitar', 'sucesso', 'Solicitação enviada. Você recebe email quando for aprovada.');
-    document.getElementById('formSolicitar').reset();
-    btn.disabled = false; btn.textContent = 'Enviar solicitação';
-    return false;
-}
-
-async function esqueciSenha() {
-    const email = document.getElementById('email').value.trim().toLowerCase();
-    if (!email) {
-        mostrarAlerta('alertaEntrar', 'erro', 'Digite seu email primeiro pra eu te mandar o link de recuperação.');
-        return;
-    }
-    const { error } = await sb.auth.resetPasswordForEmail(email, {
-        redirectTo: window.location.origin + '/reset.html'
-    });
-    if (error) mostrarAlerta('alertaEntrar', 'erro', 'Não consegui enviar agora. Tente daqui a pouco.');
-    else mostrarAlerta('alertaEntrar', 'sucesso', 'Link de recuperação enviado pro seu email.');
-}
-
-function traduzirErro(msg) {
-    const m = (msg || '').toLowerCase();
-    if (m.includes('invalid login') || m.includes('invalid credentials')) return 'Email ou senha incorretos.';
-    if (m.includes('email not confirmed')) return 'Email ainda não confirmado.';
-    if (m.includes('too many')) return 'Muitas tentativas. Espera 1 minuto e tenta de novo.';
-    if (m.includes('network')) return 'Sem conexão. Verifica sua internet.';
-    return 'Não consegui entrar. ' + msg;
-}
-
-// PWA — registra service worker se estiver disponível
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(()=>{}));
-}
 </script>
 </body>
 </html>

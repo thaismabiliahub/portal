@@ -4,8 +4,8 @@
 // Cache estratégia: network-first pra HTML/JS (sempre fresco quando online)
 // e cache-first pra fontes/ícones (estáveis).
 // =====================================================================
-const CACHE = 'affection-portal-v1';
-const ASSETS = ['/', '/index.html', '/app.html', '/config.js', '/manifest.json'];
+const CACHE = 'affection-portal-v5';
+const ASSETS = ['/', '/index.html', '/login.html', '/app.html', '/config.js', '/manifest.json', '/icons/borboleta.png', '/icons/icon-app.png', '/offline.html'];
 
 self.addEventListener('install', e => {
     self.skipWaiting();
@@ -26,6 +26,6 @@ self.addEventListener('fetch', e => {
     e.respondWith(
         fetch(e.request)
             .then(r => { const copy = r.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)); return r; })
-            .catch(() => caches.match(e.request))
+            .catch(() => caches.match(e.request).then(m => m || (e.request.mode === 'navigate' ? caches.match('/offline.html') : Response.error())))
     );
 });

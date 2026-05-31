@@ -9,6 +9,7 @@
   "orientation": "portrait-primary",
   "lang": "pt-BR",
   "icons": [
-    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+    { "src": "icons/icon-app.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-app.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ]
 }

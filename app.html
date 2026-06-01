@@ -1210,8 +1210,8 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
 .lan-pag-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
 /* Popover de filtro */
-.lan-popover { position: absolute; background: white; border: 1px solid #ebe5df; border-radius: 10px; box-shadow: 0 12px 30px rgba(0,0,0,0.12); padding: 8px; z-index: 200; min-width: 220px; max-height: 360px; overflow-y: auto; }
-.lan-popover-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 6px; cursor: pointer; font-size: 13px; color: #1a1a18; }
+.lan-popover { position: absolute; background: white; border: 1px solid #ebe5df; border-radius: 10px; box-shadow: 0 12px 30px rgba(0,0,0,0.12); padding: 6px; z-index: 200; min-width: 200px; max-width: 280px; max-height: 360px; overflow-y: auto; }
+.lan-popover-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; color: #1a1a18; white-space: nowrap; line-height: 1.2; }
 .lan-popover-item:hover { background: #faf8f6; }
 .lan-popover-item input { accent-color: #532137; }
 .lan-popover-secao { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8c857b; padding: 8px 10px 4px; }
@@ -1978,10 +1978,6 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
                 <span>Cartões</span>
             </div>
-            <div class="sidebar-item" onclick="trocarTab('acerto')" id="nav-acerto">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-                <span>Acerto cartão</span>
-            </div>
 
             <div class="sidebar-section-title">Casa</div>
             <div class="sidebar-item" onclick="trocarTab('reparos')" id="nav-reparos">
@@ -2058,32 +2054,6 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
         </header>
 
         <div class="content-scroll">
-
-            <!-- ACERTO CARTÃO COMPARTILHADO -->
-            <section id="tab-content-acerto" class="tab-content hidden">
-                <div class="acerto-wrap">
-                    <div class="ac-header">
-                        <div>
-                            <h2 class="ac-titulo">Acerto cartão compartilhado</h2>
-                            <p class="ac-sub" id="acSub">Quanto cada membro deve pro titular pagar a fatura</p>
-                        </div>
-                        <div class="ac-controles">
-                            <select id="acCartaoSeletor" class="ac-cartao-seletor" onchange="renderizarAcerto()"></select>
-                            <div class="ac-comp-nav">
-                                <button onclick="acertoNavegarComp(-1)" title="Mês anterior">‹</button>
-                                <span class="ac-comp-label" id="acCompLabel">—</span>
-                                <button onclick="acertoNavegarComp(1)" title="Próximo mês">›</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="acHeroContainer"></div>
-                    <div id="acMembrosContainer"></div>
-                    <div id="acCardsContainer" class="ac-cards"></div>
-                    <h3 class="ac-tl-titulo" id="acTimelineTitulo" style="display:none;">Fluxo de pagamento</h3>
-                    <div id="acTimelineContainer"></div>
-                    <div id="acTitularResumoContainer"></div>
-                </div>
-            </section>
 
             <!-- DASHBOARD -->
             <section id="tab-content-dashboard" class="tab-content">
@@ -2444,43 +2414,78 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
 
             <!-- CARTÕES -->
             <section id="tab-content-cartoes" class="tab-content hidden">
-                <div class="cart-wrap">
-                    <div class="cart-header">
-                        <div>
-                            <span class="cart-tag">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/></svg>
-                                Cartões de crédito
-                            </span>
-                            <h1 class="cart-titulo">Cartões</h1>
-                            <p class="cart-subtitulo" id="cartSubtitulo">Gerencie cartões próprios, de terceiros e compartilhados</p>
-                        </div>
-                        <button onclick="abrirModalCartao && abrirModalCartao()" class="lan-btn lan-btn-pri">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                            Novo cartão
-                        </button>
-                    </div>
-                    <div id="listaCartoes" class="cart-grid"></div>
+                <!-- Sub-abas: Meus cartões | Acerto compartilhado -->
+                <div class="dash-subtabs">
+                    <button id="cartSubTabMeus" onclick="cartoesSubAba('meus')" class="dash-subtab ativo">Meus cartões</button>
+                    <button id="cartSubTabAcerto" onclick="cartoesSubAba('acerto')" class="dash-subtab">Acerto compartilhado</button>
                 </div>
-                <div id="faturaDetalhe" class="hidden section-card">
-                    <div class="section-title-bar">
-                        <div>
-                            <h3 id="faturaTitulo" class="section-title" style="margin:0;"></h3>
-                            <div class="flex gap-2 mt-2">
-                                <button onclick="navegarMesFatura(-1)" class="btn-ghost">‹ Mês anterior</button>
-                                <button onclick="navegarMesFatura(1)" class="btn-ghost">Próximo mês ›</button>
+
+                <!-- SUB-ABA: MEUS CARTÕES -->
+                <div id="cartSubConteudo-meus">
+                    <div class="cart-wrap">
+                        <div class="cart-header">
+                            <div>
+                                <span class="cart-tag">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/></svg>
+                                    Cartões de crédito
+                                </span>
+                                <h1 class="cart-titulo">Cartões</h1>
+                                <p class="cart-subtitulo" id="cartSubtitulo">Gerencie cartões próprios, de terceiros e compartilhados</p>
+                            </div>
+                            <button onclick="abrirModalCartao && abrirModalCartao()" class="lan-btn lan-btn-pri">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                                Novo cartão
+                            </button>
+                        </div>
+                        <div id="listaCartoes" class="cart-grid"></div>
+                    </div>
+                    <div id="faturaDetalhe" class="hidden section-card">
+                        <div class="section-title-bar">
+                            <div>
+                                <h3 id="faturaTitulo" class="section-title" style="margin:0;"></h3>
+                                <div class="flex gap-2 mt-2">
+                                    <button onclick="navegarMesFatura(-1)" class="btn-ghost">‹ Mês anterior</button>
+                                    <button onclick="navegarMesFatura(1)" class="btn-ghost">Próximo mês ›</button>
+                                </div>
+                            </div>
+                            <div style="display:flex; gap:8px; align-items:center;">
+                                <button onclick="atribuirTodasFatura()" class="btn-secondary" style="padding:6px 12px; font-size:12px;" title="Atribuir todas as parcelas sem responsável a uma pessoa">+ Atribuir todas</button>
+                                <button onclick="fecharFatura()" class="btn-ghost">Fechar</button>
                             </div>
                         </div>
-                        <div style="display:flex; gap:8px; align-items:center;">
-                            <button onclick="atribuirTodasFatura()" class="btn-secondary" style="padding:6px 12px; font-size:12px;" title="Atribuir todas as parcelas sem responsável a uma pessoa">+ Atribuir todas</button>
-                            <button onclick="fecharFatura()" class="btn-ghost">Fechar</button>
+                        <div class="tabela-wrapper" style="border:none;">
+                            <table class="tabela">
+                                <thead><tr><th>Vencimento</th><th>Descrição</th><th>Responsável</th><th>Parcela</th><th class="text-right">Valor</th><th class="text-center">Status</th></tr></thead>
+                                <tbody id="faturaBody"></tbody>
+                                <tfoot><tr style="border-top:2px solid #d1d5db;"><td colspan="4" style="padding:10px 14px; font-weight:700;">Total</td><td id="faturaTotal" class="text-right" style="padding:10px 14px; font-weight:700;">R$ 0,00</td><td></td></tr></tfoot>
+                            </table>
                         </div>
                     </div>
-                    <div class="tabela-wrapper" style="border:none;">
-                        <table class="tabela">
-                            <thead><tr><th>Vencimento</th><th>Descrição</th><th>Responsável</th><th>Parcela</th><th class="text-right">Valor</th><th class="text-center">Status</th></tr></thead>
-                            <tbody id="faturaBody"></tbody>
-                            <tfoot><tr style="border-top:2px solid #d1d5db;"><td colspan="4" style="padding:10px 14px; font-weight:700;">Total</td><td id="faturaTotal" class="text-right" style="padding:10px 14px; font-weight:700;">R$ 0,00</td><td></td></tr></tfoot>
-                        </table>
+                </div>
+
+                <!-- SUB-ABA: ACERTO COMPARTILHADO -->
+                <div id="cartSubConteudo-acerto" style="display:none;">
+                    <div class="acerto-wrap">
+                        <div class="ac-header">
+                            <div>
+                                <h2 class="ac-titulo">Acerto cartão compartilhado</h2>
+                                <p class="ac-sub" id="acSub">Quanto cada membro deve pro titular pagar a fatura</p>
+                            </div>
+                            <div class="ac-controles">
+                                <select id="acCartaoSeletor" class="ac-cartao-seletor" onchange="renderizarAcerto()"></select>
+                                <div class="ac-comp-nav">
+                                    <button onclick="acertoNavegarComp(-1)" title="Mês anterior">‹</button>
+                                    <span class="ac-comp-label" id="acCompLabel">—</span>
+                                    <button onclick="acertoNavegarComp(1)" title="Próximo mês">›</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="acHeroContainer"></div>
+                        <div id="acMembrosContainer"></div>
+                        <div id="acCardsContainer" class="ac-cards"></div>
+                        <h3 class="ac-tl-titulo" id="acTimelineTitulo" style="display:none;">Fluxo de pagamento</h3>
+                        <div id="acTimelineContainer"></div>
+                        <div id="acTitularResumoContainer"></div>
                     </div>
                 </div>
             </section>
@@ -4980,22 +4985,41 @@ function mostrarMiniSplash() {
     window._miniSplashTimer = setTimeout(() => { el.classList.add('oculto'); }, 450);
 }
 
+// Sub-aba atual da tela Cartões: 'meus' (lista) ou 'acerto' (acerto compartilhado)
+let cartSubAbaAtual = 'meus';
+function cartoesSubAba(qual) {
+    cartSubAbaAtual = qual;
+    const meus = document.getElementById('cartSubConteudo-meus');
+    const acerto = document.getElementById('cartSubConteudo-acerto');
+    const btnMeus = document.getElementById('cartSubTabMeus');
+    const btnAcerto = document.getElementById('cartSubTabAcerto');
+    if (meus) meus.style.display = (qual === 'meus') ? '' : 'none';
+    if (acerto) acerto.style.display = (qual === 'acerto') ? '' : 'none';
+    if (btnMeus) btnMeus.classList.toggle('ativo', qual === 'meus');
+    if (btnAcerto) btnAcerto.classList.toggle('ativo', qual === 'acerto');
+    if (qual === 'meus') renderizarCartoes();
+    if (qual === 'acerto') renderizarAcerto();
+}
+
 function trocarTab(tab) {
+    // Compatibilidade: 'acerto' agora vive dentro de Cartoes
+    let abrirSubAcerto = false;
+    if (tab === 'acerto') { tab = 'cartoes'; abrirSubAcerto = true; }
     if (typeof podeVerAba === 'function' && !podeVerAba(tab)) {
-        const todas = ['dashboard','contas','cartoes','acerto','reparos','datas','documentos','anotacoes','notas','workspaces','cadastros','configuracoes'];
+        const todas = ['dashboard','contas','cartoes','reparos','datas','documentos','anotacoes','notas','workspaces','cadastros','configuracoes'];
         tab = todas.find(t => podeVerAba(t)) || tab;
     }
     mostrarMiniSplash();
     document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
     document.getElementById('tab-content-' + tab).classList.remove('hidden');
     document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
-    document.getElementById('nav-' + tab).classList.add('active');
-    const titulos = { dashboard: 'Dashboard', contas: 'Lançamentos', cartoes: 'Cartões', acerto: 'Acerto cartão compartilhado', reparos: 'Reparos', datas: 'Datas e Lembretes', documentos: 'Documentos', notas: 'Notas Fiscais', cadastros: 'Cadastros gerais', workspaces: 'Workspaces', anotacoes: 'Anotações', configuracoes: 'Configurações' };
+    const navEl = document.getElementById('nav-' + tab);
+    if (navEl) navEl.classList.add('active');
+    const titulos = { dashboard: 'Dashboard', contas: 'Lançamentos', cartoes: 'Cartões', reparos: 'Reparos', datas: 'Datas e Lembretes', documentos: 'Documentos', notas: 'Notas Fiscais', cadastros: 'Cadastros gerais', workspaces: 'Workspaces', anotacoes: 'Anotações', configuracoes: 'Configurações' };
     document.getElementById('pageTitle').textContent = titulos[tab];
     if (tab === 'dashboard') renderizarDashboard();
     if (tab === 'contas') renderizarContas();
-    if (tab === 'cartoes') renderizarCartoes();
-    if (tab === 'acerto') renderizarAcerto();
+    if (tab === 'cartoes') cartoesSubAba(abrirSubAcerto ? 'acerto' : (cartSubAbaAtual || 'meus'));
     if (tab === 'reparos') renderizarReparos();
     if (tab === 'datas') { trocarVisualDatas(visualDatasAtual); }
     if (tab === 'documentos') renderizarDocumentos();
@@ -5843,7 +5867,7 @@ function renderizarContas() {
             : (modo === 'todos' ? 'Todos os meses' : `${meses[parseInt(mm)-1]}/${aa}`);
         tagEl.textContent = `${espacoNome} · ${periodoLabel}`;
     }
-    if (subEl) subEl.textContent = `${lista.length} lançamento${lista.length !== 1 ? 's' : ''} no período · agrupados por dia`;
+    if (subEl) subEl.textContent = '';
 
     // Métricas
     const hojeStr = hoje();

@@ -1210,8 +1210,12 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
 .lan-pag-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
 /* Popover de filtro */
-.lan-popover { position: absolute; background: white; border: 1px solid #ebe5df; border-radius: 10px; box-shadow: 0 12px 30px rgba(0,0,0,0.12); padding: 6px; z-index: 200; min-width: 200px; max-width: 280px; max-height: 360px; overflow-y: auto; }
-.lan-popover-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; color: #1a1a18; white-space: nowrap; line-height: 1.2; }
+.lan-popover { position: absolute; background: white; border: 1px solid #ebe5df; border-radius: 10px; box-shadow: 0 12px 30px rgba(0,0,0,0.12); padding: 4px; z-index: 200; min-width: 220px; max-width: 300px; max-height: 360px; overflow-y: auto; }
+.lan-popover-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; color: #1a1a18; white-space: nowrap; line-height: 1.2; user-select: none; transition: background 0.1s; }
+.lan-popover-item:hover { background: #faf8f6; }
+.lan-popover-item.selecionado { color: #532137; font-weight: 600; }
+.lan-popover-item .lp-check { width: 14px; height: 14px; color: #532137; opacity: 0; flex-shrink: 0; }
+.lan-popover-item.selecionado .lp-check { opacity: 1; }
 .lan-popover-item:hover { background: #faf8f6; }
 .lan-popover-item input { accent-color: #532137; }
 .lan-popover-secao { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #8c857b; padding: 8px 10px 4px; }
@@ -5685,7 +5689,7 @@ function lanAbrirFiltro(qual) {
     }
     const filtroId = { tipo: 'filtroTipo', status: 'filtroStatus', categoria: 'filtroCategoria', responsavel: 'filtroResponsavel' }[qual];
     const atual = document.getElementById(filtroId)?.value || '';
-    pop.innerHTML = opcoes.map(([v, l]) => `<label class="lan-popover-item"><input type="radio" name="lanPop_${qual}" value="${v}" ${v === atual ? 'checked' : ''} onclick="lanAplicarFiltro('${qual}', '${v}')">${l}</label>`).join('');
+    pop.innerHTML = opcoes.map(([v, l]) => `<div class="lan-popover-item${v === atual ? ' selecionado' : ''}" onclick="lanAplicarFiltro('${qual}', '${v}')"><span>${l}</span><svg class="lp-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></div>`).join('');
     document.body.appendChild(pop);
     setTimeout(() => document.addEventListener('click', lanClickFora), 50);
 }

@@ -2477,10 +2477,10 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
                             </div>
                             <div class="ac-controles">
                                 <select id="acCartaoSeletor" class="ac-cartao-seletor" onchange="renderizarAcerto()"></select>
-                                <div class="ac-comp-nav">
-                                    <button onclick="acertoNavegarComp(-1)" title="Mês anterior">‹</button>
-                                    <span class="ac-comp-label" id="acCompLabel">—</span>
-                                    <button onclick="acertoNavegarComp(1)" title="Próximo mês">›</button>
+                                <div style="display:inline-flex; align-items:center; gap:6px;">
+                                    <button onclick="acertoNavegarComp(-1)" class="lan-comp-nav" title="Mês anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+                                    <span class="lan-comp-atual-btn" id="acCompLabel" style="cursor:default;">—</span>
+                                    <button onclick="acertoNavegarComp(1)" class="lan-comp-nav" title="Próximo mês"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
                                 </div>
                             </div>
                         </div>

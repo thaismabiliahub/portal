@@ -2749,20 +2749,20 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
                         </button>
                     </div>
 
-                    <!-- TOOLBAR busca/filtro: linha 1 = busca + espaço · linha 2 = pills -->
-                    <div class="repv2-toolbar" id="repv2Toolbar">
-                        <div style="display:flex; gap:10px; align-items:center; width:100%; flex-wrap:wrap;">
-                            <div class="lan-busca" style="flex:1 1 240px; min-width:200px;">
+                    <!-- TOOLBAR: busca + espaço inline, pills aparecem só em abas específicas -->
+                    <div class="repv2-toolbar" id="repv2Toolbar" style="flex-direction:column; align-items:stretch;">
+                        <div style="display:flex; gap:10px; align-items:center; flex-wrap:nowrap;">
+                            <div class="lan-busca" style="flex:1 1 0; min-width:0;">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                                 <input type="text" id="repv2Busca" oninput="renderizarReparos()" placeholder="Buscar item, prestador, descrição...">
                             </div>
-                            <select id="repv2FiltroEntidade" onchange="renderizarReparos()" class="lan-filtro-select" style="flex:0 0 auto;"><option value="todas">Todos os espaços</option></select>
+                            <select id="repv2FiltroEntidade" onchange="renderizarReparos()" class="lan-filtro-select" style="flex:0 0 auto; max-width:200px;"><option value="todas">Todos os espaços</option></select>
                         </div>
                         <!-- Filtros pill aparecem só na aba "Itens da casa" -->
-                        <div id="repv2FiltrosPillCategoria" style="display:none; gap:6px; flex-wrap:wrap; width:100%;"></div>
+                        <div id="repv2FiltrosPillCategoria" style="display:none; gap:6px; flex-wrap:wrap; padding-top:4px; border-top:1px solid #f3efea;"></div>
                         <select id="repv2FiltroCategoria" onchange="renderizarReparos()" style="display:none;"><option value="todas"></option></select>
                         <!-- Filtros pill de status aparecem só na aba "Lançamentos" -->
-                        <div id="repv2FiltrosPillStatus" style="display:none; gap:6px; flex-wrap:wrap; width:100%;"></div>
+                        <div id="repv2FiltrosPillStatus" style="display:none; gap:6px; flex-wrap:wrap; padding-top:4px; border-top:1px solid #f3efea;"></div>
                         <select id="repv2FiltroStatus" onchange="renderizarReparos()" style="display:none;"><option value="todos"></option></select>
                     </div>
 

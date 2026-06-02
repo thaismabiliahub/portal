@@ -1135,6 +1135,32 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
 .lan-comp-atalhos { display: flex; gap: 4px; margin-left: 12px; padding-left: 12px; border-left: 1px solid #ebe5df; }
 .lan-comp-atalhos .lan-comp-atalho.ativo { background: #f5efe6 !important; color: #8b6e3a !important; border: 1px solid rgba(139,110,58,0.2) !important; }
 
+/* Chips coloridos por categoria (mostrar/ocultar) */
+.lan-chips-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 12px 0; margin-top: 8px; border-top: 1px solid #f3efea; }
+.lan-chips-label { font-size: 10.5px; color: #9a948c; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-right: 4px; }
+.lan-chip {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 6px 12px 6px 8px;
+    background: white;
+    border: 1px solid #ebe5df;
+    border-radius: 100px;
+    cursor: pointer;
+    font-size: 12.5px; font-weight: 500; color: #1a1a18;
+    user-select: none;
+    transition: all 0.12s;
+}
+.lan-chip:hover { border-color: #c8c2bb; background: #faf8f6; }
+.lan-chip input[type="checkbox"] {
+    width: 14px; height: 14px;
+    cursor: pointer;
+    accent-color: #532137;
+    margin: 0;
+}
+.lan-chip-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.lan-chip-txt { font-weight: 600; }
+.lan-chip-num { font-size: 11px; color: #9a948c; font-weight: 600; margin-left: 2px; }
+.lan-chip:has(input:not(:checked)) { opacity: 0.45; }
+.lan-chip:has(input:not(:checked)) .lan-chip-txt { text-decoration: line-through; }
 .lan-fpill { display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; background: #faf8f6; border: 1px solid #ebe5df; border-radius: 8px; font-size: 12px; font-weight: 500; cursor: pointer; color: #1a1a18; font-family: inherit; transition: all 0.15s; position: relative; }
 .lan-fpill:hover { border-color: #532137; color: #532137; }
 .lan-fpill.ativo { background: #532137; color: white; border-color: #532137; }
@@ -2617,6 +2643,47 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
 
                         <!-- Filtros aplicados (chips com X) -->
                         <div class="lan-filtros-ativos" id="lanFiltrosAtivos" style="display:none;"></div>
+
+                        <!-- Chips coloridos: mostrar/ocultar lançamentos por categoria -->
+                        <div class="lan-chips-bar" id="lanChipsBar">
+                            <span class="lan-chips-label">MOSTRAR:</span>
+                            <label class="lan-chip" data-grupo="atrasados">
+                                <input type="checkbox" checked onchange="lanChipsRender()">
+                                <span class="lan-chip-dot" style="background:#8b3a3a;"></span>
+                                <span class="lan-chip-txt">Atrasados</span>
+                                <span class="lan-chip-num" id="lanChipNum-atrasados">0</span>
+                            </label>
+                            <label class="lan-chip" data-grupo="previstos">
+                                <input type="checkbox" checked onchange="lanChipsRender()">
+                                <span class="lan-chip-dot" style="background:#8b6e3a;"></span>
+                                <span class="lan-chip-txt">Previstos</span>
+                                <span class="lan-chip-num" id="lanChipNum-previstos">0</span>
+                            </label>
+                            <label class="lan-chip" data-grupo="pagos">
+                                <input type="checkbox" checked onchange="lanChipsRender()">
+                                <span class="lan-chip-dot" style="background:#16a34a;"></span>
+                                <span class="lan-chip-txt">Pagos</span>
+                                <span class="lan-chip-num" id="lanChipNum-pagos">0</span>
+                            </label>
+                            <label class="lan-chip" data-grupo="areceber">
+                                <input type="checkbox" checked onchange="lanChipsRender()">
+                                <span class="lan-chip-dot" style="background:#3b6a4f;"></span>
+                                <span class="lan-chip-txt">A receber</span>
+                                <span class="lan-chip-num" id="lanChipNum-areceber">0</span>
+                            </label>
+                            <label class="lan-chip" data-grupo="recebidos">
+                                <input type="checkbox" checked onchange="lanChipsRender()">
+                                <span class="lan-chip-dot" style="background:#2d5d3e;"></span>
+                                <span class="lan-chip-txt">Recebidos</span>
+                                <span class="lan-chip-num" id="lanChipNum-recebidos">0</span>
+                            </label>
+                            <label class="lan-chip" data-grupo="cancelados">
+                                <input type="checkbox" onchange="lanChipsRender()">
+                                <span class="lan-chip-dot" style="background:#9a948c;"></span>
+                                <span class="lan-chip-txt">Cancelados</span>
+                                <span class="lan-chip-num" id="lanChipNum-cancelados">0</span>
+                            </label>
+                        </div>
                     </div>
 
                     <!-- Bulk bar (aparece quando seleciona linhas) -->
@@ -6609,6 +6676,19 @@ function lanGrupoLabelDia(dataStr) {
     return `${nomesDia[d.getDay()]} · ${baseSuf}`;
 }
 
+// Lê o estado dos checkboxes dos chips coloridos (true = mostrar este grupo)
+function lanLerChips() {
+    const out = {};
+    document.querySelectorAll('.lan-chip').forEach(chip => {
+        const grupo = chip.getAttribute('data-grupo');
+        const cb = chip.querySelector('input[type="checkbox"]');
+        out[grupo] = cb ? cb.checked : true;
+    });
+    return out;
+}
+// Chamada quando um chip muda — só re-renderiza a lista
+function lanChipsRender() { renderizarContas(); }
+
 function renderizarContas() {
     popularFiltroCategoria();
     popularSeletorCompetencia();
@@ -6646,8 +6726,23 @@ function renderizarContas() {
         parcelas = parcelas.filter(p => p.data_vencimento.substring(0, 7) === competencia);
     }
 
+    // Lê estado dos chips (qual grupo está ativo)
+    const chipsAtivos = lanLerChips();
+    const hojeStr = hoje();
+    const grupoDaParcela = (p, c) => {
+        if (p.status === 'cancelada') return 'cancelados';
+        if (p.status === 'paga') return c.tipo === 'receber' ? 'recebidos' : 'pagos';
+        // status prevista ou atrasada
+        if (p.status === 'atrasada' || (p.status === 'prevista' && p.data_vencimento < hojeStr)) return 'atrasados';
+        if (c.tipo === 'receber') return 'areceber';
+        return 'previstos'; // a pagar previsto
+    };
+
     let lista = parcelas.filter(p => {
         const c = acharConta(p.conta_id); if (!c) return false;
+        // Filtro de chips (categoria visual)
+        const grupo = grupoDaParcela(p, c);
+        if (!chipsAtivos[grupo]) return false;
         if (fTipo && c.tipo !== fTipo) return false;
         if (fStatus && p.status !== fStatus) return false;
         if (fCat && c.categoria_id !== fCat) return false;
@@ -6662,6 +6757,17 @@ function renderizarContas() {
             if (!blob.includes(fBusca)) return false;
         }
         return true;
+    });
+
+    // Atualiza contadores nos chips (mostra quantos lançamentos do escopo atual existem em cada grupo, mesmo desligados)
+    const contagem = { atrasados: 0, previstos: 0, pagos: 0, areceber: 0, recebidos: 0, cancelados: 0 };
+    parcelas.forEach(p => {
+        const c = acharConta(p.conta_id); if (!c) return;
+        contagem[grupoDaParcela(p, c)]++;
+    });
+    Object.keys(contagem).forEach(g => {
+        const el = document.getElementById('lanChipNum-' + g);
+        if (el) el.textContent = contagem[g];
     });
 
     // Ordenação

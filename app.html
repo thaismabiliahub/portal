@@ -810,6 +810,67 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
 .dash-grid-principal { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
 @media (max-width: 1024px) { .dash-grid-principal { grid-template-columns: 1fr; } }
 
+/* ===== INSIGHTS DASHBOARD (parte B) ===== */
+.dash-insights { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 22px; }
+@media (max-width: 900px) { .dash-insights { grid-template-columns: 1fr; } }
+.dash-insight-card { background: white; border: 1px solid #ebe5df; border-radius: 14px; padding: 18px 20px; }
+.dash-insight-titulo { font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; color: #1a1a18; }
+.dash-insight-sub { font-size: 11.5px; color: #9a948c; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
+.dash-insight-vazio { font-size: 13px; color: #9a948c; padding: 24px 0; text-align: center; line-height: 1.5; }
+
+/* Rosca (Pra onde foi) */
+.dash-rosca-wrap { display: flex; align-items: center; gap: 18px; margin-top: 16px; }
+.dash-rosca { width: 110px; height: 110px; border-radius: 50%; flex-shrink: 0; position: relative; }
+.dash-rosca::after { content: ''; position: absolute; inset: 22px; background: white; border-radius: 50%; }
+.dash-rosca-centro { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1; }
+.dash-rosca-centro b { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; font-weight: 600; color: #1a1a18; }
+.dash-rosca-centro span { font-size: 9.5px; color: #9a948c; text-transform: uppercase; letter-spacing: 0.05em; }
+.dash-rosca-leg { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.dash-rl { display: flex; align-items: center; gap: 7px; font-size: 12px; }
+.dash-rl-dot { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
+.dash-rl-nome { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #1a1a18; }
+.dash-rl-pct { color: #9a948c; font-size: 11px; flex-shrink: 0; }
+
+/* Quem gastou */
+.dash-pessoa { display: flex; align-items: center; gap: 11px; margin-top: 13px; }
+.dash-pessoa-av { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 10.5px; font-weight: 700; flex-shrink: 0; }
+.dash-pessoa-mid { flex: 1; min-width: 0; }
+.dash-pessoa-top { display: flex; justify-content: space-between; gap: 10px; font-size: 12.5px; margin-bottom: 3px; }
+.dash-pessoa-nome { font-weight: 600; color: #1a1a18; }
+.dash-pessoa-val { font-family: 'Fraunces', serif; font-weight: 600; color: #1a1a18; }
+.dash-pessoa-track { height: 8px; background: #f5efe6; border-radius: 6px; overflow: hidden; }
+.dash-pessoa-fill { height: 100%; border-radius: 6px; }
+
+/* Planejado x Gasto (YNAB) */
+.dash-pxg { display: flex; flex-direction: column; gap: 14px; margin-top: 16px; }
+.dash-pxg-row { }
+.dash-pxg-top { display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; margin-bottom: 5px; gap: 8px; }
+.dash-pxg-nome { font-weight: 600; color: #1a1a18; display: flex; align-items: center; gap: 6px; }
+.dash-pxg-val { font-family: 'Fraunces', serif; font-weight: 500; color: #6b6660; }
+.dash-pxg-track { height: 10px; background: #f5efe6; border-radius: 6px; position: relative; overflow: visible; }
+.dash-pxg-fill { height: 100%; border-radius: 6px; }
+.dash-pxg-fill.ok { background: #16a34a; }
+.dash-pxg-fill.alerta { background: #f9a01b; }
+.dash-pxg-fill.estourou { background: #8b3a3a; }
+.dash-pxg-tag { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.04em; }
+.dash-pxg-tag.ok { background: #eafaf0; color: #16a34a; }
+.dash-pxg-tag.alerta { background: #fef3e0; color: #b5791b; }
+.dash-pxg-tag.estourou { background: #fdecec; color: #8b3a3a; }
+
+/* Cofrinhos */
+.dash-cof-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 16px; }
+.dash-cof-card { background: #faf8f6; border: 1px solid #ebe5df; border-radius: 12px; padding: 14px 16px; cursor: pointer; transition: all 0.15s; position: relative; }
+.dash-cof-card:hover { border-color: #532137; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+.dash-cof-nome { font-weight: 600; font-size: 13.5px; color: #1a1a18; }
+.dash-cof-valor { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 600; color: #532137; margin-top: 4px; }
+.dash-cof-meta { font-size: 11px; color: #6b6660; margin-top: 2px; }
+.dash-cof-bar { height: 6px; background: #ebe5df; border-radius: 4px; margin-top: 10px; overflow: hidden; }
+.dash-cof-bar i { display: block; height: 100%; border-radius: 4px; background: linear-gradient(90deg, #dd597d, #532137); }
+.dash-cof-novo { background: white; border: 2px dashed #ebe5df; border-radius: 12px; padding: 14px 16px; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #9a948c; font-size: 13px; font-weight: 500; transition: all 0.15s; min-height: 100px; }
+.dash-cof-novo:hover { border-color: #532137; color: #532137; }
+.dash-cof-novo svg { width: 20px; height: 20px; margin-bottom: 4px; }
+
+
 .dash-secao { background: white; border: 1px solid #ebe5df; border-radius: 14px; overflow: hidden; margin-bottom: 20px; }
 .dash-secao-header { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid #ebe5df; }
 .dash-secao-titulo { font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; color: #1a1a18; margin: 0; }
@@ -2178,6 +2239,43 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
                             <div class="dash-metric-valor" id="dashMetAtrasadas" style="color:#8b6e3a;">R$ 0,00</div>
                             <div class="dash-metric-trend" id="dashMetAtrasadasSub">0 lançamentos</div>
                         </div>
+                    </div>
+
+                    <!-- INSIGHTS: Pra onde foi + Quem gastou -->
+                    <div class="dash-insights">
+                        <div class="dash-insight-card">
+                            <div class="dash-insight-titulo">Pra onde foi o dinheiro</div>
+                            <div class="dash-insight-sub">Saídas do mês · por categoria</div>
+                            <div id="dashRoscaCategoria"></div>
+                        </div>
+                        <div class="dash-insight-card">
+                            <div class="dash-insight-titulo">Quem gastou o quê</div>
+                            <div class="dash-insight-sub">Saídas do mês · por responsável</div>
+                            <div id="dashBarrasPessoa"></div>
+                        </div>
+                    </div>
+
+                    <!-- PLANEJADO X GASTO (YNAB) -->
+                    <div class="dash-insight-card" style="margin-bottom:22px;">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
+                            <div>
+                                <div class="dash-insight-titulo">Coube no que combinamos?</div>
+                                <div class="dash-insight-sub">Planejado × gasto · mês atual</div>
+                            </div>
+                            <button onclick="trocarTab('cadastros'); setTimeout(()=>cadTrocarSub && cadTrocarSub('categorias'), 100);" class="dash-secao-acao">Editar orçamentos →</button>
+                        </div>
+                        <div id="dashPlanejadoGasto"></div>
+                    </div>
+
+                    <!-- COFRINHOS -->
+                    <div class="dash-insight-card" style="margin-bottom:22px;">
+                        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px;">
+                            <div>
+                                <div class="dash-insight-titulo">Cofrinhos</div>
+                                <div class="dash-insight-sub">Suas metas de poupança</div>
+                            </div>
+                        </div>
+                        <div id="dashCofrinhos"></div>
                     </div>
 
                     <!-- GRID PRINCIPAL -->
@@ -4074,6 +4172,7 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
             <div><label class="block text-sm font-medium mb-1">Nome</label><input type="text" id="categoriaNome" placeholder="Ex: Mercado, Farmácia, Salário..."></div>
             <div><label class="block text-sm font-medium mb-1">Tipo</label><select id="categoriaTipo"><option value="despesa">Despesa</option><option value="receita">Receita</option></select></div>
             <div><label class="block text-sm font-medium mb-1">Cor</label><input type="color" id="categoriaCor" value="#dd597d" class="h-10"></div>
+            <div><label class="block text-sm font-medium mb-1">Orçamento mensal (R$)<span style="color:#9a948c; font-weight:400; margin-left:6px;">opcional</span></label><input type="number" step="0.01" min="0" id="categoriaOrcamento" placeholder="Ex: 1200" style="font-family:inherit;"><div style="font-size:11px; color:#9a948c; margin-top:4px;">Se preencher, aparece no Painel a barra "planejado × gasto" desta categoria.</div></div>
         </div>
         <div class="flex justify-end gap-2 mt-6">
             <button onclick="fecharModal('modalCategoria')" class="btn-secondary">Cancelar</button>
@@ -4612,10 +4711,10 @@ function setSyncBanner(visivel, msg) {
 async function carregarEstado() {
     setSyncBanner(true, 'Carregando seus dados do servidor...');
     try {
-        const tabelas = ['workspaces','espacos','categorias','parceiros','cartoes','contas','parcelas','reparos','datas','notas','documentos','alertas_descartados','pessoas','itens_casa','prestadores_reparo','entidades','listas','tipos_anotacao'];
+        const tabelas = ['workspaces','espacos','categorias','parceiros','cartoes','contas','parcelas','reparos','datas','notas','documentos','alertas_descartados','pessoas','itens_casa','prestadores_reparo','entidades','listas','tipos_anotacao','cofrinhos'];
         const promises = tabelas.map(t => SB.from(t).select('*'));
         const resultados = await Promise.all(promises);
-        const [wsR, entR, catR, parR, carR, conR, pcR, repR, datR, notR, docR, aleR, pesR, icR, prR, legEntR, listasR, tiposAnotR] = resultados;
+        const [wsR, entR, catR, parR, carR, conR, pcR, repR, datR, notR, docR, aleR, pesR, icR, prR, legEntR, listasR, tiposAnotR, cofR] = resultados;
         // Mapeia pessoas (banco) pra usuarios_convite (estado JS, mantém formato compatível com renderizarUsuarios)
         const pessoasBanco = (pesR && pesR.data) || [];
         const usuariosConvite = pessoasBanco.map(p => ({
@@ -4661,7 +4760,8 @@ async function carregarEstado() {
             itens_casa: (icR && icR.data) || [],
             prestadores_reparo: (prR && prR.data) || [],
             listas: (listasR && listasR.data) || [],
-            tipos_anotacao: (tiposAnotR && tiposAnotR.data) || []
+            tipos_anotacao: (tiposAnotR && tiposAnotR.data) || [],
+            cofrinhos: (cofR && cofR.data) || []
         };
         // === ESPELHAMENTO: faz o seletor da topbar enxergar os workspaces ===
         // Histórico: o sistema tem 2 tabelas legado (workspaces + espacos). A tela "Espaços"
@@ -4768,7 +4868,8 @@ async function sincronizarComServidor() {
             ['itens_casa', estado.itens_casa],
             ['prestadores_reparo', estado.prestadores_reparo],
             ['listas', estado.listas],
-            ['tipos_anotacao', estado.tipos_anotacao]
+            ['tipos_anotacao', estado.tipos_anotacao],
+            ['cofrinhos', estado.cofrinhos]
         ];
         for (const [tab, dados] of upserts) {
             if (!dados || dados.length === 0) continue;
@@ -5189,8 +5290,257 @@ function renderizarDashboard() {
     try { calcularRespiroETendencias(parcelas); } catch(e) { console.warn('Respiro falhou:', e); }
 
     try { if (typeof renderizarAlertas === 'function') renderizarAlertas(); } catch(e) {}
+
+    // ===== INSIGHTS (parte B do dashboard) =====
+    try { renderizarRoscaCategoria(parcelas); } catch(e) { console.warn('Rosca falhou:', e); }
+    try { renderizarBarrasPessoa(parcelas); } catch(e) { console.warn('Barras pessoa falharam:', e); }
+    try { renderizarPlanejadoGasto(parcelas); } catch(e) { console.warn('Planejado x Gasto falhou:', e); }
+    try { renderizarCofrinhos(); } catch(e) { console.warn('Cofrinhos falhou:', e); }
+
     renderizarMovimentacoesRecentesDash(parcelas);
     renderizarProximosVencimentosDash(parcelas);
+}
+
+// ===== ROSCA: pra onde foi o dinheiro =====
+function renderizarRoscaCategoria(parcelas) {
+    const c = document.getElementById('dashRoscaCategoria');
+    if (!c) return;
+    const agora = new Date();
+    const inicio = new Date(agora.getFullYear(), agora.getMonth(), 1).toISOString().slice(0, 10);
+    const fim = new Date(agora.getFullYear(), agora.getMonth() + 1, 0).toISOString().slice(0, 10);
+    const acharConta = id => estado.contas.find(x => x.id === id);
+    const acharCat = id => estado.categorias.find(x => x.id === id);
+
+    // Soma saídas do mês por categoria
+    const porCat = {};
+    parcelas.forEach(p => {
+        const cn = acharConta(p.conta_id);
+        if (!cn || cn.tipo !== 'pagar' || p.status === 'cancelada') return;
+        if (p.data_vencimento < inicio || p.data_vencimento > fim) return;
+        const cat = acharCat(cn.categoria_id);
+        const nome = cat ? cat.nome : 'Sem categoria';
+        const cor = (cat && cat.cor) || '#9a948c';
+        porCat[nome] = porCat[nome] || { valor: 0, cor };
+        porCat[nome].valor += parseFloat(p.valor);
+    });
+    const lista = Object.entries(porCat).sort((a, b) => b[1].valor - a[1].valor).slice(0, 6);
+    const total = lista.reduce((s, [, v]) => s + v.valor, 0);
+    if (total === 0 || lista.length === 0) {
+        c.innerHTML = '<div class="dash-insight-vazio">Sem saídas neste mês ainda.</div>';
+        return;
+    }
+    // Monta conic-gradient
+    let acc = 0;
+    const stops = lista.map(([, v]) => {
+        const ini = (acc / total) * 360;
+        acc += v.valor;
+        const f = (acc / total) * 360;
+        return `${v.cor} ${ini}deg ${f}deg`;
+    }).join(',');
+    const leg = lista.map(([nome, v]) => `<div class="dash-rl"><span class="dash-rl-dot" style="background:${v.cor};"></span><span class="dash-rl-nome">${nome}</span><span class="dash-rl-pct">${Math.round((v.valor/total)*100)}%</span></div>`).join('');
+    c.innerHTML = `<div class="dash-rosca-wrap">
+        <div class="dash-rosca" style="background:conic-gradient(${stops});">
+            <div class="dash-rosca-centro"><b>${fmt(total)}</b><span>saídas</span></div>
+        </div>
+        <div class="dash-rosca-leg">${leg}</div>
+    </div>`;
+}
+
+// ===== BARRAS: quem gastou o quê =====
+function renderizarBarrasPessoa(parcelas) {
+    const c = document.getElementById('dashBarrasPessoa');
+    if (!c) return;
+    const agora = new Date();
+    const inicio = new Date(agora.getFullYear(), agora.getMonth(), 1).toISOString().slice(0, 10);
+    const fim = new Date(agora.getFullYear(), agora.getMonth() + 1, 0).toISOString().slice(0, 10);
+    const acharConta = id => estado.contas.find(x => x.id === id);
+    const usu = estado.usuarios_convite || [];
+    const acharPessoa = (eml) => usu.find(u => (u.email || '').toLowerCase() === (eml || '').toLowerCase());
+
+    const porPes = {};
+    parcelas.forEach(p => {
+        const cn = acharConta(p.conta_id);
+        if (!cn || cn.tipo !== 'pagar' || p.status === 'cancelada') return;
+        if (p.data_vencimento < inicio || p.data_vencimento > fim) return;
+        const respEml = (p.responsavel_email || '').toLowerCase();
+        const pes = respEml ? acharPessoa(respEml) : null;
+        const chave = pes ? (pes.id || respEml) : 'compartilhado';
+        const nome = pes ? (pes.apelido || pes.nome || respEml) : 'Compartilhado';
+        const cor = (pes && pes.cor_hex) || '#9a948c';
+        porPes[chave] = porPes[chave] || { nome, cor, valor: 0 };
+        porPes[chave].valor += parseFloat(p.valor);
+    });
+    const lista = Object.values(porPes).sort((a, b) => b.valor - a.valor).slice(0, 5);
+    if (lista.length === 0) {
+        c.innerHTML = '<div class="dash-insight-vazio">Ninguém gastou nada neste mês ainda.</div>';
+        return;
+    }
+    const max = Math.max(...lista.map(x => x.valor));
+    c.innerHTML = lista.map(p => {
+        const pct = max > 0 ? Math.round((p.valor / max) * 100) : 0;
+        const ini = (p.nome || '?').slice(0, 2).toUpperCase();
+        return `<div class="dash-pessoa">
+            <div class="dash-pessoa-av" style="background:${p.cor};">${ini}</div>
+            <div class="dash-pessoa-mid">
+                <div class="dash-pessoa-top"><span class="dash-pessoa-nome">${p.nome}</span><span class="dash-pessoa-val">${fmt(p.valor)}</span></div>
+                <div class="dash-pessoa-track"><div class="dash-pessoa-fill" style="width:${pct}%; background:${p.cor};"></div></div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+// ===== PLANEJADO X GASTO (YNAB) =====
+function renderizarPlanejadoGasto(parcelas) {
+    const c = document.getElementById('dashPlanejadoGasto');
+    if (!c) return;
+    const cats = (estado.categorias || []).filter(c => c.orcamento_mensal && parseFloat(c.orcamento_mensal) > 0);
+    if (cats.length === 0) {
+        c.innerHTML = '<div class="dash-insight-vazio">Você ainda não definiu nenhum orçamento por categoria.<br><br><span style="font-size:12px;">Cadastre um valor mensal em <b>Cadastros gerais → Categorias</b> pra ver aqui o quanto está gastando × o quanto combinou.</span></div>';
+        return;
+    }
+    const agora = new Date();
+    const inicio = new Date(agora.getFullYear(), agora.getMonth(), 1).toISOString().slice(0, 10);
+    const fim = new Date(agora.getFullYear(), agora.getMonth() + 1, 0).toISOString().slice(0, 10);
+    const acharConta = id => estado.contas.find(x => x.id === id);
+
+    const gastoPorCat = {};
+    parcelas.forEach(p => {
+        const cn = acharConta(p.conta_id);
+        if (!cn || cn.tipo !== 'pagar' || p.status === 'cancelada') return;
+        if (p.data_vencimento < inicio || p.data_vencimento > fim) return;
+        gastoPorCat[cn.categoria_id] = (gastoPorCat[cn.categoria_id] || 0) + parseFloat(p.valor);
+    });
+
+    c.innerHTML = '<div class="dash-pxg">' + cats.map(cat => {
+        const gastou = gastoPorCat[cat.id] || 0;
+        const plano = parseFloat(cat.orcamento_mensal);
+        const pct = Math.min(100, (gastou / plano) * 100);
+        let estado = 'ok', tagTxt = '', tagCls = 'ok';
+        if (gastou > plano) {
+            estado = 'estourou'; tagCls = 'estourou'; tagTxt = `passou ${fmt(gastou - plano)}`;
+        } else if (pct >= 80) {
+            estado = 'alerta'; tagCls = 'alerta'; tagTxt = 'quase no limite';
+        } else if (pct >= 99) {
+            estado = 'alerta'; tagCls = 'alerta'; tagTxt = 'no alvo';
+        } else {
+            estado = 'ok'; tagCls = 'ok'; tagTxt = `sobra ${fmt(plano - gastou)}`;
+        }
+        return `<div class="dash-pxg-row">
+            <div class="dash-pxg-top">
+                <span class="dash-pxg-nome">${cat.nome} <span class="dash-pxg-tag ${tagCls}">${tagTxt}</span></span>
+                <span class="dash-pxg-val">${fmt(gastou)} / ${fmt(plano)}</span>
+            </div>
+            <div class="dash-pxg-track"><div class="dash-pxg-fill ${estado}" style="width:${pct}%;"></div></div>
+        </div>`;
+    }).join('') + '</div><div style="font-size:11px; color:#9a948c; margin-top:14px;">A barra é o que gastou. O orçamento é o que combinou.</div>';
+}
+
+// ===== COFRINHOS =====
+function renderizarCofrinhos() {
+    const c = document.getElementById('dashCofrinhos');
+    if (!c) return;
+    const cofs = estado.cofrinhos || [];
+    const cards = cofs.map(cof => {
+        const meta = parseFloat(cof.meta_valor) || 0;
+        const atual = parseFloat(cof.valor_atual) || 0;
+        const pct = meta > 0 ? Math.min(100, Math.round((atual / meta) * 100)) : 0;
+        const falta = Math.max(0, meta - atual);
+        return `<div class="dash-cof-card" onclick="abrirModalCofrinho('${cof.id}')">
+            <div class="dash-cof-nome">${cof.nome || 'Cofrinho'}</div>
+            <div class="dash-cof-valor">${fmt(atual)}</div>
+            <div class="dash-cof-meta">${pct}% da meta · faltam ${fmt(falta)}</div>
+            <div class="dash-cof-bar"><i style="width:${pct}%;"></i></div>
+        </div>`;
+    }).join('');
+    const novoBtn = `<div class="dash-cof-novo" onclick="abrirModalCofrinho()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Novo cofrinho
+    </div>`;
+    c.innerHTML = '<div class="dash-cof-grid">' + cards + novoBtn + '</div>';
+}
+
+// ===== MODAL COFRINHO (criar/editar/apagar) =====
+let cofrinhoEditandoId = null;
+function abrirModalCofrinho(id) {
+    cofrinhoEditandoId = id || null;
+    const c = (estado.cofrinhos || []).find(x => x.id === id) || {};
+    let modal = document.getElementById('modalCofrinho');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'modalCofrinho';
+        modal.className = 'modal';
+        modal.innerHTML = `<div class="modal-content" style="max-width:480px;">
+            <div class="modal-header">
+                <h3 id="cofModalTitulo" style="font-family:'Fraunces',serif; font-size:20px; font-weight:600;">Novo cofrinho</h3>
+                <button onclick="fecharModal('modalCofrinho')" class="modal-close">×</button>
+            </div>
+            <div class="modal-body" style="display:flex; flex-direction:column; gap:14px;">
+                <div><label style="font-size:12px; font-weight:600; color:#6b6660;">Nome</label><input type="text" id="cofNome" style="width:100%; padding:9px 12px; border:1px solid #ebe5df; border-radius:8px; font-family:inherit; margin-top:4px;" placeholder="Ex: Viagem de fim de ano"></div>
+                <div><label style="font-size:12px; font-weight:600; color:#6b6660;">Descrição (opcional)</label><input type="text" id="cofDesc" style="width:100%; padding:9px 12px; border:1px solid #ebe5df; border-radius:8px; font-family:inherit; margin-top:4px;"></div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                    <div><label style="font-size:12px; font-weight:600; color:#6b6660;">Meta (R$)</label><input type="number" step="0.01" min="0" id="cofMeta" style="width:100%; padding:9px 12px; border:1px solid #ebe5df; border-radius:8px; font-family:inherit; margin-top:4px;"></div>
+                    <div><label style="font-size:12px; font-weight:600; color:#6b6660;">Já guardou (R$)</label><input type="number" step="0.01" min="0" id="cofAtual" value="0" style="width:100%; padding:9px 12px; border:1px solid #ebe5df; border-radius:8px; font-family:inherit; margin-top:4px;"></div>
+                </div>
+                <div><label style="font-size:12px; font-weight:600; color:#6b6660;">Data alvo (opcional)</label><input type="date" id="cofDataMeta" style="width:100%; padding:9px 12px; border:1px solid #ebe5df; border-radius:8px; font-family:inherit; margin-top:4px;"></div>
+            </div>
+            <div class="modal-footer" style="display:flex; justify-content:space-between; gap:10px; margin-top:18px;">
+                <button onclick="excluirCofrinho()" id="cofBtnExcluir" class="btn-ghost" style="color:#8b3a3a; display:none;">Excluir</button>
+                <div style="display:flex; gap:10px; margin-left:auto;">
+                    <button onclick="fecharModal('modalCofrinho')" class="btn-ghost">Cancelar</button>
+                    <button onclick="salvarCofrinho()" class="btn-primary" style="background:#532137; color:white; padding:9px 18px; border:none; border-radius:8px; font-family:inherit; font-weight:600; cursor:pointer;">Salvar</button>
+                </div>
+            </div>
+        </div>`;
+        document.body.appendChild(modal);
+    }
+    document.getElementById('cofModalTitulo').textContent = id ? 'Editar cofrinho' : 'Novo cofrinho';
+    document.getElementById('cofNome').value = c.nome || '';
+    document.getElementById('cofDesc').value = c.descricao || '';
+    document.getElementById('cofMeta').value = c.meta_valor || '';
+    document.getElementById('cofAtual').value = c.valor_atual || '0';
+    document.getElementById('cofDataMeta').value = c.data_meta || '';
+    document.getElementById('cofBtnExcluir').style.display = id ? '' : 'none';
+    modal.style.display = 'flex';
+}
+
+async function salvarCofrinho() {
+    const nome = document.getElementById('cofNome').value.trim();
+    const meta = parseFloat(document.getElementById('cofMeta').value);
+    if (!nome || !meta || meta <= 0) { alert('Preencha nome e meta válidos.'); return; }
+    const dados = {
+        nome,
+        descricao: document.getElementById('cofDesc').value.trim() || null,
+        meta_valor: meta,
+        valor_atual: parseFloat(document.getElementById('cofAtual').value) || 0,
+        data_meta: document.getElementById('cofDataMeta').value || null,
+        atualizado_em: new Date().toISOString()
+    };
+    if (cofrinhoEditandoId) {
+        const { error } = await SB.from('cofrinhos').update(dados).eq('id', cofrinhoEditandoId);
+        if (error) { alert('Não consegui salvar: ' + error.message); return; }
+        const c = estado.cofrinhos.find(x => x.id === cofrinhoEditandoId);
+        if (c) Object.assign(c, dados);
+    } else {
+        dados.criado_por = usuarioLogadoSupabase?.id || null;
+        const { data, error } = await SB.from('cofrinhos').insert(dados).select().single();
+        if (error) { alert('Não consegui criar: ' + error.message); return; }
+        estado.cofrinhos = estado.cofrinhos || [];
+        estado.cofrinhos.push(data);
+    }
+    fecharModal('modalCofrinho');
+    renderizarCofrinhos();
+    toast(cofrinhoEditandoId ? 'Cofrinho atualizado' : 'Cofrinho criado');
+}
+
+async function excluirCofrinho() {
+    if (!cofrinhoEditandoId) return;
+    if (!confirm('Apagar este cofrinho?')) return;
+    const { error } = await SB.from('cofrinhos').delete().eq('id', cofrinhoEditandoId);
+    if (error) { alert('Não consegui apagar: ' + error.message); return; }
+    estado.cofrinhos = (estado.cofrinhos || []).filter(x => x.id !== cofrinhoEditandoId);
+    fecharModal('modalCofrinho');
+    renderizarCofrinhos();
+    toast('Cofrinho apagado');
 }
 
 // Banco de frases pro topo do dashboard (rotação aleatória + contextual)
@@ -10545,6 +10895,7 @@ function abrirModalCategoria() {
     document.getElementById('categoriaNome').value = '';
     document.getElementById('categoriaTipo').value = 'despesa';
     document.getElementById('categoriaCor').value = '#dd597d';
+    const orc = document.getElementById('categoriaOrcamento'); if (orc) orc.value = '';
     document.getElementById('categoriaEntidade').innerHTML = entidadesPermitidas().map(e => `<option value="${e.id}">${e.nome}</option>`).join('');
     document.getElementById('modalCategoria').classList.remove('hidden');
 }
@@ -10556,12 +10907,15 @@ function editarCategoria(id) {
     document.getElementById('categoriaNome').value = c.nome;
     document.getElementById('categoriaTipo').value = c.tipo;
     document.getElementById('categoriaCor').value = c.cor_hex || '#dd597d';
+    const orc = document.getElementById('categoriaOrcamento'); if (orc) orc.value = c.orcamento_mensal || '';
     document.getElementById('categoriaEntidade').innerHTML = entidadesPermitidas().map(e => `<option value="${e.id}" ${e.id === c.entidade_id ? 'selected' : ''}>${e.nome}</option>`).join('');
     document.getElementById('modalCategoria').classList.remove('hidden');
 }
 function salvarCategoria() {
     const idEdicao = document.getElementById('categoriaIdEdicao')?.value;
-    const dados = { entidade_id: document.getElementById('categoriaEntidade').value, nome: document.getElementById('categoriaNome').value.trim(), tipo: document.getElementById('categoriaTipo').value, cor_hex: document.getElementById('categoriaCor').value };
+    const orcEl = document.getElementById('categoriaOrcamento');
+    const orcVal = orcEl && orcEl.value ? parseFloat(orcEl.value) : null;
+    const dados = { entidade_id: document.getElementById('categoriaEntidade').value, nome: document.getElementById('categoriaNome').value.trim(), tipo: document.getElementById('categoriaTipo').value, cor_hex: document.getElementById('categoriaCor').value, orcamento_mensal: orcVal };
     if (!dados.nome) { alert('Informe o nome'); return; }
     if (idEdicao) {
         Object.assign(estado.categorias.find(x => x.id === idEdicao), dados);

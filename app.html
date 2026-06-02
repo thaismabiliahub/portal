@@ -3060,9 +3060,9 @@ textarea.md-inp { resize: vertical; min-height: 60px; line-height: 1.4; }
                     <!-- MÉTRICAS -->
                     <div class="lan-resumo" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
                         <div class="lan-metric"><div class="lan-metric-label">Total guardado</div><div class="lan-metric-valor" id="docMetTotal">0</div><div class="lan-metric-meta" id="docMetTotalSub">documentos</div></div>
-                        <div class="lan-metric"><div class="lan-metric-label">Vencendo em 30 dias</div><div class="lan-metric-valor" id="docMetVencendo" style="color:#8b6e3a;">0</div><div class="lan-metric-meta" id="docMetVencendoSub">a renovar</div></div>
-                        <div class="lan-metric"><div class="lan-metric-label">Vencidos</div><div class="lan-metric-valor" id="docMetVencidos" style="color:#8b3a3a;">0</div><div class="lan-metric-meta" id="docMetVencidosSub">atualizar urgente</div></div>
-                        <div class="lan-metric"><div class="lan-metric-label">Adicionados no mês</div><div class="lan-metric-valor" id="docMetMes" style="color:#16a34a;">0</div><div class="lan-metric-meta" id="docMetMesSub">novos</div></div>
+                        <div class="lan-metric"><div class="lan-metric-label">Vencendo em 30 dias</div><div class="lan-metric-valor" id="docMetVencendo" style="color:#8b6e3a;">0 docs</div><div class="lan-metric-meta" id="docMetVencendoSub">a renovar</div></div>
+                        <div class="lan-metric"><div class="lan-metric-label">Vencidos</div><div class="lan-metric-valor" id="docMetVencidos" style="color:#8b3a3a;">0 docs</div><div class="lan-metric-meta" id="docMetVencidosSub">atualizar urgente</div></div>
+                        <div class="lan-metric"><div class="lan-metric-label" id="docMetMesLabel">Adicionados no mês</div><div class="lan-metric-valor" id="docMetMes" style="color:#16a34a;">0 novos</div><div class="lan-metric-meta" id="docMetMesSub">novos</div></div>
                     </div>
 
                     <!-- LAYOUT 2 COLUNAS -->
@@ -9392,18 +9392,29 @@ function renderizarDocumentos() {
 
     // Métricas (sobre todos os documentos visíveis, antes do filtro lateral)
     const total = todos.length;
-    const vencendo = todos.filter(d => statusValidade(d.data_validade) === 'alerta').length;
-    const vencidos = todos.filter(d => statusValidade(d.data_validade) === 'vencido').length;
-    const novosMes = todos.filter(d => (d.criado_em || '').startsWith(mesAtualStr)).length;
+    const vencendoLista = todos.filter(d => statusValidade(d.data_validade) === 'alerta');
+    const vencidosLista = todos.filter(d => statusValidade(d.data_validade) === 'vencido');
+    const novosLista = todos.filter(d => (d.criado_em || '').startsWith(mesAtualStr));
+    const vencendo = vencendoLista.length;
+    const vencidos = vencidosLista.length;
+    const novosMes = novosLista.length;
     const setT = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    // Total — mostra contagem + (estimativa simples baseada em ~3MB por doc se não temos tamanho real)
     setT('docMetTotal', total);
-    setT('docMetTotalSub', `documento${total !== 1 ? 's' : ''}`);
-    setT('docMetVencendo', vencendo);
-    setT('docMetVencendoSub', vencendo ? 'a renovar em até 30 dias' : 'tudo em dia');
-    setT('docMetVencidos', vencidos);
+    setT('docMetTotalSub', total > 0 ? `documento${total !== 1 ? 's' : ''} guardado${total !== 1 ? 's' : ''}` : 'guarde seu primeiro documento');
+    // Vencendo — lista até 3 nomes
+    setT('docMetVencendo', `${vencendo} doc${vencendo !== 1 ? 's' : ''}`);
+    const nomesVenc = vencendoLista.slice(0, 3).map(d => d.titulo || '').filter(Boolean).join(' · ');
+    setT('docMetVencendoSub', vencendo ? (nomesVenc || 'a renovar em até 30 dias') : 'tudo em dia');
+    // Vencidos
+    setT('docMetVencidos', `${vencidos} doc${vencidos !== 1 ? 's' : ''}`);
     setT('docMetVencidosSub', vencidos ? 'atualizar urgente' : 'nenhum vencido');
-    setT('docMetMes', novosMes);
-    setT('docMetMesSub', novosMes ? 'novos este mês' : 'sem adições este mês');
+    // Adicionados no mês — lista tipos
+    const mesAtualNome = new Date().toLocaleDateString('pt-BR', { month: 'long' });
+    setT('docMetMesLabel', `Adicionados em ${mesAtualNome}`);
+    setT('docMetMes', `${novosMes} novo${novosMes !== 1 ? 's' : ''}`);
+    const tiposNovos = [...new Set(novosLista.map(d => (d.tipo || '').toLowerCase()).filter(Boolean))].slice(0, 3).join(' + ');
+    setT('docMetMesSub', novosMes ? (tiposNovos || `novos em ${mesAtualNome}`) : 'sem adições este mês');
 
     // Sidebar de categorias com contagens
     const tipos = {};

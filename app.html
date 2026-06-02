@@ -861,17 +861,17 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
 .dash-insight-vazio { font-size: 13px; color: #9a948c; padding: 24px 0; text-align: center; line-height: 1.5; }
 
 /* Rosca (Pra onde foi) */
-.dash-rosca-wrap { display: flex; align-items: center; gap: 18px; margin-top: 16px; }
-.dash-rosca { width: 110px; height: 110px; border-radius: 50%; flex-shrink: 0; position: relative; }
-.dash-rosca::after { content: ''; position: absolute; inset: 22px; background: white; border-radius: 50%; }
-.dash-rosca-centro { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1; }
-.dash-rosca-centro b { font-family: 'JetBrains Mono', monospace; font-size: 12.5px; font-weight: 600; color: #1a1a18; }
-.dash-rosca-centro span { font-size: 9.5px; color: #9a948c; text-transform: uppercase; letter-spacing: 0.05em; }
-.dash-rosca-leg { flex: 1; display: flex; flex-direction: column; gap: 5px; min-width: 0; }
-.dash-rl { display: flex; align-items: center; gap: 7px; font-size: 12px; }
-.dash-rl-dot { width: 9px; height: 9px; border-radius: 2px; flex-shrink: 0; }
-.dash-rl-nome { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #1a1a18; }
-.dash-rl-pct { color: #9a948c; font-size: 11px; flex-shrink: 0; }
+.dash-rosca-wrap { display: flex; align-items: center; gap: 20px; margin-top: 18px; flex-wrap: wrap; }
+.dash-rosca { width: 140px; height: 140px; border-radius: 50%; flex-shrink: 0; position: relative; }
+.dash-rosca::after { content: ''; position: absolute; inset: 28px; background: white; border-radius: 50%; box-shadow: inset 0 1px 3px rgba(0,0,0,0.04); }
+.dash-rosca-centro { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 1; gap: 2px; }
+.dash-rosca-centro b { font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; color: #1a1a18; line-height: 1; }
+.dash-rosca-centro span { font-size: 9px; color: #9a948c; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
+.dash-rosca-leg { flex: 1; display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+.dash-rl { display: flex; align-items: center; gap: 8px; font-size: 12.5px; }
+.dash-rl-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+.dash-rl-nome { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: #1a1a18; font-weight: 500; }
+.dash-rl-pct { color: #6b6660; font-size: 11px; flex-shrink: 0; font-weight: 600; }
 
 /* Quem gastou */
 .dash-pessoa { display: flex; align-items: center; gap: 11px; margin-top: 13px; }
@@ -5361,13 +5361,21 @@ function renderizarRoscaCategoria(parcelas) {
 
     // Soma saídas do mês por categoria
     const porCat = {};
+    // Paleta de fallback pra categorias sem cor (rotaciona)
+    const palette = ['#532137', '#dd597d', '#c87f1f', '#8b6e3a', '#3b6a4f', '#7c2d4a', '#b8536f', '#16a34a'];
+    let palIdx = 0;
     parcelas.forEach(p => {
         const cn = acharConta(p.conta_id);
         if (!cn || cn.tipo !== 'pagar' || p.status === 'cancelada') return;
         if (p.data_vencimento < inicio || p.data_vencimento > fim) return;
         const cat = acharCat(cn.categoria_id);
         const nome = cat ? cat.nome : 'Sem categoria';
-        const cor = (cat && cat.cor) || '#9a948c';
+        // Cor: pega cor_hex da categoria (campo certo do schema); fallback pra paleta rotativa
+        let cor = cat && (cat.cor_hex || cat.cor);
+        if (!cor) {
+            if (!porCat[nome]) { cor = nome === 'Sem categoria' ? '#dd597d' : palette[palIdx++ % palette.length]; }
+            else cor = porCat[nome].cor;
+        }
         porCat[nome] = porCat[nome] || { valor: 0, cor };
         porCat[nome].valor += parseFloat(p.valor);
     });

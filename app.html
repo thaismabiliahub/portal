@@ -800,6 +800,9 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
     padding: 18px 20px;
     transition: all 0.2s;
     position: relative;
+}
+.dash-metric[onclick] { cursor: pointer; }
+.dash-metric[onclick]:hover { border-color: #532137; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(83,33,55,0.08);
     overflow: hidden;
 }
 .dash-metric:hover { border-color: #c87f1f; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,0,0,0.05); }
@@ -2264,7 +2267,7 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
 
                     <!-- MÉTRICAS -->
                     <div class="dash-resumo">
-                        <div class="dash-metric">
+                        <div class="dash-metric" onclick="dashAbrirLancamentos('pagar7')" style="cursor:pointer;">
                             <div class="dash-metric-topo">
                                 <div class="dash-metric-label">A pagar 7 dias</div>
                                 <div class="dash-metric-icon-wrap" style="color:#8b3a3a; background:rgba(139,58,58,0.08);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/></svg></div>
@@ -2273,7 +2276,7 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
                             <div class="dash-metric-trend" id="dashMet7PagarSub">0 lançamentos</div>
                             <div class="dash-metric-tendencia neutra" id="dashTrendPagar" style="display:none;"></div>
                         </div>
-                        <div class="dash-metric">
+                        <div class="dash-metric" onclick="dashAbrirLancamentos('receber7')" style="cursor:pointer;">
                             <div class="dash-metric-topo">
                                 <div class="dash-metric-label">A receber 7 dias</div>
                                 <div class="dash-metric-icon-wrap" style="color:#16a34a; background:rgba(22,163,74,0.08);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg></div>
@@ -2282,7 +2285,7 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
                             <div class="dash-metric-trend" id="dashMet7ReceberSub">0 lançamentos</div>
                             <div class="dash-metric-tendencia neutra" id="dashTrendReceber" style="display:none;"></div>
                         </div>
-                        <div class="dash-metric">
+                        <div class="dash-metric" onclick="dashAbrirLancamentos('saldo30')" style="cursor:pointer;">
                             <div class="dash-metric-topo">
                                 <div class="dash-metric-label">Saldo previsto 30 dias</div>
                                 <div class="dash-metric-icon-wrap" style="color:#532137;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg></div>
@@ -2291,7 +2294,7 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
                             <div class="dash-metric-trend" id="dashMetSaldo30Sub">a receber − a pagar</div>
                             <div class="dash-metric-tendencia neutra" id="dashTrendSaldo" style="display:none;"></div>
                         </div>
-                        <div class="dash-metric">
+                        <div class="dash-metric" onclick="dashAbrirLancamentos('atrasadas')" style="cursor:pointer;">
                             <div class="dash-metric-topo">
                                 <div class="dash-metric-label">Atrasadas</div>
                                 <div class="dash-metric-icon-wrap" style="color:#f9a01b; background:rgba(249,160,27,0.1);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
@@ -5590,6 +5593,43 @@ async function excluirCofrinho() {
     fecharModal('modalCofrinho');
     renderizarCofrinhos();
     toast('Cofrinho apagado');
+}
+
+// Abre tela de Lançamentos com filtro pre-aplicado a partir do card clicado no dashboard
+function dashAbrirLancamentos(qual) {
+    trocarTab('contas');
+    // Espera a tela renderizar antes de aplicar filtros
+    setTimeout(() => {
+        const setFiltro = (id, valor) => {
+            const el = document.getElementById(id);
+            if (el) { el.value = valor; el.dispatchEvent(new Event('change')); }
+        };
+        const hojeStr = hoje();
+        const limite7 = diasAFrente(7);
+        const limite30 = diasAFrente(30);
+        // Limpa filtros antigos antes
+        setFiltro('filtroTipo', '');
+        setFiltro('filtroStatus', '');
+        setFiltro('filtroBusca', '');
+        const de = document.getElementById('lanCustomDe'); if (de) de.value = '';
+        const ate = document.getElementById('lanCustomAte'); if (ate) ate.value = '';
+
+        if (qual === 'pagar7') {
+            setFiltro('filtroTipo', 'pagar');
+            if (de) de.value = hojeStr;
+            if (ate) ate.value = limite7;
+        } else if (qual === 'receber7') {
+            setFiltro('filtroTipo', 'receber');
+            if (de) de.value = hojeStr;
+            if (ate) ate.value = limite7;
+        } else if (qual === 'saldo30') {
+            if (de) de.value = hojeStr;
+            if (ate) ate.value = limite30;
+        } else if (qual === 'atrasadas') {
+            setFiltro('filtroStatus', 'atrasada');
+        }
+        if (typeof renderizarContas === 'function') renderizarContas();
+    }, 150);
 }
 
 // Banco de frases pro topo do dashboard (rotação aleatória + contextual)

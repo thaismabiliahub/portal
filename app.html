@@ -720,16 +720,18 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
    ===================================================================== */
 .dash-wrap { max-width: 1200px; margin: 0 auto; }
 .dash-hero { margin-bottom: 24px; }
-.dash-hero-tag {
-    display: inline-flex; align-items: center; gap: 6px;
-    background: rgba(200,127,31,0.08); color: #c87f1f;
-    padding: 4px 10px; border-radius: 12px;
-    font-size: 11px; font-weight: 600;
-    text-transform: uppercase; letter-spacing: 0.08em;
-    margin-bottom: 8px;
-}
+/* Tag pequena de saudação - escondida (redundante com o título) */
+.dash-hero-tag { display: none; }
 .dash-hero-titulo { font-family: 'Fraunces', serif; font-size: 30px; font-weight: 600; line-height: 1.1; color: #1a1a18; }
-.dash-hero-sub { font-size: 13px; color: #6b6660; margin-top: 6px; }
+.dash-hero-sub {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-style: italic;
+    font-weight: 500;
+    color: #532137;
+    margin-top: 10px;
+    line-height: 1.4;
+}
 
 /* RESPIRO - frase humana com saldo grande */
 .dash-respiro { background: linear-gradient(135deg, #fbf3f6, #fdf8f2); border: 1px solid #f0e2e8; border-radius: 18px; padding: 22px 26px; margin-bottom: 18px; display: flex; align-items: flex-start; gap: 18px; }

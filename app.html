@@ -3023,9 +3023,8 @@ textarea.md-inp { resize: vertical; min-height: 60px; line-height: 1.4; }
                             <span class="lan-tag" style="background:rgba(200,127,31,0.08); color:#c87f1f;">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                                 <span id="docHeaderTag">Arquivo digital</span>
+                                <span class="lm-ajuda" style="margin-left:6px;">?<span class="lm-tip">Guarde <strong>contratos</strong>, <strong>certidões</strong>, <strong>comprovantes</strong>, <strong>garantias</strong> e <strong>escrituras</strong>. Cada documento pode ser vinculado a um lançamento ou membro.</span></span>
                             </span>
-                            <h1 class="lan-titulo">Documentos</h1>
-                            <p class="lan-subtitulo">Contratos, certidões, comprovantes, garantias, escrituras — tudo em um só lugar, vinculável a lançamentos e membros.</p>
                         </div>
                         <div class="lan-btns">
                             <button onclick="abrirModalDocumento && abrirModalDocumento()" class="lan-btn lan-btn-pri">
@@ -7853,8 +7852,39 @@ function renderizarListas(){
     grid.innerHTML = cards + `<div class="lista-card lista-card-novo" onclick="criarLista()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span style="font-size:13px;font-weight:600;">Nova lista</span></div>`;
 }
 function criarLista(){
-    const nome = prompt('Nome da lista (ex: Mercado, Farmácia, Afazeres):');
-    if (!nome || !nome.trim()) return;
+    // Abre modal estilizado em vez de prompt() nativo
+    let m = document.getElementById('modalNovaLista');
+    if (!m) {
+        m = document.createElement('div');
+        m.id = 'modalNovaLista';
+        m.className = 'modal-overlay';
+        m.style.cssText = 'position:fixed; inset:0; z-index:200; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(0,0,0,0.5);';
+        m.innerHTML = `<div style="background:white; border-radius:14px; width:100%; max-width:420px; box-shadow:0 20px 60px rgba(0,0,0,0.18); overflow:hidden;">
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:18px 22px; border-bottom:1px solid #ebe5df;">
+                <h3 style="font-family:'Fraunces',serif; font-size:18px; font-weight:600; color:#1a1a18; margin:0;">Nova lista</h3>
+                <button onclick="document.getElementById('modalNovaLista').remove()" style="background:none; border:none; cursor:pointer; color:#9a948c; font-size:22px; line-height:1;">×</button>
+            </div>
+            <div style="padding:20px 22px;">
+                <label class="md-lbl">Nome da lista</label>
+                <input type="text" id="novaListaNome" class="md-inp" placeholder="Ex: Mercado, Farmácia, Afazeres" autofocus>
+                <div style="font-size:11.5px; color:#9a948c; margin-top:6px;">Você poderá adicionar itens (com checkbox) depois.</div>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:10px; padding:14px 22px; border-top:1px solid #ebe5df; background:#faf8f6;">
+                <button onclick="document.getElementById('modalNovaLista').remove()" class="md-btn-out">Cancelar</button>
+                <button onclick="criarListaConfirmar()" class="md-btn-pri">Criar</button>
+            </div>
+        </div>`;
+        document.body.appendChild(m);
+        // Enter pra confirmar
+        m.querySelector('input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); criarListaConfirmar(); } });
+        m.querySelector('input').focus();
+    }
+}
+
+function criarListaConfirmar() {
+    const nome = (document.getElementById('novaListaNome')?.value || '').trim();
+    if (!nome) { alert('Informe o nome da lista'); return; }
+    document.getElementById('modalNovaLista')?.remove();
     const cores = ['#532137','#dd597d','#c87f1f','#57544f','#16a34a','#2c6e8b'];
     const email = emailUsuarioAtual();
     const novoId = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : uuid();

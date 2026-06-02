@@ -163,6 +163,26 @@ input[type="checkbox"] { width: auto; }
 .cal-day-events { margin-top: 4px; }
 .cal-event-pill { font-size: 10px; padding: 2px 6px; border-radius: 3px; margin-bottom: 2px; color: white; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .cal-event-aniversario { background: #dd597d; }
+/* Toolbar rica do calendário */
+.cal-toolbar { background: white; border: 1px solid #ebe5df; border-radius: 14px; padding: 14px 18px; margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; }
+.cal-tb-nav { display: inline-flex; align-items: center; gap: 8px; }
+.cal-tb-titulo { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 600; margin: 0; color: #1a1a18; min-width: 140px; text-align: center; }
+.cal-tb-hoje { padding: 8px 14px; background: #532137; color: white; border: 1px solid #532137; border-radius: 8px; font-family: inherit; font-size: 12.5px; font-weight: 600; cursor: pointer; transition: all 0.12s; margin-left: 4px; }
+.cal-tb-hoje:hover { background: #6a2a47; }
+.cal-tb-chips { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.cal-tb-mostrar { font-size: 10.5px; color: #9a948c; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-right: 4px; }
+.cal-chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px 5px 8px; background: white; border: 1px solid #ebe5df; border-radius: 100px; cursor: pointer; font-size: 12px; font-weight: 600; color: #1a1a18; user-select: none; transition: all 0.12s; }
+.cal-chip:hover { border-color: #c8c2bb; background: #faf8f6; }
+.cal-chip input[type="checkbox"] { width: 13px; height: 13px; cursor: pointer; accent-color: #532137; margin: 0; }
+.cal-chip-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.cal-chip:has(input:not(:checked)) { opacity: 0.45; }
+/* Paleta de cores no modal de data */
+.md-paleta { display: flex; gap: 6px; flex-wrap: wrap; }
+.md-paleta input[type="radio"] { display: none; }
+.md-paleta label { width: 28px; height: 28px; border-radius: 8px; cursor: pointer; transition: transform 0.12s; border: 2px solid transparent; display: inline-flex; align-items: center; justify-content: center; }
+.md-paleta label:hover { transform: scale(1.1); }
+.md-paleta input[type="radio"]:checked + label { border-color: #1a1a18; transform: scale(1.1); }
+.md-paleta input[type="radio"]:checked + label::after { content: '✓'; color: white; font-weight: 800; font-size: 14px; }
 .cal-event-comemoracao { background: #f9a01b; }
 .cal-event-lembrete { background: #7c3aed; }
 .cal-event-vencimento { background: #dc2626; }
@@ -2940,12 +2960,23 @@ textarea.md-inp { resize: vertical; min-height: 60px; line-height: 1.4; }
                     <div id="kanbanColunas" class="kanban-board"></div>
                 </div>
                 <div id="datasCalendario" class="hidden">
-                    <div class="section-card" style="padding: 16px;">
-                        <div class="flex items-center justify-between mb-4">
-                            <button onclick="navegarMesCalendario(-1)" class="btn-secondary" style="padding: 6px 14px;">&lsaquo; Mês anterior</button>
-                            <h3 id="calendarioTitulo" style="font-size: 18px; font-weight: 600; margin: 0;"></h3>
-                            <button onclick="navegarMesCalendario(1)" class="btn-secondary" style="padding: 6px 14px;">Próximo mês &rsaquo;</button>
+                    <!-- Header rico do calendário -->
+                    <div class="cal-toolbar">
+                        <div class="cal-tb-nav">
+                            <button onclick="navegarMesCalendario(-1)" class="lan-comp-nav" title="Mês anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+                            <h3 id="calendarioTitulo" class="cal-tb-titulo">—</h3>
+                            <button onclick="navegarMesCalendario(1)" class="lan-comp-nav" title="Próximo mês"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
+                            <button onclick="irMesAtualCalendario()" class="cal-tb-hoje">Hoje</button>
                         </div>
+                        <div class="cal-tb-chips">
+                            <span class="cal-tb-mostrar">MOSTRAR:</span>
+                            <label class="cal-chip" data-tipo="aniversario"><input type="checkbox" checked onchange="renderizarCalendario()"><span class="cal-chip-dot" style="background:#dd597d;"></span><span>Aniversários</span></label>
+                            <label class="cal-chip" data-tipo="comemoracao"><input type="checkbox" checked onchange="renderizarCalendario()"><span class="cal-chip-dot" style="background:#f9a01b;"></span><span>Comemorações</span></label>
+                            <label class="cal-chip" data-tipo="lembrete"><input type="checkbox" checked onchange="renderizarCalendario()"><span class="cal-chip-dot" style="background:#7c3aed;"></span><span>Lembretes</span></label>
+                            <label class="cal-chip" data-tipo="vencimento"><input type="checkbox" checked onchange="renderizarCalendario()"><span class="cal-chip-dot" style="background:#dc2626;"></span><span>Vencimentos</span></label>
+                        </div>
+                    </div>
+                    <div class="section-card" style="padding: 16px;">
                         <div id="calendarioGrid"></div>
                     </div>
                     <div id="diaSelecionadoBox" class="section-card hidden">
@@ -4474,6 +4505,19 @@ textarea.md-inp { resize: vertical; min-height: 60px; line-height: 1.4; }
                         <option value="compartilhada">Compartilhada</option>
                         <option value="pessoal">Pessoal (só eu)</option>
                     </select>
+                </div>
+            </div>
+            <div>
+                <label class="md-lbl">Cor</label>
+                <div class="md-paleta" id="dataPaletaCor">
+                    <input type="radio" name="dataCor" id="dataCor-rosa" value="#dd597d" checked><label for="dataCor-rosa" style="background:#dd597d;"></label>
+                    <input type="radio" name="dataCor" id="dataCor-bordo" value="#532137"><label for="dataCor-bordo" style="background:#532137;"></label>
+                    <input type="radio" name="dataCor" id="dataCor-laranja" value="#f9a01b"><label for="dataCor-laranja" style="background:#f9a01b;"></label>
+                    <input type="radio" name="dataCor" id="dataCor-roxo" value="#7c3aed"><label for="dataCor-roxo" style="background:#7c3aed;"></label>
+                    <input type="radio" name="dataCor" id="dataCor-verde" value="#16a34a"><label for="dataCor-verde" style="background:#16a34a;"></label>
+                    <input type="radio" name="dataCor" id="dataCor-vermelho" value="#dc2626"><label for="dataCor-vermelho" style="background:#dc2626;"></label>
+                    <input type="radio" name="dataCor" id="dataCor-azul" value="#3b82f6"><label for="dataCor-azul" style="background:#3b82f6;"></label>
+                    <input type="radio" name="dataCor" id="dataCor-cinza" value="#6b6660"><label for="dataCor-cinza" style="background:#6b6660;"></label>
                 </div>
             </div>
             <label style="display:inline-flex; align-items:center; gap:8px; cursor:pointer; user-select:none; margin-top:2px;">
@@ -8968,6 +9012,25 @@ function renderizarDatasView() {
     else renderizarCalendario();
 }
 
+// Lê se o chip de um tipo está marcado no calendário (true se nem existe o chip)
+function calChipAtivo(tipo) {
+    const chip = document.querySelector(`.cal-chip[data-tipo="${tipo}"] input[type="checkbox"]`);
+    return chip ? chip.checked : true;
+}
+
+// Cor padrão por tipo (fallback se a data não tem cor própria)
+function calCorPorTipo(tipo) {
+    const cores = { aniversario: '#dd597d', comemoracao: '#f9a01b', lembrete: '#7c3aed', vencimento: '#dc2626' };
+    return cores[tipo] || '#6b6660';
+}
+
+function irMesAtualCalendario() {
+    mesCalendarioAtual = mesAtual();
+    diaCalendarioSelecionado = null;
+    document.getElementById('diaSelecionadoBox')?.classList.add('hidden');
+    renderizarCalendario();
+}
+
 function navegarMesCalendario(dir) {
     const [a, m] = mesCalendarioAtual.split('-').map(Number);
     const d = new Date(a, m - 1 + dir, 1);
@@ -9018,8 +9081,8 @@ function renderizarCalendario() {
         html += `<div class="${classes.join(' ')}" onclick="selecionarDiaCalendario('${dataStr}')">
             <div class="cal-day-number">${dia}</div>
             <div class="cal-day-events">
-                ${eventos.slice(0, 3).map(e => `<div class="cal-event-pill cal-event-${e.tipo}" title="${e.titulo}">${e.titulo}</div>`).join('')}
-                ${eventos.length > 3 ? `<div style="font-size:10px; color:#6b7280;">+${eventos.length - 3} mais</div>` : ''}
+                ${eventos.filter(e => calChipAtivo(e.tipo)).slice(0, 3).map(e => `<div class="cal-event-pill" title="${e.titulo}" style="background:${e.cor || calCorPorTipo(e.tipo)};">${e.titulo}</div>`).join('')}
+                ${(() => { const filt = eventos.filter(e => calChipAtivo(e.tipo)); return filt.length > 3 ? `<div style="font-size:10px; color:#6b7280;">+${filt.length - 3} mais</div>` : ''; })()}
             </div>
         </div>`;
     }
@@ -9150,11 +9213,19 @@ function editarData(id) {
     document.getElementById('dataPessoa').value = d.pessoa || 'familia';
     document.getElementById('dataVisibilidade').value = d.visibilidade || 'compartilhada';
     document.getElementById('dataRecorrente').checked = !!d.recorrente;
+    // Marca a cor da data (se não tem cor salva, marca a padrão do tipo)
+    const corAtual = d.cor || calCorPorTipo(d.tipo);
+    const radio = document.querySelector(`input[name="dataCor"][value="${corAtual}"]`);
+    if (radio) radio.checked = true;
+    else {
+        const first = document.querySelector('input[name="dataCor"]'); if (first) first.checked = true;
+    }
     document.getElementById('modalData').classList.remove('hidden');
 }
 function salvarData() {
     const idEdicao = document.getElementById('dataIdEdicao').value;
-    const dados = { data: document.getElementById('dataData').value, tipo: document.getElementById('dataTipo').value, titulo: document.getElementById('dataTitulo').value.trim(), descricao: document.getElementById('dataDesc').value || null, recorrente: document.getElementById('dataRecorrente').checked, pessoa: document.getElementById('dataPessoa').value, visibilidade: document.getElementById('dataVisibilidade').value, criado_por: usuarioAtual };
+    const corSel = document.querySelector('input[name="dataCor"]:checked');
+    const dados = { data: document.getElementById('dataData').value, tipo: document.getElementById('dataTipo').value, titulo: document.getElementById('dataTitulo').value.trim(), descricao: document.getElementById('dataDesc').value || null, recorrente: document.getElementById('dataRecorrente').checked, pessoa: document.getElementById('dataPessoa').value, visibilidade: document.getElementById('dataVisibilidade').value, cor: corSel ? corSel.value : null, criado_por: usuarioAtual };
     if (!dados.titulo) { alert('Informe o título'); return; }
     if (idEdicao) { Object.assign(estado.datas.find(x => x.id === idEdicao), dados); toast('Atualizado'); }
     else { estado.datas.push({ id: uuid(), ...dados }); toast('Criado'); }

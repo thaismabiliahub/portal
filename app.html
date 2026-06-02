@@ -2921,13 +2921,10 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
                         </div>
                     </div>
                 <div id="datasKanban">
-                    <div class="flex items-center justify-between mb-3" style="background:white; border:1px solid #e5e7eb; border-radius:8px; padding:10px 14px;">
-                        <button onclick="navegarKanban(-6)" class="btn-secondary" style="padding:5px 10px; font-size:12px;">&laquo; 6 meses</button>
-                        <button onclick="navegarKanban(-1)" class="btn-secondary" style="padding:5px 10px; font-size:12px;">&lsaquo; Mês anterior</button>
-                        <button onclick="irMesAtualKanban()" class="btn-secondary" style="padding:5px 14px; font-size:12px; font-weight:600;">Mês atual</button>
-                        <span id="kanbanRangeLabel" style="font-size:13px; font-weight:600; color:var(--bordo);"></span>
-                        <button onclick="navegarKanban(1)" class="btn-secondary" style="padding:5px 10px; font-size:12px;">Próximo mês &rsaquo;</button>
-                        <button onclick="navegarKanban(6)" class="btn-secondary" style="padding:5px 10px; font-size:12px;">6 meses &raquo;</button>
+                    <div style="display:inline-flex; align-items:center; gap:6px; margin-bottom:14px;">
+                        <button onclick="navegarKanban(-1)" class="lan-comp-nav" title="Mês anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+                        <button id="kanbanRangeLabel" onclick="irMesAtualKanban()" class="lan-comp-atual-btn" title="Voltar pro mês atual" style="min-width:240px;">—</button>
+                        <button onclick="navegarKanban(1)" class="lan-comp-nav" title="Próximo mês"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
                     </div>
                     <div id="kanbanColunas" class="kanban-board"></div>
                 </div>

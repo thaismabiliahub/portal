@@ -5314,7 +5314,10 @@ function renderizarDashboard() {
         elSub.className = 'dash-hero-sub ' + corSorteada;
     }
     const elData = document.getElementById('dashHeroData');
-    if (elData) elData.textContent = `Hoje, ${dataLong} · ${lembretes} lembrete${lembretes !== 1 ? 's' : ''} esta semana`;
+    if (elData) {
+        const horaAgora = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        elData.textContent = `Hoje, ${dataLong} · ${horaAgora} · ${lembretes} lembrete${lembretes !== 1 ? 's' : ''} esta semana`;
+    }
 
     // Métricas
     const pagar7 = parcelas.filter(p => { const c = acharConta(p.conta_id); return c && c.tipo === 'pagar' && p.status !== 'paga' && p.status !== 'cancelada' && p.data_vencimento >= hojeStr && p.data_vencimento <= limite7; });

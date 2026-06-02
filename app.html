@@ -4360,36 +4360,48 @@ textarea.md-inp { resize: vertical; min-height: 60px; line-height: 1.4; }
 
 <!-- Modal Categoria -->
 <div id="modalCategoria" class="hidden fixed inset-0 modal-overlay z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-lg p-6 w-full max-w-md">
-        <h3 id="modalCategoriaTitulo" class="text-lg font-bold mb-4">Nova categoria</h3>
-        <input type="hidden" id="categoriaIdEdicao" value="">
-        <div class="space-y-3">
-            <div><label class="block text-sm font-medium mb-1">Espaço</label><select id="categoriaEntidade"></select></div>
-            <div><label class="block text-sm font-medium mb-1">Nome</label><input type="text" id="categoriaNome" placeholder="Ex: Mercado, Farmácia, Salário..."></div>
-            <div><label class="block text-sm font-medium mb-1">Tipo</label><select id="categoriaTipo"><option value="despesa">Despesa</option><option value="receita">Receita</option></select></div>
-            <div><label class="block text-sm font-medium mb-1">Cor</label><input type="color" id="categoriaCor" value="#dd597d" class="h-10"></div>
-            <div><label class="block text-sm font-medium mb-1">Orçamento mensal (R$)<span style="color:#9a948c; font-weight:400; margin-left:6px;">opcional</span></label><input type="number" step="0.01" min="0" id="categoriaOrcamento" placeholder="Ex: 1200" style="font-family:inherit;"><div style="font-size:11px; color:#9a948c; margin-top:4px;">Se preencher, aparece no Painel a barra "planejado × gasto" desta categoria.</div></div>
+    <div style="background:white; border-radius:14px; width:100%; max-width:460px; box-shadow:0 20px 60px rgba(0,0,0,0.15); overflow:hidden;">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:20px 24px; border-bottom:1px solid #ebe5df;">
+            <h3 id="modalCategoriaTitulo" style="font-family:'Fraunces',serif; font-size:20px; font-weight:600; color:#1a1a18; margin:0;">Nova categoria</h3>
+            <button onclick="fecharModal('modalCategoria')" style="background:none; border:none; cursor:pointer; color:#9a948c; font-size:24px; line-height:1; padding:0;">×</button>
         </div>
-        <div class="flex justify-end gap-2 mt-6">
-            <button onclick="fecharModal('modalCategoria')" class="btn-secondary">Cancelar</button>
-            <button onclick="salvarCategoria()" class="btn-primary">Salvar</button>
+        <input type="hidden" id="categoriaIdEdicao" value="">
+        <div style="padding:22px 24px; display:flex; flex-direction:column; gap:14px;">
+            <div><label class="md-lbl">Espaço</label><select id="categoriaEntidade" class="md-inp"></select></div>
+            <div><label class="md-lbl">Nome</label><input type="text" id="categoriaNome" class="md-inp" placeholder="Ex: Mercado, Farmácia, Salário..."></div>
+            <div style="display:grid; grid-template-columns:1fr 100px; gap:12px;">
+                <div><label class="md-lbl">Tipo</label><select id="categoriaTipo" class="md-inp"><option value="despesa">Despesa</option><option value="receita">Receita</option></select></div>
+                <div><label class="md-lbl">Cor</label><input type="color" id="categoriaCor" value="#dd597d" class="md-inp" style="padding:4px; height:40px; cursor:pointer;"></div>
+            </div>
+            <div>
+                <label class="md-lbl">Orçamento mensal (R$) <span style="color:#9a948c; font-weight:400; margin-left:4px;">opcional</span></label>
+                <input type="number" step="0.01" min="0" id="categoriaOrcamento" class="md-inp" placeholder="Ex: 1200">
+                <div style="font-size:11.5px; color:#9a948c; margin-top:6px;">Se preencher, aparece no Painel a barra "planejado × gasto" desta categoria.</div>
+            </div>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:10px; padding:16px 24px; border-top:1px solid #ebe5df; background:#faf8f6;">
+            <button onclick="fecharModal('modalCategoria')" class="md-btn-out">Cancelar</button>
+            <button onclick="salvarCategoria()" class="md-btn-pri">Salvar</button>
         </div>
     </div>
 </div>
 
 <!-- Modal Parceiro -->
 <div id="modalParceiro" class="hidden fixed inset-0 modal-overlay z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-lg p-6 w-full max-w-md">
-        <h3 id="modalParceiroTitulo" class="text-lg font-bold mb-4">Novo parceiro</h3>
-        <input type="hidden" id="parceiroIdEdicao" value="">
-        <div class="space-y-3">
-            <div><label class="block text-sm font-medium mb-1">Espaço</label><select id="parceiroEntidade"></select></div>
-            <div><label class="block text-sm font-medium mb-1">Nome</label><input type="text" id="parceiroNome" placeholder="Ex: Bradesco, Mercado Fort, Bruna Adv..."></div>
-            <div><label class="block text-sm font-medium mb-1">Tipo</label><select id="parceiroTipo"><option value="fornecedor">Fornecedor</option><option value="cliente">Cliente</option><option value="ambos">Ambos</option></select></div>
+    <div style="background:white; border-radius:14px; width:100%; max-width:420px; box-shadow:0 20px 60px rgba(0,0,0,0.15); overflow:hidden;">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:20px 24px; border-bottom:1px solid #ebe5df;">
+            <h3 id="modalParceiroTitulo" style="font-family:'Fraunces',serif; font-size:20px; font-weight:600; color:#1a1a18; margin:0;">Novo parceiro</h3>
+            <button onclick="fecharModal('modalParceiro')" style="background:none; border:none; cursor:pointer; color:#9a948c; font-size:24px; line-height:1; padding:0;">×</button>
         </div>
-        <div class="flex justify-end gap-2 mt-6">
-            <button onclick="fecharModal('modalParceiro')" class="btn-secondary">Cancelar</button>
-            <button onclick="salvarParceiro()" class="btn-primary">Salvar</button>
+        <input type="hidden" id="parceiroIdEdicao" value="">
+        <div style="padding:22px 24px; display:flex; flex-direction:column; gap:14px;">
+            <div><label class="md-lbl">Espaço</label><select id="parceiroEntidade" class="md-inp"></select></div>
+            <div><label class="md-lbl">Nome</label><input type="text" id="parceiroNome" class="md-inp" placeholder="Ex: Bradesco, Mercado Fort, Bruna Adv..."></div>
+            <div><label class="md-lbl">Tipo</label><select id="parceiroTipo" class="md-inp"><option value="fornecedor">Fornecedor</option><option value="cliente">Cliente</option><option value="ambos">Ambos</option></select></div>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:10px; padding:16px 24px; border-top:1px solid #ebe5df; background:#faf8f6;">
+            <button onclick="fecharModal('modalParceiro')" class="md-btn-out">Cancelar</button>
+            <button onclick="salvarParceiro()" class="md-btn-pri">Salvar</button>
         </div>
     </div>
 </div>
@@ -4455,20 +4467,27 @@ textarea.md-inp { resize: vertical; min-height: 60px; line-height: 1.4; }
 
 <!-- Modal Prestador de Reparo -->
 <div id="modalPrestadorReparo" class="hidden fixed inset-0 modal-overlay z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-lg p-6 w-full max-w-md">
-        <h3 id="modalPrestadorReparoTitulo" class="text-lg font-bold mb-4">Novo prestador</h3>
-        <input type="hidden" id="prestadorReparoIdEdicao" value="">
-        <div class="grid grid-cols-2 gap-3">
-            <div class="col-span-2"><label class="block text-sm font-medium mb-1">Nome</label><input type="text" id="prestadorReparoNome" placeholder="Ex: Tio Vina"></div>
-            <div><label class="block text-sm font-medium mb-1">Espaço</label><select id="prestadorReparoEntidade"></select></div>
-            <div><label class="block text-sm font-medium mb-1">Tipo</label><select id="prestadorReparoTipo"><option value="tecnico">Técnico</option><option value="autonomo">Autônomo</option><option value="empresa">Empresa</option><option value="outro">Outro</option></select></div>
-            <div><label class="block text-sm font-medium mb-1">Telefone</label><input type="text" id="prestadorReparoTel" placeholder="(99) 99999-9999"></div>
-            <div><label class="block text-sm font-medium mb-1">Especialidade</label><input type="text" id="prestadorReparoEsp" placeholder="Ex: Refrigeração"></div>
-            <div class="col-span-2"><label class="block text-sm font-medium mb-1">Observação</label><textarea id="prestadorReparoObs" rows="3"></textarea></div>
+    <div style="background:white; border-radius:14px; width:100%; max-width:520px; box-shadow:0 20px 60px rgba(0,0,0,0.15); overflow:hidden;">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:20px 24px; border-bottom:1px solid #ebe5df;">
+            <h3 id="modalPrestadorReparoTitulo" style="font-family:'Fraunces',serif; font-size:20px; font-weight:600; color:#1a1a18; margin:0;">Novo prestador</h3>
+            <button onclick="fecharModal('modalPrestadorReparo')" style="background:none; border:none; cursor:pointer; color:#9a948c; font-size:24px; line-height:1; padding:0;">×</button>
         </div>
-        <div class="flex justify-end gap-2 mt-6">
-            <button onclick="fecharModal('modalPrestadorReparo')" class="btn-secondary">Cancelar</button>
-            <button onclick="salvarPrestadorReparo()" class="btn-primary">Salvar</button>
+        <input type="hidden" id="prestadorReparoIdEdicao" value="">
+        <div style="padding:22px 24px; display:flex; flex-direction:column; gap:14px;">
+            <div><label class="md-lbl">Nome</label><input type="text" id="prestadorReparoNome" class="md-inp" placeholder="Ex: Tio Vina"></div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div><label class="md-lbl">Espaço</label><select id="prestadorReparoEntidade" class="md-inp"></select></div>
+                <div><label class="md-lbl">Tipo</label><select id="prestadorReparoTipo" class="md-inp"><option value="tecnico">Técnico</option><option value="autonomo">Autônomo</option><option value="empresa">Empresa</option><option value="outro">Outro</option></select></div>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div><label class="md-lbl">Telefone</label><input type="text" id="prestadorReparoTel" class="md-inp" placeholder="(99) 99999-9999"></div>
+                <div><label class="md-lbl">Especialidade</label><input type="text" id="prestadorReparoEsp" class="md-inp" placeholder="Ex: Refrigeração"></div>
+            </div>
+            <div><label class="md-lbl">Observação <span style="color:#9a948c; font-weight:400; margin-left:4px;">opcional</span></label><textarea id="prestadorReparoObs" class="md-inp" rows="2" placeholder="Endereço, horário, formas de contato preferidas..."></textarea></div>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:10px; padding:16px 24px; border-top:1px solid #ebe5df; background:#faf8f6;">
+            <button onclick="fecharModal('modalPrestadorReparo')" class="md-btn-out">Cancelar</button>
+            <button onclick="salvarPrestadorReparo()" class="md-btn-pri">Salvar</button>
         </div>
     </div>
 </div>

@@ -1135,6 +1135,17 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
 .lan-comp-atalhos { display: flex; gap: 4px; margin-left: 12px; padding-left: 12px; border-left: 1px solid #ebe5df; }
 .lan-comp-atalhos .lan-comp-atalho.ativo { background: #f5efe6 !important; color: #8b6e3a !important; border: 1px solid rgba(139,110,58,0.2) !important; }
 
+/* Padrão de modal estilo sistema */
+.md-lbl { display: block; font-size: 11.5px; font-weight: 700; color: #6b6660; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+.md-inp { width: 100%; padding: 10px 12px; border: 1px solid #ebe5df; border-radius: 8px; font-family: inherit; font-size: 13.5px; color: #1a1a18; background: white; outline: none; transition: border-color 0.12s; }
+.md-inp:focus { border-color: #532137; }
+.md-inp::placeholder { color: #c8c2bb; }
+textarea.md-inp { resize: vertical; min-height: 60px; line-height: 1.4; }
+.md-btn-out { padding: 9px 16px; background: white; border: 1px solid #ebe5df; border-radius: 8px; font-family: inherit; font-size: 13px; font-weight: 600; color: #1a1a18; cursor: pointer; transition: all 0.12s; }
+.md-btn-out:hover { border-color: #532137; color: #532137; }
+.md-btn-pri { padding: 9px 18px; background: #532137; border: 1px solid #532137; border-radius: 8px; font-family: inherit; font-size: 13px; font-weight: 600; color: white; cursor: pointer; transition: all 0.12s; }
+.md-btn-pri:hover { background: #6a2a47; }
+
 /* Chips coloridos por categoria (mostrar/ocultar) */
 .lan-chips-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 12px 0; margin-top: 8px; border-top: 1px solid #f3efea; }
 .lan-chips-label { font-size: 10.5px; color: #9a948c; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-right: 4px; }
@@ -4420,21 +4431,59 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
 
 <!-- Modal Data -->
 <div id="modalData" class="hidden fixed inset-0 modal-overlay z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-lg p-6 w-full max-w-md">
-        <h3 id="modalDataTitulo" class="text-lg font-bold mb-4">Nova data</h3>
-        <input type="hidden" id="dataIdEdicao" value="">
-        <div class="space-y-3">
-            <div><label class="block text-sm font-medium mb-1">Data</label><input type="date" id="dataData"></div>
-            <div><label class="block text-sm font-medium mb-1">Tipo</label><select id="dataTipo"><option value="aniversario">Aniversário</option><option value="comemoracao">Comemoração</option><option value="lembrete">Lembrete</option><option value="vencimento">Vencimento importante</option></select></div>
-            <div><label class="block text-sm font-medium mb-1">Título</label><input type="text" id="dataTitulo"></div>
-            <div><label class="block text-sm font-medium mb-1">Descrição</label><textarea id="dataDesc" rows="3"></textarea></div>
-            <div><label class="block text-sm font-medium mb-1">Pessoa relacionada</label><select id="dataPessoa"><option value="familia">Família (todos)</option><option value="thais">Thais</option><option value="andrey">Andrey</option><option value="yasmin">Yasmin</option><option value="tayane">Tayane</option></select></div>
-            <div><label class="block text-sm font-medium mb-1">Visibilidade</label><select id="dataVisibilidade"><option value="compartilhada">Compartilhada (família vê)</option><option value="pessoal">Pessoal (só eu vejo)</option></select></div>
-            <div><label class="flex items-center gap-2"><input type="checkbox" id="dataRecorrente"><span class="text-sm">Repetir todo ano</span></label></div>
+    <div style="background:white; border-radius:14px; width:100%; max-width:480px; box-shadow:0 20px 60px rgba(0,0,0,0.15); overflow:hidden;">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:20px 24px; border-bottom:1px solid #ebe5df;">
+            <h3 id="modalDataTitulo" style="font-family:'Fraunces',serif; font-size:20px; font-weight:600; color:#1a1a18; margin:0;">Nova data</h3>
+            <button onclick="fecharModal('modalData')" style="background:none; border:none; cursor:pointer; color:#9a948c; font-size:24px; line-height:1; padding:0;">×</button>
         </div>
-        <div class="flex justify-end gap-2 mt-6">
-            <button onclick="fecharModal('modalData')" class="btn-secondary">Cancelar</button>
-            <button onclick="salvarData()" class="btn-primary">Salvar</button>
+        <input type="hidden" id="dataIdEdicao" value="">
+        <div style="padding:22px 24px; display:flex; flex-direction:column; gap:14px;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div>
+                    <label class="md-lbl">Data</label>
+                    <input type="date" id="dataData" class="md-inp">
+                </div>
+                <div>
+                    <label class="md-lbl">Tipo</label>
+                    <select id="dataTipo" class="md-inp">
+                        <option value="aniversario">Aniversário</option>
+                        <option value="comemoracao">Comemoração</option>
+                        <option value="lembrete">Lembrete</option>
+                        <option value="vencimento">Vencimento importante</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <label class="md-lbl">Título</label>
+                <input type="text" id="dataTitulo" class="md-inp" placeholder="Ex: Aniversário da Jady">
+            </div>
+            <div>
+                <label class="md-lbl">Descrição <span style="color:#9a948c; font-weight:400; margin-left:4px;">opcional</span></label>
+                <textarea id="dataDesc" rows="2" class="md-inp" placeholder="Detalhes, presente em mente, etc."></textarea>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div>
+                    <label class="md-lbl">Pessoa relacionada</label>
+                    <select id="dataPessoa" class="md-inp">
+                        <option value="familia">Família (todos)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="md-lbl">Visibilidade</label>
+                    <select id="dataVisibilidade" class="md-inp">
+                        <option value="compartilhada">Compartilhada</option>
+                        <option value="pessoal">Pessoal (só eu)</option>
+                    </select>
+                </div>
+            </div>
+            <label style="display:inline-flex; align-items:center; gap:8px; cursor:pointer; user-select:none; margin-top:2px;">
+                <input type="checkbox" id="dataRecorrente" style="width:16px; height:16px; accent-color:#532137; cursor:pointer;">
+                <span style="font-size:13px; color:#1a1a18;">Repetir todo ano</span>
+            </label>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:10px; padding:16px 24px; border-top:1px solid #ebe5df; background:#faf8f6;">
+            <button onclick="fecharModal('modalData')" class="md-btn-out">Cancelar</button>
+            <button onclick="salvarData()" class="md-btn-pri">Salvar</button>
         </div>
     </div>
 </div>
@@ -9066,7 +9115,19 @@ function dropDataNoMes(event, anoMesDestino) {
     renderizarDatasKanban();
     toast(`Movido para ${new Date(anoMesDestino + '-01').toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}`);
 }
+// Popula o select de Pessoa relacionada com gente cadastrada (sem nomes cravados)
+function popularSelectPessoaData() {
+    const sel = document.getElementById('dataPessoa');
+    if (!sel) return;
+    const us = (estado.usuarios_convite || []).filter(u => u.status !== 'removido' && u.nome);
+    const valorAtual = sel.value;
+    sel.innerHTML = '<option value="familia">Família (todos)</option>' +
+        us.map(u => `<option value="${u.email || u.id}">${u.apelido || u.nome}</option>`).join('');
+    if (valorAtual) sel.value = valorAtual;
+}
+
 function abrirModalData() {
+    popularSelectPessoaData();
     document.getElementById('modalDataTitulo').textContent = 'Nova data';
     document.getElementById('dataIdEdicao').value = '';
     document.getElementById('dataData').value = hoje();
@@ -9079,7 +9140,8 @@ function abrirModalData() {
 }
 function editarData(id) {
     const d = estado.datas.find(x => x.id === id); if (!d) return;
-    document.getElementById('modalDataTitulo').textContent = 'Editar';
+    popularSelectPessoaData();
+    document.getElementById('modalDataTitulo').textContent = 'Editar data';
     document.getElementById('dataIdEdicao').value = d.id;
     document.getElementById('dataData').value = d.data;
     document.getElementById('dataTipo').value = d.tipo;

@@ -1578,7 +1578,32 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
 .repv2-pill.ativo { background: #532137; color: white; border-color: #532137; }
 #repv2FiltrosPillCategoria, #repv2FiltrosPillStatus { gap: 6px; }
 
-.repv2-toolbar { background: white; border: 1px solid #ebe5df; border-radius: 14px; padding: 14px 18px; margin-bottom: 16px; }
+.repv2-toolbar { background: white; border: 1px solid #ebe5df; border-radius: 14px; padding: 0; margin-bottom: 16px; overflow: hidden; }
+.repv2-tb-row { display: flex; align-items: stretch; gap: 0; padding: 0; }
+.repv2-tb-busca { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; padding: 0 14px; }
+.repv2-tb-busca svg { width: 15px; height: 15px; color: #9a948c; flex-shrink: 0; }
+.repv2-tb-busca input { flex: 1; border: none; outline: none; background: transparent; font-family: inherit; font-size: 13px; padding: 14px 0; color: #1a1a18; min-width: 0; }
+.repv2-tb-busca input::placeholder { color: #9a948c; }
+.repv2-tb-kbd { background: #faf8f6; border: 1px solid #ebe5df; border-radius: 4px; padding: 2px 6px; font-size: 10px; color: #9a948c; font-family: 'JetBrains Mono', monospace; flex-shrink: 0; }
+.repv2-tb-divisor { width: 1px; background: #ebe5df; }
+.repv2-tb-grupo { display: inline-flex; align-items: center; gap: 8px; padding: 0 14px; }
+.repv2-tb-label { font-size: 11px; color: #9a948c; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 700; }
+.repv2-tb-select { background: transparent; border: none; outline: none; font-family: inherit; font-size: 13px; font-weight: 600; color: #1a1a18; cursor: pointer; padding: 14px 6px 14px 0; }
+.repv2-tb-acoes { display: flex; align-items: stretch; gap: 0; border-left: 1px solid #ebe5df; }
+.repv2-tb-btn { display: inline-flex; align-items: center; gap: 6px; padding: 0 14px; background: white; border: none; font-family: inherit; font-size: 12.5px; font-weight: 600; color: #6b6660; cursor: pointer; transition: all 0.12s; }
+.repv2-tb-btn:hover { background: #faf8f6; color: #532137; }
+.repv2-tb-btn:not(:last-child) { border-right: 1px solid #ebe5df; }
+.repv2-tb-btn svg { width: 14px; height: 14px; }
+.repv2-tb-pills { display: none; gap: 6px; flex-wrap: wrap; padding: 10px 14px; border-top: 1px solid #ebe5df; background: #faf8f6; }
+.repv2-tb-pills.ativa { display: flex; }
+@media (max-width: 720px) {
+    .repv2-tb-row { flex-direction: column; }
+    .repv2-tb-busca { padding: 12px 14px; border-bottom: 1px solid #ebe5df; }
+    .repv2-tb-divisor { display: none; }
+    .repv2-tb-grupo { padding: 12px 14px; border-bottom: 1px solid #ebe5df; }
+    .repv2-tb-acoes { border-left: none; border-top: 1px solid #ebe5df; }
+    .repv2-tb-btn { flex: 1; padding: 12px; justify-content: center; }
+}
 .repv2-filtro-pill { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; background: #faf8f6; border: 1px solid #ebe5df; border-radius: 8px; font-size: 12px; font-weight: 500; cursor: pointer; color: #1a1a18; font-family: inherit; transition: all 0.15s; }
 .repv2-filtro-pill:hover { border-color: #532137; }
 .repv2-filtro-pill.ativo { background: #532137; color: white; border-color: #532137; }
@@ -2754,18 +2779,34 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
                         </button>
                     </div>
 
-                    <!-- TOOLBAR (grid): linha 1 = busca + espaço · linha 2 = pills (quando aplica) -->
-                    <div class="repv2-toolbar" id="repv2Toolbar" style="display:grid; grid-template-columns: 1fr auto; gap:10px 12px; align-items:center;">
-                        <div class="lan-busca" style="min-width:0;">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                            <input type="text" id="repv2Busca" oninput="renderizarReparos()" placeholder="Buscar item, prestador, descrição...">
+                    <!-- TOOLBAR estilo sistema (denso, com ações inline) -->
+                    <div class="repv2-toolbar" id="repv2Toolbar">
+                        <div class="repv2-tb-row">
+                            <div class="repv2-tb-busca">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                <input type="text" id="repv2Busca" oninput="renderizarReparos()" placeholder="Buscar item, prestador, descrição...">
+                                <kbd class="repv2-tb-kbd">Ctrl K</kbd>
+                            </div>
+                            <div class="repv2-tb-divisor"></div>
+                            <div class="repv2-tb-grupo">
+                                <span class="repv2-tb-label">Espaço</span>
+                                <select id="repv2FiltroEntidade" onchange="renderizarReparos()" class="repv2-tb-select"><option value="todas">Todos</option></select>
+                            </div>
+                            <div class="repv2-tb-acoes">
+                                <button class="repv2-tb-btn" onclick="repv2OrdenarMenu()" title="Ordenar">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M6 12h12M9 18h6"/></svg>
+                                    Ordenar
+                                </button>
+                                <button class="repv2-tb-btn" onclick="repv2ExportarLista()" title="Exportar lista visível">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                    Exportar
+                                </button>
+                            </div>
                         </div>
-                        <select id="repv2FiltroEntidade" onchange="renderizarReparos()" class="lan-filtro-select" style="min-width:160px; max-width:200px;"><option value="todas">Todos os espaços</option></select>
-                        <!-- Filtros pill aparecem só na aba "Itens da casa" -->
-                        <div id="repv2FiltrosPillCategoria" style="display:none; gap:6px; flex-wrap:wrap; grid-column: 1 / -1; padding-top:8px; border-top:1px solid #f3efea;"></div>
+                        <!-- Filtros pill aparecem só nas abas "Itens da casa" / "Lançamentos" -->
+                        <div id="repv2FiltrosPillCategoria" class="repv2-tb-pills"></div>
                         <select id="repv2FiltroCategoria" onchange="renderizarReparos()" style="display:none;"><option value="todas"></option></select>
-                        <!-- Filtros pill de status aparecem só na aba "Lançamentos" -->
-                        <div id="repv2FiltrosPillStatus" style="display:none; gap:6px; flex-wrap:wrap; grid-column: 1 / -1; padding-top:8px; border-top:1px solid #f3efea;"></div>
+                        <div id="repv2FiltrosPillStatus" class="repv2-tb-pills"></div>
                         <select id="repv2FiltroStatus" onchange="renderizarReparos()" style="display:none;"><option value="todos"></option></select>
                     </div>
 
@@ -8324,9 +8365,10 @@ function repv2RenderFiltrosPill(subTab, itens, reparos) {
     const wrapStat = document.getElementById('repv2FiltrosPillStatus');
     if (!wrapCat || !wrapStat) return;
 
+    wrapCat.classList.remove('ativa');
+    wrapStat.classList.remove('ativa');
     if (subTab === 'itens') {
-        wrapStat.style.display = 'none';
-        wrapCat.style.display = 'inline-flex';
+        wrapCat.classList.add('ativa');
         const filtroAtual = document.getElementById('repv2FiltroCategoria')?.value || 'todas';
         const cats = [
             { v: 'todas', label: 'Todos' },
@@ -8343,8 +8385,7 @@ function repv2RenderFiltrosPill(subTab, itens, reparos) {
             return `<button class="repv2-pill ${ativo}" onclick="repv2SetFiltroCat('${c.v}')">${c.label} · ${count}</button>`;
         }).join('');
     } else if (subTab === 'lancamentos') {
-        wrapCat.style.display = 'none';
-        wrapStat.style.display = 'inline-flex';
+        wrapStat.classList.add('ativa');
         const filtroAtual = document.getElementById('repv2FiltroStatus')?.value || 'todos';
         const stats = [
             { v: 'todos', label: 'Todos' },
@@ -8358,11 +8399,12 @@ function repv2RenderFiltrosPill(subTab, itens, reparos) {
             const ativo = filtroAtual === s.v ? 'ativo' : '';
             return `<button class="repv2-pill ${ativo}" onclick="repv2SetFiltroStat('${s.v}')">${s.label} · ${count}</button>`;
         }).join('');
-    } else {
-        wrapCat.style.display = 'none';
-        wrapStat.style.display = 'none';
     }
 }
+
+// Stubs pra botões de ordenar/exportar (TODO: implementar)
+function repv2OrdenarMenu() { toast && toast('Ordenação em breve.'); }
+function repv2ExportarLista() { toast && toast('Exportação em breve.'); }
 
 function repv2SetFiltroCat(v) {
     const el = document.getElementById('repv2FiltroCategoria');

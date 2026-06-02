@@ -2187,7 +2187,7 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
                         </button>
                         <button id="dashSubTabGraficos" onclick="dashTrocarSub('graficos')" class="dash-subtab">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-                            Gráficos analíticos
+                            Análise
                         </button>
                     </div>
 
@@ -2365,7 +2365,7 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
                             </select>
                         </div>
 
-                        <div class="gra-metricas">
+                        <div class="gra-metricas" style="display:none;">
                             <div class="gra-metric">
                                 <div class="gra-metric-label">Receita do período</div>
                                 <div class="gra-metric-valor pos" id="graMetReceita">R$ 0,00</div>
@@ -5240,7 +5240,7 @@ function fecharModal(id) {
 
 function destruirCharts() { Object.values(charts).forEach(c => { try { c.destroy(); } catch(e){} }); charts = {}; }
 
-// Alterna entre sub-abas Painel (KPIs) e Gráficos analíticos dentro do Dashboard
+// Alterna entre sub-abas Painel (KPIs) e Análise dentro do Dashboard
 function dashTrocarSub(qual) {
     const painel = document.getElementById('dashSubPainel');
     const graficos = document.getElementById('dashSubGraficos');
@@ -11520,7 +11520,7 @@ function graPopularEspacos() {
     if (valorAtual) sel.value = valorAtual;
 }
 
-// ===== Pills da aba Gráficos analíticos (Tipo / Espaço) =====
+// ===== Pills da aba Análise (Tipo / Espaço) =====
 function graAbrirFiltro(qual) {
     document.querySelectorAll('.lan-popover').forEach(p => p.remove());
     const pill = document.getElementById('graFpill-' + qual);

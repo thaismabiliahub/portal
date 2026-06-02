@@ -1554,6 +1554,20 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
 .repv2-subtab-badge.atencao { background: #f6e8e8; color: #8b3a3a; }
 
 .repv2-metricas { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 22px; }
+/* Filtros pill no estilo demo */
+.repv2-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 12px;
+    background: #faf8f6;
+    border: 1px solid #ebe5df;
+    border-radius: 8px;
+    font-size: 12px; font-weight: 500; cursor: pointer;
+    color: #1a1a18; font-family: inherit;
+    transition: all 0.12s;
+}
+.repv2-pill:hover { border-color: #532137; color: #532137; }
+.repv2-pill.ativo { background: #532137; color: white; border-color: #532137; }
+#repv2FiltrosPillCategoria, #repv2FiltrosPillStatus { gap: 6px; }
 .repv2-metric { background: white; border: 1px solid #ebe5df; border-radius: 12px; padding: 16px 18px; }
 .repv2-metric-label { font-size: 10px; color: #6b6660; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
 .repv2-metric-valor { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; margin-top: 4px; color: #1a1a18; }
@@ -2742,21 +2756,12 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
                             <input type="text" id="repv2Busca" oninput="renderizarReparos()" placeholder="Buscar item, prestador, descrição...">
                         </div>
                         <select id="repv2FiltroEntidade" onchange="renderizarReparos()" class="lan-filtro-select"><option value="todas">Todos os espaços</option></select>
-                        <select id="repv2FiltroCategoria" onchange="renderizarReparos()" class="lan-filtro-select" style="display:none;">
-                            <option value="todas">Todas categorias</option>
-                            <option value="eletrodomestico">Eletrodomésticos</option>
-                            <option value="estrutura">Estrutura</option>
-                            <option value="veiculo">Veículo</option>
-                            <option value="eletronico">Eletrônicos</option>
-                            <option value="outro">Outros</option>
-                        </select>
-                        <select id="repv2FiltroStatus" onchange="renderizarReparos()" class="lan-filtro-select" style="display:none;">
-                            <option value="todos">Todos os status</option>
-                            <option value="planejado">Planejado</option>
-                            <option value="orcamento">Em orçamento</option>
-                            <option value="em_andamento">Em andamento</option>
-                            <option value="concluido">Concluído</option>
-                        </select>
+                        <!-- Filtros pill aparecem só na aba "Itens da casa" -->
+                        <div id="repv2FiltrosPillCategoria" style="display:none; gap:6px; flex-wrap:wrap;"></div>
+                        <select id="repv2FiltroCategoria" onchange="renderizarReparos()" style="display:none;"><option value="todas"></option></select>
+                        <!-- Filtros pill de status aparecem só na aba "Lançamentos" -->
+                        <div id="repv2FiltrosPillStatus" style="display:none; gap:6px; flex-wrap:wrap;"></div>
+                        <select id="repv2FiltroStatus" onchange="renderizarReparos()" style="display:none;"><option value="todos"></option></select>
                     </div>
 
                     <!-- LANÇAMENTOS -->
@@ -8260,17 +8265,24 @@ function renderizarReparos() {
     const prests = estado.prestadores_reparo.filter(p => !p.entidade_id || ents.find(e => e.id === p.entidade_id));
     const reparos = estado.reparos.filter(r => !r.entidade_id || ents.find(e => e.id === r.entidade_id));
 
-    // Métricas
+    // Métricas — alinhadas com a demo (4 cards: Total gasto / Próximos 30d / Atenção / Garantias ativas)
     const anoAtual = new Date().getFullYear();
-    const totalAno = reparos.filter(r => r.status === 'concluido' && (r.data || '').startsWith(String(anoAtual))).reduce((s, r) => s + (parseFloat(r.custo_real) || 0), 0);
-    const pendentes = reparos.filter(r => r.status !== 'concluido').length;
-    const proxAlerta = itens.filter(i => { const d = repv2DiasUntil(i.proxima_manutencao); return d !== null && d >= 0 && d <= 30; }).length;
-    const atrasados = itens.filter(i => { const d = repv2DiasUntil(i.proxima_manutencao); return d !== null && d < 0; }).length;
+    const reparosAno = reparos.filter(r => r.status === 'concluido' && (r.data || '').startsWith(String(anoAtual)));
+    const totalAno = reparosAno.reduce((s, r) => s + (parseFloat(r.custo_real) || 0), 0);
+    const itensComReparoAno = new Set(reparosAno.map(r => r.item_id).filter(Boolean));
+    const proxAlerta = itens.filter(i => { const d = repv2DiasUntil(i.proxima_manutencao); return d !== null && d >= 0 && d <= 30; });
+    const proxAlertaCusto = proxAlerta.reduce((s, i) => s + (parseFloat(i.custo_medio) || 0), 0);
+    const atrasados = itens.filter(i => { const d = repv2DiasUntil(i.proxima_manutencao); return d !== null && d < 0; });
+    const nomesAtencao = atrasados.slice(0, 2).map(i => (i.nome || '').toLowerCase()).join(' e ');
+    const garantiasAtivas = itens.filter(i => i.garantia_ate && repv2DiasUntil(i.garantia_ate) >= 0);
+    const proxGarantia = garantiasAtivas.length > 0
+        ? garantiasAtivas.slice().sort((a, b) => (a.garantia_ate || '').localeCompare(b.garantia_ate || ''))[0]
+        : null;
     const metricas = [
-        { label: `Total gasto · ${anoAtual}`, valor: fmt(totalAno), meta: `${reparos.filter(r => r.status === 'concluido' && (r.data || '').startsWith(String(anoAtual))).length} concluídos` },
-        { label: 'Em aberto', valor: pendentes, meta: 'planejados, em orçamento e em andamento', cor: '#8b6e3a' },
-        { label: 'Próximos 30 dias', valor: proxAlerta, meta: 'manutenções por fazer', cor: '#8b6e3a' },
-        { label: 'Atrasadas', valor: atrasados, meta: atrasados > 0 ? 'itens precisando agora' : 'tudo em dia', cor: atrasados > 0 ? '#8b3a3a' : '#16a34a' }
+        { label: `Total gasto · ${anoAtual}`, valor: fmt(totalAno), meta: `${reparosAno.length} reparos · ${itensComReparoAno.size} ${itensComReparoAno.size === 1 ? 'item' : 'itens'}` },
+        { label: 'Próximos 30 dias', valor: `${proxAlerta.length} ${proxAlerta.length === 1 ? 'manutenção' : 'manutenções'}`, meta: proxAlertaCusto > 0 ? `~${fmt(proxAlertaCusto)} estimado` : 'manutenções por fazer', cor: proxAlerta.length > 0 ? '#8b6e3a' : '#16a34a' },
+        { label: 'Atenção', valor: `${atrasados.length} ${atrasados.length === 1 ? 'item' : 'itens'}`, meta: atrasados.length > 0 ? (nomesAtencao || 'precisando agora') : 'tudo em dia', cor: atrasados.length > 0 ? '#8b3a3a' : '#16a34a' },
+        { label: 'Garantias ativas', valor: `${garantiasAtivas.length} ${garantiasAtivas.length === 1 ? 'produto' : 'produtos'}`, meta: proxGarantia ? `próxima vence em ${repv2DataAprox(proxGarantia.garantia_ate)}` : '—', cor: garantiasAtivas.length > 0 ? '#16a34a' : null }
     ];
     const metEl = document.getElementById('repv2Metricas');
     if (metEl) {
@@ -8287,10 +8299,68 @@ function renderizarReparos() {
     const bProx = document.getElementById('repv2BadgeProx'); if (bProx) { bProx.textContent = proxAlerta; bProx.classList.toggle('atencao', atrasados > 0); }
     const bPrest = document.getElementById('repv2BadgePrest'); if (bPrest) bPrest.textContent = prests.length;
 
+    // Renderiza filtros pill condicionalmente
+    repv2RenderFiltrosPill(subTabReparos, itens, reparos);
+
     if (subTabReparos === 'lancamentos') renderizarRepv2Lancamentos(reparos, itens, prests, ents, filtroEnt, filtroStatus, busca);
     else if (subTabReparos === 'itens') renderizarRepv2Itens(itens, filtroEnt, filtroCat, busca);
     else if (subTabReparos === 'proximas') renderizarRepv2Proximas(itens, filtroEnt, busca);
     else if (subTabReparos === 'prestadores') renderizarRepv2Prestadores(prests, filtroEnt, busca);
+}
+
+// Renderiza filtros pill da toolbar (categoria pra aba Itens, status pra aba Lançamentos)
+function repv2RenderFiltrosPill(subTab, itens, reparos) {
+    const wrapCat = document.getElementById('repv2FiltrosPillCategoria');
+    const wrapStat = document.getElementById('repv2FiltrosPillStatus');
+    if (!wrapCat || !wrapStat) return;
+
+    if (subTab === 'itens') {
+        wrapStat.style.display = 'none';
+        wrapCat.style.display = 'inline-flex';
+        const filtroAtual = document.getElementById('repv2FiltroCategoria')?.value || 'todas';
+        const cats = [
+            { v: 'todas', label: 'Todos' },
+            { v: 'eletrodomestico', label: 'Eletrodomésticos' },
+            { v: 'estrutura', label: 'Estrutura' },
+            { v: 'veiculo', label: 'Veículo' },
+            { v: 'eletronico', label: 'Eletrônicos' },
+            { v: 'outro', label: 'Outros' }
+        ];
+        wrapCat.innerHTML = cats.map(c => {
+            const count = c.v === 'todas' ? itens.length : itens.filter(i => i.categoria === c.v).length;
+            if (count === 0 && c.v !== 'todas' && filtroAtual !== c.v) return '';
+            const ativo = filtroAtual === c.v ? 'ativo' : '';
+            return `<button class="repv2-pill ${ativo}" onclick="repv2SetFiltroCat('${c.v}')">${c.label} · ${count}</button>`;
+        }).join('');
+    } else if (subTab === 'lancamentos') {
+        wrapCat.style.display = 'none';
+        wrapStat.style.display = 'inline-flex';
+        const filtroAtual = document.getElementById('repv2FiltroStatus')?.value || 'todos';
+        const stats = [
+            { v: 'todos', label: 'Todos' },
+            { v: 'planejado', label: 'Planejado' },
+            { v: 'orcamento', label: 'Em orçamento' },
+            { v: 'em_andamento', label: 'Em andamento' },
+            { v: 'concluido', label: 'Concluído' }
+        ];
+        wrapStat.innerHTML = stats.map(s => {
+            const count = s.v === 'todos' ? reparos.length : reparos.filter(r => r.status === s.v).length;
+            const ativo = filtroAtual === s.v ? 'ativo' : '';
+            return `<button class="repv2-pill ${ativo}" onclick="repv2SetFiltroStat('${s.v}')">${s.label} · ${count}</button>`;
+        }).join('');
+    } else {
+        wrapCat.style.display = 'none';
+        wrapStat.style.display = 'none';
+    }
+}
+
+function repv2SetFiltroCat(v) {
+    const el = document.getElementById('repv2FiltroCategoria');
+    if (el) { el.value = v; renderizarReparos(); }
+}
+function repv2SetFiltroStat(v) {
+    const el = document.getElementById('repv2FiltroStatus');
+    if (el) { el.value = v; renderizarReparos(); }
 }
 
 function renderizarRepv2Lancamentos(reparos, itens, prests, ents, filtroEnt, filtroStatus, busca) {

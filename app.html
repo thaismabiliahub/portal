@@ -2248,21 +2248,6 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
                         </button>
                     </div>
 
-                    <!-- RESPIRO: frase em linguagem humana + saldo previsto -->
-                    <div class="dash-respiro" id="dashRespiro" style="display:none;">
-                        <div class="dash-respiro-ic" id="dashRespiroIc">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
-                        </div>
-                        <div class="dash-respiro-txt">
-                            <div class="dash-respiro-frase" id="dashRespiroFrase">—</div>
-                            <div class="dash-respiro-saldo" id="dashRespiroSaldo">R$ 0,00 <small id="dashRespiroSaldoLabel">· saldo previsto do mês</small></div>
-                            <div class="dash-respiro-delta" id="dashRespiroDelta" style="display:none;">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
-                                <span id="dashRespiroDeltaTexto">—</span>
-                            </div>
-                        </div>
-                    </div>
-
                     <div id="alertasContainer" class="space-y-2" style="margin-bottom:18px;"></div>
 
                     <!-- MÉTRICAS -->
@@ -5809,40 +5794,7 @@ function calcularRespiroETendencias(parcelas) {
         icone = 'alerta';
     }
 
-    const elRes = document.getElementById('dashRespiro');
-    const elFr = document.getElementById('dashRespiroFrase');
-    const elSal = document.getElementById('dashRespiroSaldo');
-    const elIc = document.getElementById('dashRespiroIc');
-    const elDel = document.getElementById('dashRespiroDelta');
-    const elDelTxt = document.getElementById('dashRespiroDeltaTexto');
-    if (!elRes) return;
-    elRes.style.display = '';
-    if (elFr) elFr.innerHTML = frase;
-    if (elSal) {
-        elSal.innerHTML = `${fmt(saldoMes)} <small id="dashRespiroSaldoLabel">· saldo previsto do mês</small>`;
-        elSal.classList.toggle('neg', saldoMes < 0);
-    }
-    if (elIc) {
-        elIc.className = 'dash-respiro-ic' + (icone === 'urgente' ? ' urgente' : (icone === 'alerta' ? ' alerta' : ''));
-        const svgPath = icone === 'urgente'
-            ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
-            : (icone === 'alerta'
-                ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>'
-                : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>');
-        elIc.innerHTML = svgPath;
-    }
-    // Delta vs mês passado (só mostra se mês passado teve movimento)
-    if (saldoPas !== 0 && elDel && elDelTxt) {
-        const melhor = delta >= 0;
-        elDel.style.display = '';
-        elDel.classList.toggle('neg', !melhor);
-        elDelTxt.textContent = `${fmt(Math.abs(delta))} ${melhor ? 'melhor' : 'pior'} que ${mesPasNome}`;
-        elDel.querySelector('svg').innerHTML = melhor
-            ? '<line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>'
-            : '<line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/>';
-    } else if (elDel) {
-        elDel.style.display = 'none';
-    }
+    // Bloco do Respiro foi removido do HTML — pula direto pras tendências dos cards.
 
     // ===== TENDÊNCIAS NOS CARDS (vs mês passado) =====
     // A pagar (mês inteiro vs mês passado inteiro)

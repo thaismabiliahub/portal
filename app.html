@@ -6794,8 +6794,7 @@ function renderizarContas() {
     }
     if (subEl) subEl.textContent = '';
 
-    // Métricas
-    const hojeStr = hoje();
+    // Métricas (reusa hojeStr já declarado acima)
     const aPagar = lista.filter(p => { const c = acharConta(p.conta_id); return c && c.tipo === 'pagar' && p.status !== 'cancelada'; });
     const aReceber = lista.filter(p => { const c = acharConta(p.conta_id); return c && c.tipo === 'receber' && p.status !== 'cancelada'; });
     const atrasados = lista.filter(p => (p.status === 'atrasada' || (p.status === 'prevista' && p.data_vencimento < hojeStr)) && p.status !== 'cancelada');

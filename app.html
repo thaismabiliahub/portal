@@ -3039,7 +3039,6 @@ textarea.md-inp { resize: vertical; min-height: 60px; line-height: 1.4; }
                     <div class="lan-header">
                         <div>
                             <span class="lan-tag" style="background:rgba(200,127,31,0.08); color:#c87f1f;">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
                                 <span id="docHeaderTag">Arquivo digital</span>
                                 <span class="lm-ajuda" style="margin-left:6px;">?<span class="lm-tip">Guarde <strong>contratos</strong>, <strong>certidões</strong>, <strong>comprovantes</strong>, <strong>garantias</strong> e <strong>escrituras</strong>. Cada documento pode ser vinculado a um lançamento ou membro.</span></span>
                             </span>
@@ -3962,7 +3961,7 @@ textarea.md-inp { resize: vertical; min-height: 60px; line-height: 1.4; }
 .lm-label-row{display:flex;align-items:center;gap:6px;}
 .lm-ajuda{width:15px;height:15px;border-radius:50%;background:#f5efe6;color:#8b6e3a;font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;cursor:help;position:relative;border:1px solid #e6dcc8;text-transform:none;letter-spacing:0;flex-shrink:0;}
 .lm-ajuda:hover{background:#f9a01b;color:#fff;border-color:#f9a01b;}
-.lm-ajuda .lm-tip{position:absolute;bottom:calc(100% + 8px);left:0;background:#2c2c2a;color:#fff;padding:9px 12px;border-radius:8px;font-size:11.5px;font-weight:400;line-height:1.45;letter-spacing:0;text-transform:none;width:230px;text-align:left;opacity:0;visibility:hidden;transition:opacity .15s;z-index:60;box-shadow:0 8px 24px rgba(0,0,0,.25);pointer-events:none;}
+.lm-ajuda .lm-tip{position:absolute;top:calc(100% + 8px);bottom:auto;left:0;background:#2c2c2a;color:#fff;padding:9px 12px;border-radius:8px;font-size:11.5px;font-weight:400;line-height:1.45;letter-spacing:0;text-transform:none;width:230px;text-align:left;opacity:0;visibility:hidden;transition:opacity .15s;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.25);pointer-events:none;}
 .lm-ajuda:hover .lm-tip{opacity:1;visibility:visible;}
 .lm-ajuda .lm-tip strong{color:#f9a01b;}
 .lm-comp-box{background:rgba(249,160,27,.08);border:1px solid #e8d6b0;border-radius:8px;padding:10px 12px;margin-top:8px;font-size:12px;color:#6b5a3a;line-height:1.5;display:none;}
@@ -4988,6 +4987,12 @@ let cartaoFaturaAtual = null, mesFaturaAtual = null;
 let charts = {};
 
 function uuid() { return 'id-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9); }
+// ID de verdade (UUID) pra registros criados pelo usuário — sem o prefixo "id-" que o sync filtra.
+// Mesmo padrão já usado no cadastro de usuário, que persiste corretamente no banco.
+function uuidReal() {
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) { var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8); return v.toString(16); });
+}
 // Marca ID pra ser DELETADO no próximo sync com o Supabase
 function marcarParaApagar(tabela, id) {
     if (!id) return;
@@ -8393,7 +8398,7 @@ function salvarCartao() {
     if (!dados.nome) { alert('Informe o nome'); return; }
     let novoId;
     if (idEdicao) { Object.assign(estado.cartoes.find(x => x.id === idEdicao), dados); novoId = idEdicao; toast('Atualizado'); }
-    else { novoId = uuid(); estado.cartoes.push({ id: novoId, ...dados }); toast('Criado'); }
+    else { novoId = uuidReal(); estado.cartoes.push({ id: novoId, ...dados }); toast('Criado'); }
     salvarEstado(); fecharModal('modalCartao'); renderizarCartoes();
     // Reseta z-index do modal de cartão
     document.getElementById('modalCartao').style.zIndex = '';
@@ -8943,7 +8948,7 @@ function salvarReparo() {
     };
     if (!dados.item) { alert('Informe o serviço/descrição'); return; }
     if (idEdicao) { Object.assign(estado.reparos.find(x => x.id === idEdicao), dados); toast('Atualizado'); }
-    else { estado.reparos.push({ id: uuid(), ...dados }); toast('Criado'); }
+    else { estado.reparos.push({ id: uuidReal(), ...dados }); toast('Criado'); }
     salvarEstado(); fecharModal('modalReparo'); renderizarReparos();
 }
 
@@ -9001,7 +9006,7 @@ function salvarItemCasa() {
     };
     if (!dados.nome) { alert('Informe o nome do item'); return; }
     if (idEdicao) { Object.assign(estado.itens_casa.find(x => x.id === idEdicao), dados); toast('Atualizado'); }
-    else { estado.itens_casa.push({ id: uuid(), ...dados }); toast('Criado'); }
+    else { estado.itens_casa.push({ id: uuidReal(), ...dados }); toast('Criado'); }
     salvarEstado(); fecharModal('modalItemCasa'); renderizarReparos();
 }
 
@@ -9054,7 +9059,7 @@ function salvarPrestadorReparo() {
     };
     if (!dados.nome) { alert('Informe o nome do prestador'); return; }
     if (idEdicao) { Object.assign(estado.prestadores_reparo.find(x => x.id === idEdicao), dados); toast('Atualizado'); }
-    else { estado.prestadores_reparo.push({ id: uuid(), ...dados }); toast('Criado'); }
+    else { estado.prestadores_reparo.push({ id: uuidReal(), ...dados }); toast('Criado'); }
     salvarEstado(); fecharModal('modalPrestadorReparo'); renderizarReparos();
 }
 
@@ -9334,7 +9339,7 @@ function salvarData() {
     const dados = { data: document.getElementById('dataData').value, tipo: document.getElementById('dataTipo').value, titulo: document.getElementById('dataTitulo').value.trim(), descricao: document.getElementById('dataDesc').value || null, recorrente: document.getElementById('dataRecorrente').checked, pessoa: document.getElementById('dataPessoa').value, visibilidade: document.getElementById('dataVisibilidade').value, cor: corSel ? corSel.value : null, criado_por: usuarioAtual };
     if (!dados.titulo) { alert('Informe o título'); return; }
     if (idEdicao) { Object.assign(estado.datas.find(x => x.id === idEdicao), dados); toast('Atualizado'); }
-    else { estado.datas.push({ id: uuid(), ...dados }); toast('Criado'); }
+    else { estado.datas.push({ id: uuidReal(), ...dados }); toast('Criado'); }
     salvarEstado(); fecharModal('modalData'); renderizarDatasView();
 }
 function podeVerData(d) {
@@ -9510,9 +9515,17 @@ function renderizarDocumentos() {
         return (b.criado_em || '').localeCompare(a.criado_em || '');
     });
 
-    // Atualiza header tag
+    // Atualiza header tag: "[Espaço] · N documentos · X MB" (estilo demo, sem ícone, sem título repetido)
     const tag = document.getElementById('docHeaderTag');
-    if (tag) tag.textContent = `${total} documento${total !== 1 ? 's' : ''} guardado${total !== 1 ? 's' : ''}`;
+    if (tag) {
+        let bytes = 0;
+        todos.forEach(d => { if (d.arquivo_data) bytes += Math.floor(String(d.arquivo_data).length * 0.75); });
+        const tam = bytes >= 1048576 ? (bytes / 1048576).toFixed(bytes >= 10485760 ? 0 : 1) + ' MB'
+                  : bytes > 0 ? Math.max(1, Math.round(bytes / 1024)) + ' KB' : '0 MB';
+        const wsObj = (estado.workspaces || []).find(w => w.id === workspaceAtual);
+        const wsNome = (workspaceAtual === 'todos' || !wsObj) ? 'Todos os espaços' : wsObj.nome;
+        tag.textContent = `${wsNome} · ${total} documento${total !== 1 ? 's' : ''} · ${tam}`;
+    }
 
     // RENDER CARDS
     const grid = document.getElementById('documentosLista');
@@ -9631,7 +9644,7 @@ async function salvarDocumento() {
         const d = estado.documentos.find(x => x.id === idEdicao);
         Object.assign(d, dados);
         toast('Atualizado');
-    } else { estado.documentos.push({ id: uuid(), ...dados }); toast('Criado'); }
+    } else { estado.documentos.push({ id: uuidReal(), ...dados }); toast('Criado'); }
     salvarEstado(); fecharModal('modalDocumento'); renderizarDocumentos();
 }
 function deletarDocumento(id) { if (!confirm('Excluir?')) return; marcarParaApagar('documentos', id); estado.documentos = estado.documentos.filter(d => d.id !== id); salvarEstado(); renderizarDocumentos(); toast('Excluído'); }
@@ -9676,7 +9689,7 @@ async function salvarNota() {
     }
     if (!dados.estabelecimento || !dados.valor) { alert('Estabelecimento e valor'); return; }
     if (idEdicao) { const n = estado.notas.find(x => x.id === idEdicao); Object.assign(n, dados); toast('Atualizada'); }
-    else { estado.notas.push({ id: uuid(), ...dados }); toast('Criada'); }
+    else { estado.notas.push({ id: uuidReal(), ...dados }); toast('Criada'); }
     salvarEstado(); fecharModal('modalNota'); renderizarNotas();
 }
 function deletarNota(id) { if (!confirm('Excluir?')) return; marcarParaApagar('notas', id); estado.notas = estado.notas.filter(n => n.id !== id); salvarEstado(); renderizarNotas(); toast('Excluída'); }
@@ -11563,7 +11576,7 @@ function salvarCategoria() {
         Object.assign(estado.categorias.find(x => x.id === idEdicao), dados);
         toast('Atualizada');
     } else {
-        estado.categorias.push({ id: uuid(), ...dados });
+        estado.categorias.push({ id: uuidReal(), ...dados });
         toast('Criada');
     }
     salvarEstado(); fecharModal('modalCategoria'); renderizarCadastros();
@@ -11606,7 +11619,7 @@ function salvarParceiro() {
         Object.assign(estado.parceiros.find(x => x.id === idEdicao), dados);
         toast('Atualizado');
     } else {
-        estado.parceiros.push({ id: uuid(), ...dados });
+        estado.parceiros.push({ id: uuidReal(), ...dados });
         toast('Criado');
     }
     salvarEstado(); fecharModal('modalParceiro'); renderizarCadastros();

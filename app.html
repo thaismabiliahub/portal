@@ -2121,6 +2121,7 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
                         <span class="dash-hero-tag" id="dashSaudacao">Bom dia</span>
                         <h1 class="dash-hero-titulo" id="dashHeroTitulo">Bom dia.</h1>
                         <p class="dash-hero-sub" id="dashHeroSub">—</p>
+                        <p class="dash-hero-data" id="dashHeroData" style="font-size:12px; color:#9a948c; margin-top:6px;">—</p>
                     </div>
 
                     <!-- RESPIRO: frase em linguagem humana + saldo previsto -->
@@ -5153,7 +5154,7 @@ function renderizarDashboard() {
     const limite30 = diasAFrente(30);
     const acharConta = id => estado.contas.find(c => c.id === id);
 
-    // Saudação + data
+    // Saudação + data + frase divertida
     const agora = new Date();
     const h = agora.getHours();
     const saudacao = h < 12 ? 'Bom dia' : (h < 18 ? 'Boa tarde' : 'Boa noite');
@@ -5164,7 +5165,11 @@ function renderizarDashboard() {
     const lembretes = (estado.datas || []).filter(d => d.data >= hojeStr && d.data <= fimSemana).length;
     const elTag = document.getElementById('dashSaudacao'); if (elTag) elTag.textContent = saudacao;
     const elTit = document.getElementById('dashHeroTitulo'); if (elTit) elTit.textContent = `${saudacao}, ${primeiroNome}.`;
-    const elSub = document.getElementById('dashHeroSub'); if (elSub) elSub.textContent = `Hoje, ${dataLong} · ${lembretes} lembrete${lembretes !== 1 ? 's' : ''} esta semana`;
+    // Sub = FRASE DIVERTIDA · Data + lembretes vai pro elemento dashHeroData abaixo
+    const elSub = document.getElementById('dashHeroSub');
+    if (elSub) elSub.textContent = sortearFraseDashboard(h, parcelas);
+    const elData = document.getElementById('dashHeroData');
+    if (elData) elData.textContent = `Hoje, ${dataLong} · ${lembretes} lembrete${lembretes !== 1 ? 's' : ''} esta semana`;
 
     // Métricas
     const pagar7 = parcelas.filter(p => { const c = acharConta(p.conta_id); return c && c.tipo === 'pagar' && p.status !== 'paga' && p.status !== 'cancelada' && p.data_vencimento >= hojeStr && p.data_vencimento <= limite7; });
@@ -5187,6 +5192,140 @@ function renderizarDashboard() {
     try { if (typeof renderizarAlertas === 'function') renderizarAlertas(); } catch(e) {}
     renderizarMovimentacoesRecentesDash(parcelas);
     renderizarProximosVencimentosDash(parcelas);
+}
+
+// Banco de frases pro topo do dashboard (rotação aleatória + contextual)
+const FRASES_DASHBOARD = {
+    manha: [
+        "Bom dia! O café passou e as contas também.",
+        "Acorda, milionária em construção.",
+        "Hoje o dinheiro tem encontro marcado com a organização.",
+        "Respira. Você já venceu metade do dia só por abrir o portal.",
+        "Bom dia! Que os PIX sejam abundantes e os boletos comportados.",
+        "A riqueza gosta de quem acompanha os números.",
+        "Seu futuro financeiro agradece sua visita.",
+        "Ohhhhhhh que dia lindo! Só perde pra tua beleza, coisa rica! ✨",
+        "Bom dia, patroa do patrimônio!",
+        "Alerta: pessoa milionária em treinamento acessou o sistema."
+    ],
+    tarde: [
+        "Oi, coisa rica! Veio conferir se o patrimônio cresceu?",
+        "Boa tarde! O dinheiro gosta de atenção.",
+        "Passando para lembrar que a fatura não se fiscaliza sozinha.",
+        "A tarde tá linda. O saldo podia colaborar mais.",
+        "Entre um café e outro, bora cuidar da vida financeira.",
+        "Quem acompanha, controla. Quem controla, prospera.",
+        "Boa tarde! Seu patrimônio mandou um abraço.",
+        "O dinheiro está trabalhando. Você está fiscalizando.",
+        "Seja bem-vinda ao centro de comando da riqueza familiar."
+    ],
+    noite: [
+        "Boa noite! Mais um dia sem deixar os boletos vencerem você.",
+        "Hora de conferir se o dinheiro se comportou hoje.",
+        "Casa em ordem, mente em paz, contas sob controle.",
+        "O dia termina. A organização continua rendendo.",
+        "Boa noite, coisa rica. Amanhã a prosperidade continua.",
+        "Fechando o dia com gratidão e sem sustos no extrato. 🌙",
+        "Na boquinha da noite, tudo conferido por aqui."
+    ],
+    engracadas: [
+        "Saldo em análise. Sonhos aprovados.",
+        "O dinheiro entrou só para bater ponto.",
+        "Meu salário é turista. Mal chega e já vai embora.",
+        "A planilha sabe coisas que eu preferia não saber.",
+        "Não estou gastando. Estou estimulando a economia.",
+        "Patrimônio: carregando...",
+        "Rico em experiência financeira.",
+        "Meu cartão tem uma vida social mais ativa que a minha.",
+        "A fatura chegou cheia de argumentos.",
+        "Objetivo: liberdade financeira. Status: carregando."
+    ],
+    inteligentes: [
+        "Cada real tem uma missão.",
+        "Pequenos aportes. Grandes histórias.",
+        "O segredo não é ganhar mais. É perder menos.",
+        "Quem mede, melhora.",
+        "Prosperidade é hábito, não sorte.",
+        "Riqueza silenciosa também é riqueza.",
+        "Seu futuro financeiro está sendo escrito hoje.",
+        "Dinheiro organizado trabalha enquanto você descansa.",
+        "Mais amor, menos juros.",
+        "Família organizada, patrimônio fortalecido."
+    ],
+    atrasadas: [
+        "Ei, coisa rica... temos {N} continha{S} pedindo atenção. 👀",
+        "Seu dinheiro pediu uma reunião urgente.",
+        "Algumas contas estão esperando você."
+    ],
+    limpo: [
+        "Tudo certo por aqui. Até os boletos estão em paz. ✨",
+        "Mês limpo, coração tranquilo.",
+        "Organização nota 10. Continue assim."
+    ],
+    fimMes: [
+        "Reta final do mês. Hora de fechar com chave de ouro.",
+        "Os últimos dias do mês revelam os melhores hábitos.",
+        "Fechamento chegando. Bora garantir que tudo bate."
+    ]
+};
+
+function sortearFraseDashboard(hora, parcelas) {
+    try {
+        // 1. ANIVERSÁRIO (próprio ou de outra pessoa cadastrada)
+        const hojeMD = new Date().toISOString().slice(5, 10); // "MM-DD"
+        const nomeLog = (usuarioLogadoSupabase && (usuarioLogadoSupabase.apelido || usuarioLogadoSupabase.nome)) || '';
+        const emailLog = (usuarioLogadoSupabase && usuarioLogadoSupabase.email || '').toLowerCase();
+        const usu = estado.usuarios_convite || [];
+        // aniversário do próprio usuário?
+        const eu = usu.find(u => (u.email || '').toLowerCase() === emailLog);
+        if (eu && eu.data_nascimento && eu.data_nascimento.slice(5, 10) === hojeMD) {
+            return `Parabéns, ${eu.apelido || eu.nome || 'coisa rica'}! 🎉 Hoje o Portal toca pra você. Ano novo, conquistas novas.`;
+        }
+        // aniversário de outra pessoa cadastrada?
+        const outroAniv = usu.find(u => u.email && u.email.toLowerCase() !== emailLog && u.data_nascimento && u.data_nascimento.slice(5, 10) === hojeMD);
+        if (outroAniv) {
+            return `Hoje é aniversário d${outroAniv.apelido || outroAniv.nome ? 'a ' : 'e '}${outroAniv.apelido || outroAniv.nome}! 🎂 Manda um abraço.`;
+        }
+
+        // 2. CONTEXTUAIS — atrasadas
+        const acharConta = id => estado.contas.find(c => c.id === id);
+        const hojeStr = hoje();
+        const atrasadasN = parcelas.filter(p => (p.status === 'atrasada' || (p.status === 'prevista' && p.data_vencimento < hojeStr)) && p.status !== 'paga' && p.status !== 'cancelada').length;
+        if (atrasadasN > 0) {
+            const f = FRASES_DASHBOARD.atrasadas[Math.floor(Math.random() * FRASES_DASHBOARD.atrasadas.length)];
+            return f.replace('{N}', atrasadasN).replace('{S}', atrasadasN === 1 ? '' : 's');
+        }
+
+        // 3. CONTEXTUAIS — fim do mês (últimos 5 dias)
+        const agora = new Date();
+        const fimMes = new Date(agora.getFullYear(), agora.getMonth() + 1, 0).getDate();
+        const diaHoje = agora.getDate();
+        if ((fimMes - diaHoje) <= 4) {
+            return FRASES_DASHBOARD.fimMes[Math.floor(Math.random() * FRASES_DASHBOARD.fimMes.length)];
+        }
+
+        // 4. CONTEXTUAIS — tudo limpo (nada vence nos próximos 7 dias)
+        const limite7 = diasAFrente(7);
+        const proximas = parcelas.filter(p => { const c = acharConta(p.conta_id); return c && c.tipo === 'pagar' && p.status !== 'paga' && p.status !== 'cancelada' && p.data_vencimento >= hojeStr && p.data_vencimento <= limite7; }).length;
+        if (proximas === 0 && Math.random() < 0.4) {
+            return FRASES_DASHBOARD.limpo[Math.floor(Math.random() * FRASES_DASHBOARD.limpo.length)];
+        }
+
+        // 5. ROTAÇÃO PADRÃO — sortear entre horário + engraçadas + inteligentes
+        let pool;
+        if (hora < 12) pool = FRASES_DASHBOARD.manha;
+        else if (hora < 18) pool = FRASES_DASHBOARD.tarde;
+        else pool = FRASES_DASHBOARD.noite;
+
+        // 60% chance de pegar do horário, 20% engraçada, 20% inteligente
+        const r = Math.random();
+        if (r < 0.6) return pool[Math.floor(Math.random() * pool.length)];
+        if (r < 0.8) return FRASES_DASHBOARD.engracadas[Math.floor(Math.random() * FRASES_DASHBOARD.engracadas.length)];
+        return FRASES_DASHBOARD.inteligentes[Math.floor(Math.random() * FRASES_DASHBOARD.inteligentes.length)];
+    } catch(e) {
+        console.warn('sortearFraseDashboard falhou:', e);
+        return '';
+    }
 }
 
 // Calcula saldo previsto do mês, compara com mês anterior, monta frase humana

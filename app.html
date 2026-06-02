@@ -731,6 +731,48 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
 .dash-hero-titulo { font-family: 'Fraunces', serif; font-size: 30px; font-weight: 600; line-height: 1.1; color: #1a1a18; }
 .dash-hero-sub { font-size: 13px; color: #6b6660; margin-top: 6px; }
 
+/* RESPIRO - frase humana com saldo grande */
+.dash-respiro { background: linear-gradient(135deg, #fbf3f6, #fdf8f2); border: 1px solid #f0e2e8; border-radius: 18px; padding: 22px 26px; margin-bottom: 18px; display: flex; align-items: flex-start; gap: 18px; }
+.dash-respiro-ic { width: 44px; height: 44px; border-radius: 12px; background: #eafaf0; color: #16a34a; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.dash-respiro-ic.alerta { background: #fef3e0; color: #b5791b; }
+.dash-respiro-ic.urgente { background: #fdecec; color: #8b3a3a; }
+.dash-respiro-ic svg { width: 22px; height: 22px; }
+.dash-respiro-txt { flex: 1; min-width: 0; }
+.dash-respiro-frase { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 500; line-height: 1.4; color: #2c2c2a; }
+.dash-respiro-frase b { color: #532137; font-weight: 600; }
+.dash-respiro-saldo { font-family: 'Fraunces', serif; font-size: 38px; font-weight: 600; line-height: 1; margin-top: 12px; color: #532137; }
+.dash-respiro-saldo.neg { color: #8b3a3a; }
+.dash-respiro-saldo small { font-size: 13px; font-family: 'DM Sans', sans-serif; color: #6b6660; font-weight: 500; }
+.dash-respiro-delta { font-size: 12.5px; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; color: #16a34a; background: #eafaf0; padding: 5px 11px; border-radius: 100px; margin-top: 10px; }
+.dash-respiro-delta.neg { color: #8b3a3a; background: #fdecec; }
+.dash-respiro-delta svg { width: 13px; height: 13px; }
+
+/* TENDÊNCIA nos cards de métrica */
+.dash-metric-tendencia { display: inline-flex; align-items: center; gap: 4px; font-size: 11.5px; font-weight: 600; margin-top: 6px; padding: 2px 8px; border-radius: 100px; }
+.dash-metric-tendencia.up { color: #16a34a; background: #eafaf0; }
+.dash-metric-tendencia.down { color: #8b3a3a; background: #fdecec; }
+.dash-metric-tendencia.neutra { color: #6b6660; background: #f5efe6; }
+.dash-metric-tendencia svg { width: 11px; height: 11px; }
+
+/* VENCIMENTOS RICOS */
+.dash-venc-rico { display: flex; align-items: center; gap: 14px; padding: 13px 16px; border: 1px solid #ebe5df; border-radius: 12px; margin: 0 22px 8px; background: white; cursor: pointer; transition: all 0.12s; }
+.dash-venc-rico:hover { border-color: #532137; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+.dash-venc-data { text-align: center; flex-shrink: 0; width: 42px; }
+.dash-venc-dia { font-family: 'Fraunces', serif; font-size: 19px; font-weight: 600; line-height: 1; color: #1a1a18; }
+.dash-venc-mes { font-size: 10px; text-transform: uppercase; color: #9a948c; letter-spacing: 0.06em; margin-top: 1px; }
+.dash-venc-info { flex: 1; min-width: 0; }
+.dash-venc-desc { font-weight: 600; font-size: 13.5px; color: #1a1a18; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dash-venc-meta { font-size: 11.5px; color: #6b6660; margin-top: 2px; }
+.dash-venc-valor { font-family: 'Fraunces', serif; font-weight: 600; font-size: 15px; flex-shrink: 0; }
+.dash-venc-valor.recv { color: #16a34a; }
+.dash-venc-tag { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.04em; flex-shrink: 0; }
+.dash-venc-tag.urg { background: #fdecec; color: #8b3a3a; }
+.dash-venc-tag.ok { background: #eafaf0; color: #16a34a; }
+.dash-venc-tag.amb { background: #fef3e0; color: #b5791b; }
+.dash-venc-av { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: 700; flex-shrink: 0; background: #532137; }
+.dash-venc-semdono { width: 30px; height: 30px; border-radius: 50%; background: #fef3e0; color: #b5791b; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 2px dashed #e9b758; }
+.dash-venc-semdono svg { width: 14px; height: 14px; }
+
 .dash-resumo {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -2081,6 +2123,21 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
                         <p class="dash-hero-sub" id="dashHeroSub">—</p>
                     </div>
 
+                    <!-- RESPIRO: frase em linguagem humana + saldo previsto -->
+                    <div class="dash-respiro" id="dashRespiro" style="display:none;">
+                        <div class="dash-respiro-ic" id="dashRespiroIc">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>
+                        </div>
+                        <div class="dash-respiro-txt">
+                            <div class="dash-respiro-frase" id="dashRespiroFrase">—</div>
+                            <div class="dash-respiro-saldo" id="dashRespiroSaldo">R$ 0,00 <small id="dashRespiroSaldoLabel">· saldo previsto do mês</small></div>
+                            <div class="dash-respiro-delta" id="dashRespiroDelta" style="display:none;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+                                <span id="dashRespiroDeltaTexto">—</span>
+                            </div>
+                        </div>
+                    </div>
+
                     <div id="alertasContainer" class="space-y-2" style="margin-bottom:18px;"></div>
 
                     <!-- MÉTRICAS -->
@@ -2092,6 +2149,7 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
                             </div>
                             <div class="dash-metric-valor neg" id="dashMet7Pagar">R$ 0,00</div>
                             <div class="dash-metric-trend" id="dashMet7PagarSub">0 lançamentos</div>
+                            <div class="dash-metric-tendencia neutra" id="dashTrendPagar" style="display:none;"></div>
                         </div>
                         <div class="dash-metric">
                             <div class="dash-metric-topo">
@@ -2100,6 +2158,7 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
                             </div>
                             <div class="dash-metric-valor pos" id="dashMet7Receber">R$ 0,00</div>
                             <div class="dash-metric-trend" id="dashMet7ReceberSub">0 lançamentos</div>
+                            <div class="dash-metric-tendencia neutra" id="dashTrendReceber" style="display:none;"></div>
                         </div>
                         <div class="dash-metric">
                             <div class="dash-metric-topo">
@@ -2108,6 +2167,7 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
                             </div>
                             <div class="dash-metric-valor" id="dashMetSaldo30">R$ 0,00</div>
                             <div class="dash-metric-trend" id="dashMetSaldo30Sub">a receber − a pagar</div>
+                            <div class="dash-metric-tendencia neutra" id="dashTrendSaldo" style="display:none;"></div>
                         </div>
                         <div class="dash-metric">
                             <div class="dash-metric-topo">
@@ -5121,9 +5181,120 @@ function renderizarDashboard() {
     const pagar30 = parcelas.filter(p => { const c = acharConta(p.conta_id); return c && c.tipo === 'pagar' && p.status !== 'paga' && p.status !== 'cancelada' && p.data_vencimento <= limite30; }).reduce((s, p) => s + parseFloat(p.valor), 0);
     setSafe('dashMetSaldo30', fmt(receber30 - pagar30));
 
+    // ===== RESPIRO + TENDÊNCIAS (vs mês passado) =====
+    try { calcularRespiroETendencias(parcelas); } catch(e) { console.warn('Respiro falhou:', e); }
+
     try { if (typeof renderizarAlertas === 'function') renderizarAlertas(); } catch(e) {}
     renderizarMovimentacoesRecentesDash(parcelas);
     renderizarProximosVencimentosDash(parcelas);
+}
+
+// Calcula saldo previsto do mês, compara com mês anterior, monta frase humana
+function calcularRespiroETendencias(parcelas) {
+    const acharConta = id => estado.contas.find(c => c.id === id);
+    const agora = new Date();
+    const inicioMes = new Date(agora.getFullYear(), agora.getMonth(), 1).toISOString().slice(0, 10);
+    const fimMes = new Date(agora.getFullYear(), agora.getMonth() + 1, 0).toISOString().slice(0, 10);
+    const inicioMesPas = new Date(agora.getFullYear(), agora.getMonth() - 1, 1).toISOString().slice(0, 10);
+    const fimMesPas = new Date(agora.getFullYear(), agora.getMonth(), 0).toISOString().slice(0, 10);
+
+    // Saldo previsto do mês atual (a receber − a pagar, contando tudo do mês)
+    const noMes = (p, ini, fim) => p.data_vencimento >= ini && p.data_vencimento <= fim && p.status !== 'cancelada';
+    const recMes = parcelas.filter(p => { const c = acharConta(p.conta_id); return c && c.tipo === 'receber' && noMes(p, inicioMes, fimMes); }).reduce((s, p) => s + parseFloat(p.valor), 0);
+    const pagMes = parcelas.filter(p => { const c = acharConta(p.conta_id); return c && c.tipo === 'pagar' && noMes(p, inicioMes, fimMes); }).reduce((s, p) => s + parseFloat(p.valor), 0);
+    const saldoMes = recMes - pagMes;
+
+    const recPas = parcelas.filter(p => { const c = acharConta(p.conta_id); return c && c.tipo === 'receber' && noMes(p, inicioMesPas, fimMesPas); }).reduce((s, p) => s + parseFloat(p.valor), 0);
+    const pagPas = parcelas.filter(p => { const c = acharConta(p.conta_id); return c && c.tipo === 'pagar' && noMes(p, inicioMesPas, fimMesPas); }).reduce((s, p) => s + parseFloat(p.valor), 0);
+    const saldoPas = recPas - pagPas;
+
+    const delta = saldoMes - saldoPas;
+    const mesPasNome = new Date(agora.getFullYear(), agora.getMonth() - 1, 1).toLocaleDateString('pt-BR', { month: 'long' });
+    const hojeStr = hoje();
+    const limite7 = diasAFrente(7);
+    const urgentes = parcelas.filter(p => { const c = acharConta(p.conta_id); return c && c.tipo === 'pagar' && p.status !== 'paga' && p.status !== 'cancelada' && p.data_vencimento >= hojeStr && p.data_vencimento <= limite7; }).length;
+    const atrasadasN = parcelas.filter(p => (p.status === 'atrasada' || (p.status === 'prevista' && p.data_vencimento < hojeStr)) && p.status !== 'paga' && p.status !== 'cancelada').length;
+
+    // Monta a frase
+    let frase = '';
+    let icone = 'tranquilo';
+    if (atrasadasN > 0) {
+        frase = `Tem <b>${atrasadasN} ${atrasadasN === 1 ? 'conta atrasada' : 'contas atrasadas'}</b> precisando de atenção.`;
+        icone = 'urgente';
+    } else if (urgentes > 0) {
+        frase = `Esta semana <b>${urgentes} ${urgentes === 1 ? 'conta vence' : 'contas vencem'}</b>. Saldo previsto do mês:`;
+        icone = 'alerta';
+    } else if (saldoMes >= 0) {
+        frase = `Esse mês está <b>tranquilo</b>. Nada urgente nessa semana.`;
+        icone = 'tranquilo';
+    } else {
+        frase = `Esse mês está <b>apertado</b>. Saldo previsto:`;
+        icone = 'alerta';
+    }
+
+    const elRes = document.getElementById('dashRespiro');
+    const elFr = document.getElementById('dashRespiroFrase');
+    const elSal = document.getElementById('dashRespiroSaldo');
+    const elIc = document.getElementById('dashRespiroIc');
+    const elDel = document.getElementById('dashRespiroDelta');
+    const elDelTxt = document.getElementById('dashRespiroDeltaTexto');
+    if (!elRes) return;
+    elRes.style.display = '';
+    if (elFr) elFr.innerHTML = frase;
+    if (elSal) {
+        elSal.innerHTML = `${fmt(saldoMes)} <small id="dashRespiroSaldoLabel">· saldo previsto do mês</small>`;
+        elSal.classList.toggle('neg', saldoMes < 0);
+    }
+    if (elIc) {
+        elIc.className = 'dash-respiro-ic' + (icone === 'urgente' ? ' urgente' : (icone === 'alerta' ? ' alerta' : ''));
+        const svgPath = icone === 'urgente'
+            ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>'
+            : (icone === 'alerta'
+                ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>'
+                : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg>');
+        elIc.innerHTML = svgPath;
+    }
+    // Delta vs mês passado (só mostra se mês passado teve movimento)
+    if (saldoPas !== 0 && elDel && elDelTxt) {
+        const melhor = delta >= 0;
+        elDel.style.display = '';
+        elDel.classList.toggle('neg', !melhor);
+        elDelTxt.textContent = `${fmt(Math.abs(delta))} ${melhor ? 'melhor' : 'pior'} que ${mesPasNome}`;
+        elDel.querySelector('svg').innerHTML = melhor
+            ? '<line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>'
+            : '<line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/>';
+    } else if (elDel) {
+        elDel.style.display = 'none';
+    }
+
+    // ===== TENDÊNCIAS NOS CARDS (vs mês passado) =====
+    // A pagar (mês inteiro vs mês passado inteiro)
+    aplicarTendencia('dashTrendPagar', pagMes, pagPas, true);  // pra "a pagar", subir é RUIM
+    aplicarTendencia('dashTrendReceber', recMes, recPas, false); // pra "a receber", subir é BOM
+    aplicarTendencia('dashTrendSaldo', saldoMes, saldoPas, false); // pra saldo, subir é BOM
+}
+
+function aplicarTendencia(elId, atual, anterior, subirERuim) {
+    const el = document.getElementById(elId);
+    if (!el) return;
+    if (anterior === 0 || (atual === 0 && anterior === 0)) {
+        el.style.display = 'none';
+        return;
+    }
+    const pct = ((atual - anterior) / Math.abs(anterior)) * 100;
+    const arred = Math.round(pct);
+    if (Math.abs(arred) < 1) {
+        el.style.display = '';
+        el.className = 'dash-metric-tendencia neutra';
+        el.textContent = 'igual ao mês passado';
+        return;
+    }
+    const subiu = arred > 0;
+    const bom = subirERuim ? !subiu : subiu;
+    el.style.display = '';
+    el.className = 'dash-metric-tendencia ' + (bom ? 'up' : 'down');
+    const seta = subiu ? '↑' : '↓';
+    el.textContent = `${seta} ${Math.abs(arred)}% vs mês passado`;
 }
 
 function renderizarMovimentacoesRecentesDash(parcelas) {
@@ -5159,19 +5330,62 @@ function renderizarProximosVencimentosDash(parcelas) {
     if (!container) return;
     const hojeStr = hoje();
     const limite15 = diasAFrente(15);
+    const limite3 = diasAFrente(3);
     const acharConta = id => estado.contas.find(c => c.id === id);
+    const acharPessoaPorEmail = (eml) => (estado.usuarios_convite || []).find(u => (u.email || '').toLowerCase() === (eml || '').toLowerCase());
+    const acharEntidade = (id) => (estado.espacos || []).find(e => e.id === id);
+
     const prox = parcelas.filter(p => p.status !== 'paga' && p.status !== 'cancelada' && p.data_vencimento >= hojeStr && p.data_vencimento <= limite15)
                           .sort((a, b) => (a.data_vencimento || '').localeCompare(b.data_vencimento || ''))
                           .slice(0, 5);
     if (prox.length === 0) {
-        container.innerHTML = '<div class="dash-vazio">Nenhum vencimento nos próximos 15 dias.</div>';
+        container.innerHTML = '<div class="dash-vazio" style="padding:18px 22px;">Nada vence nos próximos 15 dias.</div>';
         return;
     }
-    container.innerHTML = prox.map(p => {
+    const meses = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+    container.innerHTML = '<div style="padding:8px 0 14px;">' + prox.map(p => {
         const c = acharConta(p.conta_id); if (!c) return '';
         const isReceber = c.tipo === 'receber';
-        return `<div style="display:grid; grid-template-columns:1fr auto; gap:12px; padding:12px 22px; border-bottom:1px solid #f3efea; align-items:center;"><div><div style="font-size:13px; font-weight:500; color:#1a1a18;">${c.descricao || '—'}</div><div style="font-size:11px; color:#6b6660; margin-top:2px;">${dataFmt(p.data_vencimento)}</div></div><div style="font-family:'Fraunces',serif; font-size:14px; font-weight:600; ${isReceber ? 'color:#16a34a;' : 'color:#1a1a18;'}">${(isReceber ? '+ ' : '- ') + fmt(parseFloat(p.valor))}</div></div>`;
-    }).join('');
+        const d = new Date(p.data_vencimento + 'T00:00:00');
+        const dia = String(d.getDate()).padStart(2, '0');
+        const mes = meses[d.getMonth()];
+        const ent = acharEntidade(c.entidade_id);
+        const respEmail = p.responsavel_email || c.criado_por || null;
+        const pessoa = respEmail ? acharPessoaPorEmail(respEmail) : null;
+        const semDono = !respEmail && !isReceber && c.cartao_id;
+
+        // Tag de urgência
+        let tagHtml = '';
+        if (semDono) {
+            tagHtml = '<span class="dash-venc-tag amb">Sem dono</span>';
+        } else if (p.data_vencimento <= limite3) {
+            tagHtml = '<span class="dash-venc-tag urg">Urgente</span>';
+        } else {
+            tagHtml = '<span class="dash-venc-tag ok">No prazo</span>';
+        }
+
+        // Avatar ou ícone "sem dono"
+        let avHtml = '';
+        if (semDono) {
+            avHtml = `<div class="dash-venc-semdono" title="Ninguém assumiu ainda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M5 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2"/></svg></div>`;
+        } else if (pessoa) {
+            const iniciais = (pessoa.apelido || pessoa.nome || '?').slice(0, 2).toUpperCase();
+            const cor = pessoa.cor_hex || '#532137';
+            avHtml = `<div class="dash-venc-av" title="${pessoa.nome || ''}" style="background:${cor};">${iniciais}</div>`;
+        }
+
+        const meta = [ent ? ent.nome : null, c.forma_pagamento].filter(Boolean).join(' · ') || '—';
+        const valStr = (isReceber ? '+ ' : '- ') + fmt(parseFloat(p.valor));
+        const valClass = isReceber ? 'dash-venc-valor recv' : 'dash-venc-valor';
+
+        return `<div class="dash-venc-rico" onclick="trocarTab('contas')">
+            <div class="dash-venc-data"><div class="dash-venc-dia">${dia}</div><div class="dash-venc-mes">${mes}</div></div>
+            <div class="dash-venc-info"><div class="dash-venc-desc">${c.descricao || '—'}</div><div class="dash-venc-meta">${meta}</div></div>
+            ${tagHtml}
+            ${avHtml}
+            <div class="${valClass}">${valStr}</div>
+        </div>`;
+    }).join('') + '</div>';
 }
 
 function renderizarQuemDeveQuanto(parcelas) {

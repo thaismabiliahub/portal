@@ -720,8 +720,17 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
    ===================================================================== */
 .dash-wrap { max-width: 1200px; margin: 0 auto; }
 .dash-hero { margin-bottom: 24px; }
-/* Tag pequena de saudação - escondida (redundante com o título) */
-.dash-hero-tag { display: none; }
+/* Tag pequena de saudação - cor muda por horário */
+.dash-hero-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 11px; border-radius: 12px;
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    margin-bottom: 10px;
+}
+.dash-hero-tag.manha { background: rgba(249,160,27,0.12); color: #c87f1f; }
+.dash-hero-tag.tarde { background: rgba(221,89,125,0.12); color: #b8536f; }
+.dash-hero-tag.noite { background: rgba(83,33,55,0.10); color: #532137; }
 .dash-hero-titulo { font-family: 'Fraunces', serif; font-size: 30px; font-weight: 600; line-height: 1.1; color: #1a1a18; }
 .dash-hero-sub {
     font-family: 'Fraunces', serif;
@@ -5265,7 +5274,11 @@ function renderizarDashboard() {
     const dataLong = agora.toLocaleDateString('pt-BR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
     const fimSemana = diasAFrente(7);
     const lembretes = (estado.datas || []).filter(d => d.data >= hojeStr && d.data <= fimSemana).length;
-    const elTag = document.getElementById('dashSaudacao'); if (elTag) elTag.textContent = saudacao;
+    const elTag = document.getElementById('dashSaudacao');
+    if (elTag) {
+        elTag.textContent = saudacao;
+        elTag.className = 'dash-hero-tag ' + (h < 12 ? 'manha' : (h < 18 ? 'tarde' : 'noite'));
+    }
     const elTit = document.getElementById('dashHeroTitulo'); if (elTit) elTit.textContent = `${saudacao}, ${primeiroNome}.`;
     // Sub = FRASE DIVERTIDA · Data + lembretes vai pro elemento dashHeroData abaixo
     const elSub = document.getElementById('dashHeroSub');

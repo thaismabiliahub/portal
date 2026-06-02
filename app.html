@@ -4955,10 +4955,14 @@ function setSyncBanner(visivel, msg) {
 async function carregarEstado() {
     setSyncBanner(true, 'Carregando seus dados do servidor...');
     try {
-        const tabelas = ['workspaces','espacos','categorias','parceiros','cartoes','contas','parcelas','reparos','datas','notas','documentos','alertas_descartados','pessoas','itens_casa','prestadores_reparo','entidades','listas','tipos_anotacao','cofrinhos'];
+        // Tabelas que existem no banco. 'entidades', 'listas' e 'tipos_anotacao' foram removidas
+        // (404 - não criadas no banco do Portal). Quando criar, voltam pra lista.
+        const tabelas = ['workspaces','espacos','categorias','parceiros','cartoes','contas','parcelas','reparos','datas','notas','documentos','alertas_descartados','pessoas','itens_casa','prestadores_reparo','cofrinhos'];
         const promises = tabelas.map(t => SB.from(t).select('*'));
         const resultados = await Promise.all(promises);
-        const [wsR, entR, catR, parR, carR, conR, pcR, repR, datR, notR, docR, aleR, pesR, icR, prR, legEntR, listasR, tiposAnotR, cofR] = resultados;
+        const [wsR, entR, catR, parR, carR, conR, pcR, repR, datR, notR, docR, aleR, pesR, icR, prR, cofR] = resultados;
+        // Tabelas removidas (não existem no banco ainda): legEntR (entidades), listasR (listas), tiposAnotR (tipos_anotacao)
+        const legEntR = null, listasR = null, tiposAnotR = null;
         // Mapeia pessoas (banco) pra usuarios_convite (estado JS, mantém formato compatível com renderizarUsuarios)
         const pessoasBanco = (pesR && pesR.data) || [];
         const usuariosConvite = pessoasBanco.map(p => ({

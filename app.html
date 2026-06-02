@@ -1553,27 +1553,32 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
 .repv2-subtab.ativo .repv2-subtab-badge { background: #532137; color: white; }
 .repv2-subtab-badge.atencao { background: #f6e8e8; color: #8b3a3a; }
 
-.repv2-metricas { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 22px; }
-/* Filtros pill no estilo demo */
+.repv2-metricas { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 22px; }
+.repv2-metric { background: white; border: 1px solid #ebe5df; border-radius: 14px; padding: 18px 20px; transition: all 0.15s; position: relative; }
+.repv2-metric:hover { border-color: #c8c2bb; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+.repv2-metric-label { font-size: 10.5px; color: #6b6660; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; }
+.repv2-metric-valor { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 600; margin-top: 6px; color: #1a1a18; line-height: 1.05; }
+.repv2-metric-meta { font-size: 11.5px; color: #9a948c; margin-top: 4px; }
+.repv2-metric-ic { position: absolute; top: 16px; right: 16px; width: 30px; height: 30px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; background: #f5efe6; color: #532137; }
+.repv2-metric-ic svg { width: 14px; height: 14px; }
+
+/* Filtros pill no estilo sistema */
 .repv2-pill {
     display: inline-flex; align-items: center; gap: 6px;
-    padding: 7px 12px;
+    padding: 7px 13px;
     background: #faf8f6;
     border: 1px solid #ebe5df;
-    border-radius: 8px;
-    font-size: 12px; font-weight: 500; cursor: pointer;
+    border-radius: 100px;
+    font-size: 12px; font-weight: 600; cursor: pointer;
     color: #1a1a18; font-family: inherit;
     transition: all 0.12s;
+    white-space: nowrap;
 }
 .repv2-pill:hover { border-color: #532137; color: #532137; }
 .repv2-pill.ativo { background: #532137; color: white; border-color: #532137; }
 #repv2FiltrosPillCategoria, #repv2FiltrosPillStatus { gap: 6px; }
-.repv2-metric { background: white; border: 1px solid #ebe5df; border-radius: 12px; padding: 16px 18px; }
-.repv2-metric-label { font-size: 10px; color: #6b6660; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
-.repv2-metric-valor { font-family: 'Fraunces', serif; font-size: 22px; font-weight: 600; margin-top: 4px; color: #1a1a18; }
-.repv2-metric-meta { font-size: 11px; color: #6b6660; margin-top: 2px; }
 
-.repv2-toolbar { background: white; border: 1px solid #ebe5df; border-radius: 12px; padding: 12px 16px; margin-bottom: 16px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.repv2-toolbar { background: white; border: 1px solid #ebe5df; border-radius: 14px; padding: 14px 18px; margin-bottom: 16px; }
 .repv2-filtro-pill { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; background: #faf8f6; border: 1px solid #ebe5df; border-radius: 8px; font-size: 12px; font-weight: 500; cursor: pointer; color: #1a1a18; font-family: inherit; transition: all 0.15s; }
 .repv2-filtro-pill:hover { border-color: #532137; }
 .repv2-filtro-pill.ativo { background: #532137; color: white; border-color: #532137; }
@@ -8278,15 +8283,20 @@ function renderizarReparos() {
     const proxGarantia = garantiasAtivas.length > 0
         ? garantiasAtivas.slice().sort((a, b) => (a.garantia_ate || '').localeCompare(b.garantia_ate || ''))[0]
         : null;
+    const icDinheiro = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>';
+    const icCalendar = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>';
+    const icAlerta = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+    const icEscudo = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>';
     const metricas = [
-        { label: `Total gasto · ${anoAtual}`, valor: fmt(totalAno), meta: `${reparosAno.length} reparos · ${itensComReparoAno.size} ${itensComReparoAno.size === 1 ? 'item' : 'itens'}` },
-        { label: 'Próximos 30 dias', valor: `${proxAlerta.length} ${proxAlerta.length === 1 ? 'manutenção' : 'manutenções'}`, meta: proxAlertaCusto > 0 ? `~${fmt(proxAlertaCusto)} estimado` : 'manutenções por fazer', cor: proxAlerta.length > 0 ? '#8b6e3a' : '#16a34a' },
-        { label: 'Atenção', valor: `${atrasados.length} ${atrasados.length === 1 ? 'item' : 'itens'}`, meta: atrasados.length > 0 ? (nomesAtencao || 'precisando agora') : 'tudo em dia', cor: atrasados.length > 0 ? '#8b3a3a' : '#16a34a' },
-        { label: 'Garantias ativas', valor: `${garantiasAtivas.length} ${garantiasAtivas.length === 1 ? 'produto' : 'produtos'}`, meta: proxGarantia ? `próxima vence em ${repv2DataAprox(proxGarantia.garantia_ate)}` : '—', cor: garantiasAtivas.length > 0 ? '#16a34a' : null }
+        { label: `Total gasto · ${anoAtual}`, valor: fmt(totalAno), meta: `${reparosAno.length} reparos · ${itensComReparoAno.size} ${itensComReparoAno.size === 1 ? 'item' : 'itens'}`, ic: icDinheiro, icCor: '#532137', icBg: '#f5efe6' },
+        { label: 'Próximos 30 dias', valor: `${proxAlerta.length} ${proxAlerta.length === 1 ? 'manutenção' : 'manutenções'}`, meta: proxAlertaCusto > 0 ? `~${fmt(proxAlertaCusto)} estimado` : 'manutenções por fazer', cor: proxAlerta.length > 0 ? '#8b6e3a' : '#16a34a', ic: icCalendar, icCor: proxAlerta.length > 0 ? '#8b6e3a' : '#16a34a', icBg: proxAlerta.length > 0 ? '#fef3e0' : '#ecf4ee' },
+        { label: 'Atenção', valor: `${atrasados.length} ${atrasados.length === 1 ? 'item' : 'itens'}`, meta: atrasados.length > 0 ? (nomesAtencao || 'precisando agora') : 'tudo em dia', cor: atrasados.length > 0 ? '#8b3a3a' : '#16a34a', ic: icAlerta, icCor: atrasados.length > 0 ? '#8b3a3a' : '#16a34a', icBg: atrasados.length > 0 ? '#f6e8e8' : '#ecf4ee' },
+        { label: 'Garantias ativas', valor: `${garantiasAtivas.length} ${garantiasAtivas.length === 1 ? 'produto' : 'produtos'}`, meta: proxGarantia ? `próxima vence em ${repv2DataAprox(proxGarantia.garantia_ate)}` : '—', cor: garantiasAtivas.length > 0 ? '#16a34a' : null, ic: icEscudo, icCor: '#16a34a', icBg: '#ecf4ee' }
     ];
     const metEl = document.getElementById('repv2Metricas');
     if (metEl) {
         metEl.innerHTML = metricas.map(m => `<div class="repv2-metric">
+            <div class="repv2-metric-ic" style="color:${m.icCor || '#532137'}; background:${m.icBg || '#f5efe6'};">${m.ic}</div>
             <div class="repv2-metric-label">${m.label}</div>
             <div class="repv2-metric-valor" style="${m.cor ? `color:${m.cor};` : ''}">${m.valor}</div>
             <div class="repv2-metric-meta">${m.meta}</div>

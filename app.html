@@ -4396,24 +4396,35 @@ textarea.md-inp { resize: vertical; min-height: 60px; line-height: 1.4; }
 
 <!-- Modal Reparo -->
 <div id="modalReparo" class="hidden fixed inset-0 modal-overlay z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-lg p-6 w-full max-w-lg">
-        <h3 id="modalReparoTitulo" class="text-lg font-bold mb-4">Novo lançamento de reparo</h3>
-        <input type="hidden" id="reparoIdEdicao" value="">
-        <div class="grid grid-cols-2 gap-3">
-            <div><label class="block text-sm font-medium mb-1">Espaço</label><select id="reparoEntidade"></select></div>
-            <div><label class="block text-sm font-medium mb-1">Data prevista</label><input type="date" id="reparoData"></div>
-            <div><label class="block text-sm font-medium mb-1">Item da casa</label><select id="reparoItemId"><option value="">— sem vínculo —</option></select></div>
-            <div><label class="block text-sm font-medium mb-1">Prestador</label><select id="reparoPrestadorId"><option value="">— sem vínculo —</option></select></div>
-            <div class="col-span-2"><label class="block text-sm font-medium mb-1">Serviço / Descrição</label><input type="text" id="reparoItem" placeholder="Ex: Troca de borracha porta geladeira"></div>
-            <div><label class="block text-sm font-medium mb-1">Local</label><input type="text" id="reparoLocal" placeholder="cozinha, área, etc"></div>
-            <div><label class="block text-sm font-medium mb-1">Status</label><select id="reparoStatus"><option value="planejado">Planejado</option><option value="orcamento">Em orçamento</option><option value="em_andamento">Em andamento</option><option value="concluido">Concluído</option></select></div>
-            <div><label class="block text-sm font-medium mb-1">Custo previsto (R$)</label><input type="number" id="reparoCustoPrev" step="0.01"></div>
-            <div><label class="block text-sm font-medium mb-1">Custo real (R$)</label><input type="number" id="reparoCustoReal" step="0.01"></div>
-            <div class="col-span-2"><label class="block text-sm font-medium mb-1">Observação</label><textarea id="reparoObs" rows="3"></textarea></div>
+    <div style="background:white; border-radius:14px; width:100%; max-width:560px; box-shadow:0 20px 60px rgba(0,0,0,0.15); overflow:hidden; max-height:90vh; display:flex; flex-direction:column;">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:20px 24px; border-bottom:1px solid #ebe5df;">
+            <h3 id="modalReparoTitulo" style="font-family:'Fraunces',serif; font-size:20px; font-weight:600; color:#1a1a18; margin:0;">Novo reparo</h3>
+            <button onclick="fecharModal('modalReparo')" style="background:none; border:none; cursor:pointer; color:#9a948c; font-size:24px; line-height:1; padding:0;">×</button>
         </div>
-        <div class="flex justify-end gap-2 mt-6">
-            <button onclick="fecharModal('modalReparo')" class="btn-secondary">Cancelar</button>
-            <button onclick="salvarReparo()" class="btn-primary">Salvar</button>
+        <input type="hidden" id="reparoIdEdicao" value="">
+        <div style="padding:22px 24px; display:flex; flex-direction:column; gap:14px; overflow-y:auto;">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div><label class="md-lbl">Espaço</label><select id="reparoEntidade" class="md-inp"></select></div>
+                <div><label class="md-lbl">Data prevista</label><input type="date" id="reparoData" class="md-inp"></div>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div><label class="md-lbl">Item da casa</label><select id="reparoItemId" class="md-inp"><option value="">— sem vínculo —</option></select></div>
+                <div><label class="md-lbl">Prestador</label><select id="reparoPrestadorId" class="md-inp"><option value="">— sem vínculo —</option></select></div>
+            </div>
+            <div><label class="md-lbl">Serviço / Descrição</label><input type="text" id="reparoItem" class="md-inp" placeholder="Ex: Troca de borracha porta geladeira"></div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div><label class="md-lbl">Local</label><input type="text" id="reparoLocal" class="md-inp" placeholder="cozinha, área, etc"></div>
+                <div><label class="md-lbl">Status</label><select id="reparoStatus" class="md-inp"><option value="planejado">Planejado</option><option value="orcamento">Em orçamento</option><option value="em_andamento">Em andamento</option><option value="concluido">Concluído</option></select></div>
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                <div><label class="md-lbl">Custo previsto (R$)</label><input type="number" id="reparoCustoPrev" class="md-inp" step="0.01" placeholder="0,00"></div>
+                <div><label class="md-lbl">Custo real (R$) <span style="color:#9a948c; font-weight:400; margin-left:4px;">após concluir</span></label><input type="number" id="reparoCustoReal" class="md-inp" step="0.01" placeholder="0,00"></div>
+            </div>
+            <div><label class="md-lbl">Observação <span style="color:#9a948c; font-weight:400; margin-left:4px;">opcional</span></label><textarea id="reparoObs" class="md-inp" rows="2" placeholder="Detalhes, garantia, telefones, etc."></textarea></div>
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:10px; padding:16px 24px; border-top:1px solid #ebe5df; background:#faf8f6;">
+            <button onclick="fecharModal('modalReparo')" class="md-btn-out">Cancelar</button>
+            <button onclick="salvarReparo()" class="md-btn-pri">Salvar</button>
         </div>
     </div>
 </div>

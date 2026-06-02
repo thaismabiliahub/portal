@@ -740,10 +740,13 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
     font-size: 17px;
     font-style: italic;
     font-weight: 500;
-    color: #532137;
     margin-top: 10px;
     line-height: 1.4;
+    color: #dd597d; /* default rosa; cor rotaciona via JS */
 }
+.dash-hero-sub.cor-rosa { color: #dd597d; }
+.dash-hero-sub.cor-verde { color: #16a34a; }
+.dash-hero-sub.cor-laranja { color: #c87f1f; }
 
 /* RESPIRO - frase humana com saldo grande */
 .dash-respiro { background: linear-gradient(135deg, #fbf3f6, #fdf8f2); border: 1px solid #f0e2e8; border-radius: 18px; padding: 22px 26px; margin-bottom: 18px; display: flex; align-items: flex-start; gap: 18px; }
@@ -5304,7 +5307,12 @@ function renderizarDashboard() {
     const elTit = document.getElementById('dashHeroTitulo'); if (elTit) elTit.textContent = '';
     // Sub = FRASE DIVERTIDA · Data + lembretes vai pro elemento dashHeroData abaixo
     const elSub = document.getElementById('dashHeroSub');
-    if (elSub) elSub.textContent = sortearFraseDashboard(h, parcelas);
+    if (elSub) {
+        elSub.textContent = sortearFraseDashboard(h, parcelas);
+        const cores = ['cor-rosa', 'cor-verde', 'cor-laranja'];
+        const corSorteada = cores[Math.floor(Math.random() * cores.length)];
+        elSub.className = 'dash-hero-sub ' + corSorteada;
+    }
     const elData = document.getElementById('dashHeroData');
     if (elData) elData.textContent = `Hoje, ${dataLong} · ${lembretes} lembrete${lembretes !== 1 ? 's' : ''} esta semana`;
 

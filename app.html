@@ -1155,6 +1155,17 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
 .lan-comp-atalhos { display: flex; gap: 4px; margin-left: 12px; padding-left: 12px; border-left: 1px solid #ebe5df; }
 .lan-comp-atalhos .lan-comp-atalho.ativo { background: #f5efe6 !important; color: #8b6e3a !important; border: 1px solid rgba(139,110,58,0.2) !important; }
 
+/* Checklist do modal Anotação - grande e usável */
+.anot-chk-row { display: flex; align-items: center; gap: 10px; background: #faf8f6; border: 1px solid #ebe5df; border-radius: 8px; padding: 8px 10px; transition: all 0.12s; }
+.anot-chk-row:focus-within { border-color: #532137; background: white; }
+.anot-chk-check { width: 18px; height: 18px; flex-shrink: 0; accent-color: #532137; cursor: pointer; margin: 0; }
+.anot-chk-input { flex: 1; border: none; outline: none; background: transparent; font-family: inherit; font-size: 14px; color: #1a1a18; padding: 4px 0; min-width: 0; }
+.anot-chk-input::placeholder { color: #c8c2bb; }
+.anot-chk-x { background: none; border: none; cursor: pointer; color: #c8c2bb; font-size: 18px; line-height: 1; padding: 4px 8px; border-radius: 6px; flex-shrink: 0; }
+.anot-chk-x:hover { color: #8b3a3a; background: #fdecec; }
+.anot-add-btn { display: inline-flex; align-items: center; gap: 6px; padding: 9px 14px; background: white; border: 1px dashed #c8c2bb; border-radius: 8px; font-family: inherit; font-size: 13px; font-weight: 600; color: #532137; cursor: pointer; transition: all 0.12s; margin-top: 8px; }
+.anot-add-btn:hover { border-color: #532137; border-style: solid; background: #faf8f6; }
+
 /* Padrão de modal estilo sistema */
 .md-lbl { display: block; font-size: 11.5px; font-weight: 700; color: #6b6660; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
 .md-inp { width: 100%; padding: 10px 12px; border: 1px solid #ebe5df; border-radius: 8px; font-family: inherit; font-size: 13.5px; color: #1a1a18; background: white; outline: none; transition: border-color 0.12s; }
@@ -4208,10 +4219,15 @@ textarea.md-inp { resize: vertical; min-height: 60px; line-height: 1.4; }
                     <span>Fixar no topo</span>
                 </label>
             </div>
-            <div style="border-top:1px solid #ebe5df; padding-top:14px;">
-                <label class="esp-label">Checklist (opcional)</label>
-                <div id="anotChecklistLista" style="margin-bottom:8px;"></div>
-                <button type="button" onclick="anotAdicionarItem()" class="btn-ghost" style="padding:6px 12px; font-size:12px; color:#532137;">+ Adicionar item</button>
+            <div style="border-top:1px solid #ebe5df; padding-top:16px;">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+                    <label class="md-lbl" style="margin:0;">Checklist <span style="color:#9a948c; font-weight:400; margin-left:4px;">opcional · Enter pra adicionar</span></label>
+                </div>
+                <div id="anotChecklistLista" style="display:flex; flex-direction:column; gap:6px;"></div>
+                <button type="button" onclick="anotAdicionarItemFocado()" class="anot-add-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Adicionar item
+                </button>
             </div>
         </div>
         <div style="padding:16px 24px; border-top:1px solid #ebe5df; display:flex; justify-content:space-between; gap:8px;">
@@ -10576,20 +10592,56 @@ function anotAdicionarItem() {
     anotChecklistTemp.push({ texto: '', done: false });
     anotRenderChecklistEdit();
 }
+// Adiciona um item e dá foco nele
+function anotAdicionarItemFocado() {
+    anotChecklistTemp.push({ texto: '', done: false });
+    anotRenderChecklistEdit();
+    setTimeout(() => {
+        const inputs = document.querySelectorAll('#anotChecklistLista .anot-chk-input');
+        if (inputs.length) inputs[inputs.length - 1].focus();
+    }, 30);
+}
 
 function anotRemoverItem(idx) {
     anotChecklistTemp.splice(idx, 1);
     anotRenderChecklistEdit();
 }
 
+// Enter pula pro próximo item; se for o último, cria um novo e foca
+function anotChecklistEnter(idx) {
+    const proximo = idx + 1;
+    if (proximo < anotChecklistTemp.length) {
+        const inputs = document.querySelectorAll('#anotChecklistLista .anot-chk-input');
+        if (inputs[proximo]) inputs[proximo].focus();
+    } else {
+        // Cria novo só se o atual tem texto (evita criar vazios em série)
+        if ((anotChecklistTemp[idx]?.texto || '').trim() !== '') {
+            anotAdicionarItemFocado();
+        }
+    }
+}
+
+// Backspace em campo vazio → remove e foca no anterior
+function anotChecklistBackspace(idx, valor) {
+    if (valor === '' && anotChecklistTemp.length > 1) {
+        anotChecklistTemp.splice(idx, 1);
+        anotRenderChecklistEdit();
+        setTimeout(() => {
+            const inputs = document.querySelectorAll('#anotChecklistLista .anot-chk-input');
+            const alvo = Math.max(0, idx - 1);
+            if (inputs[alvo]) { inputs[alvo].focus(); const v = inputs[alvo].value; inputs[alvo].setSelectionRange(v.length, v.length); }
+        }, 30);
+    }
+}
+
 function anotRenderChecklistEdit() {
     const cont = document.getElementById('anotChecklistLista');
     if (!cont) return;
     cont.innerHTML = anotChecklistTemp.map((item, i) => `
-        <div style="display:flex; gap:6px; align-items:center; margin-bottom:4px;">
-            <input type="checkbox" ${item.done ? 'checked' : ''} onchange="anotChecklistTemp[${i}].done = this.checked">
-            <input type="text" value="${escapeHtmlSimples(item.texto)}" oninput="anotChecklistTemp[${i}].texto = this.value" class="anot-card-checklist-input" placeholder="Texto do item" style="margin:0; flex:1;">
-            <button type="button" onclick="anotRemoverItem(${i})" style="background:none;border:none;cursor:pointer;color:#8b3a3a;padding:4px;font-size:14px;">×</button>
+        <div class="anot-chk-row">
+            <input type="checkbox" class="anot-chk-check" ${item.done ? 'checked' : ''} onchange="anotChecklistTemp[${i}].done = this.checked">
+            <input type="text" class="anot-chk-input" value="${escapeHtmlSimples(item.texto)}" oninput="anotChecklistTemp[${i}].texto = this.value" placeholder="Item ${i + 1}" onkeydown="if(event.key==='Enter'){event.preventDefault(); anotChecklistEnter(${i});} else if(event.key==='Backspace'){anotChecklistBackspace(${i}, this.value);}">
+            <button type="button" onclick="anotRemoverItem(${i})" class="anot-chk-x" title="Remover">×</button>
         </div>
     `).join('');
 }

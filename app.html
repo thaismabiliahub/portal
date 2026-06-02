@@ -5296,7 +5296,11 @@ function renderizarDashboard() {
     const saudacao = h < 12 ? 'Bom dia' : (h < 18 ? 'Boa tarde' : 'Boa noite');
     const nome = (usuarioLogadoSupabase && (usuarioLogadoSupabase.apelido || usuarioLogadoSupabase.nome)) || 'você';
     const primeiroNome = String(nome).split(' ')[0];
-    const dataLong = agora.toLocaleDateString('pt-BR', { weekday:'long', day:'numeric', month:'long', year:'numeric' });
+    // Dia da semana sem "-feira" e capitalizado (ex: "Segunda" em vez de "segunda-feira")
+    const diaSem = agora.toLocaleDateString('pt-BR', { weekday: 'long' }).split('-')[0];
+    const diaSemCap = diaSem.charAt(0).toUpperCase() + diaSem.slice(1);
+    const restoData = agora.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
+    const dataLong = `${diaSemCap}, ${restoData}`;
     const fimSemana = diasAFrente(7);
     const lembretes = (estado.datas || []).filter(d => d.data >= hojeStr && d.data <= fimSemana).length;
     const elTag = document.getElementById('dashSaudacao');

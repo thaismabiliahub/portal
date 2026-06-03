@@ -96,6 +96,8 @@ input[type="checkbox"] { width: auto; }
 .top-header { background: white; border-bottom: 1px solid var(--card-border); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
 .header-left { display: flex; align-items: center; gap: 16px; }
 .header-right { display: flex; align-items: center; gap: 12px; }
+.topbar-data { font-size: 12px; color: #6b6660; font-weight: 500; padding: 4px 10px; background: #faf6f4; border: 1px solid #ebe5df; border-radius: 999px; white-space: nowrap; }
+@media (max-width: 900px) { .topbar-data { display: none; } }
 .entidade-selector { background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 6px; padding: 6px 12px; font-size: 13px; min-width: 200px; }
 .user-selector { background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 6px; padding: 6px 12px; font-size: 13px; }
 
@@ -2352,6 +2354,7 @@ textarea.md-inp { resize: vertical; min-height: 60px; line-height: 1.4; }
                 </div>
             </div>
             <div class="header-right">
+                <span id="topbarDataHora" class="topbar-data" title="Data, hora e lembretes da semana">—</span>
                 <span id="nomeUsuarioReal" class="voar-user-nome">—</span>
                 <span id="userBadge" class="user-badge master" style="display:none;">—</span>
                 <div style="position: relative;">
@@ -2395,7 +2398,8 @@ textarea.md-inp { resize: vertical; min-height: 60px; line-height: 1.4; }
                         <span class="dash-hero-tag" id="dashSaudacao">Bom dia</span>
                         <h1 class="dash-hero-titulo" id="dashHeroTitulo">Bom dia.</h1>
                         <p class="dash-hero-sub" id="dashHeroSub">—</p>
-                        <p class="dash-hero-data" id="dashHeroData" style="font-size:12px; color:#9a948c; margin-top:6px;">—</p>
+                        <!-- Data/hora/lembretes movidos pra topbar (#topbarDataHora). Mantemos o id aqui escondido pra compat. -->
+                        <p class="dash-hero-data" id="dashHeroData" style="display:none;">—</p>
                     </div>
 
                     <!-- AÇÕES RÁPIDAS — atalhos do dia-a-dia, no topo pra agilidade -->
@@ -5648,10 +5652,15 @@ function renderizarDashboard() {
         const corSorteada = cores[Math.floor(Math.random() * cores.length)];
         elSub.className = 'dash-hero-sub ' + corSorteada;
     }
+    const horaAgora = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    const txtCompleto = `${dataLong} · ${horaAgora} · ${lembretes} lembrete${lembretes !== 1 ? 's' : ''} esta semana`;
     const elData = document.getElementById('dashHeroData');
-    if (elData) {
-        const horaAgora = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-        elData.textContent = `${dataLong} · ${horaAgora} · ${lembretes} lembrete${lembretes !== 1 ? 's' : ''} esta semana`;
+    if (elData) elData.textContent = txtCompleto;
+    // Topbar: data/hora discreta no canto superior direito (texto mais curto)
+    const elTopData = document.getElementById('topbarDataHora');
+    if (elTopData) {
+        const dataCurta = agora.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+        elTopData.textContent = `${dataCurta} · ${horaAgora}${lembretes > 0 ? ` · ${lembretes} lembrete${lembretes !== 1 ? 's' : ''}` : ''}`;
     }
 
     // Métricas

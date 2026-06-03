@@ -293,6 +293,23 @@ body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif; }
 @media (max-width: 540px) {
     .lan-resumo { grid-template-columns: 1fr; }
     .lan-tabela2 { font-size: 12px; }
+    /* Mobile: encolhe os paddings da pagina pra conteudo nao vazar pra direita */
+    .content-scroll { padding: 10px 10px !important; overflow-x: hidden; }
+    .tab-content { padding: 6px 10px !important; }
+    /* Botoes de atalho do Dashboard: encolhe pro texto caber (Lancamento/Documentos/Lembrete) */
+    .dash-qa-btn-topo { padding: 11px 12px; font-size: 12.5px; gap: 7px; }
+    .dash-qa-btn-topo .dash-qa-btn-icon { width: 28px; height: 28px; }
+    .dash-qa-btn-topo svg { width: 14px; height: 14px; }
+    /* Garante que filhos de flex encolham (evita vazamento) */
+    .lan-wrap, .dash-secao, .dash-qa-topo, .dash-grid-principal, .dash-insights { min-width: 0; }
+    /* Reduz paddings internos dos cartoes do Dashboard que tinham 22px hardcoded */
+    .dash-secao-header { padding: 14px 14px !important; }
+    .dash-tx-item { padding: 12px 14px !important; gap: 10px !important; grid-template-columns: 1fr auto 24px !important; }
+    .dash-venc-rico { margin: 0 14px 8px !important; padding: 11px 12px !important; gap: 10px !important; }
+    .dash-qa-grid { padding: 12px 14px 14px !important; }
+    /* Texto longo nao vaza */
+    .dash-tx-desc, .dash-tx-meta, .dash-venc-desc { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+    .dash-tx-valor { font-size: 14px !important; }
 }
 
 /* ============== ONDA 4: Tema escuro ============== */

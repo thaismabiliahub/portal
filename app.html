@@ -97,7 +97,7 @@ input[type="checkbox"] { width: auto; }
 .header-left { display: flex; align-items: center; gap: 16px; }
 .header-right { display: flex; align-items: center; gap: 12px; }
 .topbar-data { font-size: 12px; color: #6b6660; font-weight: 500; padding: 4px 10px; background: #faf6f4; border: 1px solid #ebe5df; border-radius: 999px; white-space: nowrap; }
-@media (max-width: 900px) { .topbar-data { display: none; } }
+@media (max-width: 540px) { .topbar-data { font-size: 10.5px; padding: 3px 7px; } }
 .entidade-selector { background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 6px; padding: 6px 12px; font-size: 13px; min-width: 200px; }
 .user-selector { background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 6px; padding: 6px 12px; font-size: 13px; }
 
@@ -290,6 +290,7 @@ body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif; }
     .lan-resumo { grid-template-columns: 1fr 1fr; }
     .voar-topbar { padding-left: 8px !important; padding-right: 12px !important; }
     .header-right .voar-user-nome { display: none; }
+    .header-right #userBadge { display: none !important; }
 }
 
 @media (max-width: 540px) {

@@ -310,6 +310,23 @@ body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif; }
     /* Texto longo nao vaza */
     .dash-tx-desc, .dash-tx-meta, .dash-venc-desc { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
     .dash-tx-valor { font-size: 14px !important; }
+    /* REDE DE SEGURANCA: nada vaza pra direita em nenhuma aba */
+    html, body, .app-layout, .main-area { overflow-x: hidden; max-width: 100vw; }
+    .content-scroll { overflow-x: hidden !important; }
+    /* Cartoes/seccoes genericos: reduz padding lateral pra encaixar no celular */
+    .lan-toolbar, .lan-tabela, .lan-metric, .doc-toolbar, .doc-card,
+    .anot-card, .ac-pessoa, .ac-tl, .ac-card-hero { padding-left: 14px !important; padding-right: 14px !important; }
+    /* Grids viram coluna unica no mobile */
+    .doc-grid-cards, .anot-grid-cards { grid-template-columns: 1fr !important; }
+    /* Barra de abas embaixo: garante que os nomes cabem */
+    .bottom-nav-item span { font-size: 9.5px; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 2px; }
+    .bottom-nav-item { padding: 6px 2px; }
+    /* Top header e tag de cabecalho menores no mobile */
+    .top-header { padding: 8px 10px !important; }
+    .lan-tag { font-size: 10px !important; padding: 4px 8px !important; }
+    .lan-header h1, .lan-titulo { font-size: 22px !important; }
+    /* Tabelas largas viram scroll horizontal interno (em vez de empurrar a tela) */
+    .lan-tabela, .doc-lista-table, .tabela-wrapper { overflow-x: auto; }
 }
 
 /* ============== ONDA 4: Tema escuro ============== */

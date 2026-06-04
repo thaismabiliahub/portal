@@ -10282,28 +10282,40 @@ function removerUsuario(id) {
 // email travado, etc) ou quando o usuario foi cadastrado antes da edge function existir.
 async function reenviarConvite(id) {
     const u = (estado.usuarios_convite || []).find(x => x.id === id);
-    if (!u) { toast('Usuario nao encontrado'); return; }
-    if (!u.email) { toast('Usuario sem email cadastrado'); return; }
+    if (!u) { alert('Usuario nao encontrado'); return; }
+    if (!u.email) { alert('Usuario sem email cadastrado'); return; }
     if (!confirm(`Reenviar email de convite pra ${u.nome} (${u.email})?`)) return;
     toast('Enviando convite...');
+    // Captura TODO o resultado pra debug — mostra em alert se falhar
+    const diag = ['Email: ' + u.email, 'Nome: ' + u.nome];
     try {
+        const t0 = Date.now();
         const { data: resp, error: err } = await SB.functions.invoke('convidar-usuario', {
             body: { email: u.email, nome: u.nome }
         });
+        diag.push('Tempo: ' + (Date.now()-t0) + 'ms');
         if (err) {
-            toast('Falhou: ' + (err.message || err));
+            diag.push('ERRO (SDK): ' + (err.message || JSON.stringify(err)));
+            if (err.context) diag.push('Contexto: ' + JSON.stringify(err.context).slice(0,500));
+            alert('FALHOU no envio do convite.\n\nDiagnostico (copia e cola tudo pra mim):\n\n' + diag.join('\n'));
             console.error('reenviarConvite erro:', err);
             return;
         }
         if (resp?.status === 'error') {
-            toast('Falhou: ' + resp.message);
+            diag.push('ERRO (funcao): ' + resp.message);
+            alert('FALHOU.\n\nDiagnostico (copia e cola tudo pra mim):\n\n' + diag.join('\n'));
             console.error('reenviarConvite resp erro:', resp);
             return;
         }
+        diag.push('RESULTADO: ok');
+        if (resp?.resend_id) diag.push('Resend id: ' + resp.resend_id);
         toast('Convite enviado pra ' + u.email + ' (peca pra olhar spam)');
+        console.log('reenviarConvite ok:', diag.join(' | '));
     } catch (e) {
-        toast('Falhou (rede): ' + (e.message || e));
-        console.error('reenviarConvite rede:', e);
+        diag.push('EXCEPTION: ' + (e.message || String(e)));
+        if (e.stack) diag.push(e.stack.slice(0,400));
+        alert('FALHOU (excecao).\n\nDiagnostico (copia e cola tudo pra mim):\n\n' + diag.join('\n'));
+        console.error('reenviarConvite excecao:', e);
     }
 }
 

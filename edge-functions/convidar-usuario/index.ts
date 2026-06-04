@@ -135,26 +135,32 @@ serve(async (req) => {
     if (inviteError) {
       const msg = inviteError.message || "";
       if (msg.indexOf("already") >= 0 || msg.indexOf("registered") >= 0 || msg.indexOf("exists") >= 0) {
-        const linkResp = await supabaseAdmin.auth.admin.generateLink({
-          type: "magiclink",
-          email: email,
-          options: { redirectTo: "https://portal.affectionconsultoria.com.br/" },
+        // Usuario ja existe — em vez de gerar link "pra copiar" (que nao manda email),
+        // dispara o endpoint /auth/v1/recover que MANDA EMAIL automaticamente via SMTP
+        // (Resend). Usa template mailer_templates_recovery_content (estetica Affection).
+        const recoverResp = await fetch(supabaseUrl + "/auth/v1/recover", {
+          method: "POST",
+          headers: {
+            "apikey": supabaseServiceKey,
+            "Authorization": "Bearer " + supabaseServiceKey,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: email,
+            options: { redirectTo: "https://portal.affectionconsultoria.com.br/criar-senha.html" }
+          }),
         });
-        if (linkResp.error) {
+        if (!recoverResp.ok) {
+          const errBody = await recoverResp.text();
           return jsonResp({
             status: "error",
-            message: "Usuario ja existe e magic link falhou: " + linkResp.error.message,
-            step: "magic_link"
+            message: "Usuario ja existe; reenvio falhou: " + errBody.slice(0, 300),
+            step: "recover"
           }, 200);
-        }
-        authUserId = linkResp.data && linkResp.data.user && linkResp.data.user.id;
-        if (authUserId) {
-          await supabaseAdmin.from("pessoas").update({ auth_id: authUserId }).eq("email", email).is("auth_id", null);
         }
         return jsonResp({
           status: "ok",
-          message: email + " ja estava no Auth — link de acesso gerado abaixo (copie e envie):",
-          actionLink: (linkResp.data && linkResp.data.properties && linkResp.data.properties.action_link) || null,
+          message: "E-mail enviado pra " + email + " (link de acesso/redefinir senha — usuario ja existia no Auth).",
           alreadyExisted: true
         }, 200);
       }

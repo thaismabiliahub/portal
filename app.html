@@ -602,45 +602,120 @@ html[data-tema="escuro"] .lm-check-row { background: #2a2a27; }
 .content-scroll, .main-area { background: #faf8f6 !important; }
 .tab-content { padding: 20px 24px !important; }
 
-/* BOTÕES — VOAR */
-.btn-primary {
-    background: #532137 !important;
-    color: white !important;
-    border: 1px solid #532137 !important;
-    border-radius: 8px !important;
-    padding: 8px 16px !important;
-    font-size: 13px !important;
-    font-weight: 500 !important;
-    font-family: 'DM Sans', sans-serif !important;
-    cursor: pointer; transition: all 0.15s !important;
-    box-shadow: none !important;
-}
-.btn-primary:hover { background: #6a2a47 !important; transform: translateY(-1px); }
+/* ===================================================================
+   SISTEMA DE BOTÕES UNIFICADO — Paleta Bordô Affection (escolha Thais)
+   5 tipos: primário, secundário, ghost/texto, perigo, sucesso.
+   Aliases mantém compat com classes antigas (.lan-btn-pri, .lan-btn-out,
+   .btn-primary etc) — herdam o mesmo estilo automaticamente.
+   =================================================================== */
 
-.btn-secondary {
+/* PRIMÁRIO — ação principal (Salvar, Nova, Confirmar) */
+.btn-primary, .lan-btn-pri, .btn-affection {
+    display: inline-flex !important; align-items: center; justify-content: center; gap: 8px;
+    padding: 10px 18px !important;
+    background: linear-gradient(135deg, #6a2a47 0%, #532137 60%, #3a1820 100%) !important;
+    color: white !important;
+    border: 1px solid rgba(83,33,55,0.4) !important;
+    border-radius: 10px !important;
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 13px !important; font-weight: 600 !important;
+    letter-spacing: 0.2px !important;
+    cursor: pointer; outline: none;
+    box-shadow: 0 1px 2px rgba(83,33,55,0.18), 0 4px 14px -4px rgba(83,33,55,0.35), inset 0 1px 0 rgba(255,255,255,0.12) !important;
+    transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.15s ease !important;
+    text-decoration: none;
+}
+.btn-primary:hover, .lan-btn-pri:hover, .btn-affection:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(83,33,55,0.22), 0 8px 22px -4px rgba(83,33,55,0.45), inset 0 1px 0 rgba(255,255,255,0.18) !important;
+    filter: brightness(1.05);
+}
+.btn-primary:active, .lan-btn-pri:active { transform: translateY(0); filter: brightness(0.98); }
+.btn-primary svg, .lan-btn-pri svg { width: 14px; height: 14px; }
+
+/* SECUNDÁRIO — ação alternativa (Cancelar, Voltar) */
+.btn-secondary, .lan-btn-out {
+    display: inline-flex !important; align-items: center; justify-content: center; gap: 8px;
+    padding: 10px 18px !important;
     background: white !important;
     color: #532137 !important;
-    border: 1px solid #532137 !important;
-    border-radius: 8px !important;
-    padding: 8px 16px !important;
-    font-size: 13px !important;
-    font-weight: 500 !important;
+    border: 1.5px solid #532137 !important;
+    border-radius: 10px !important;
     font-family: 'DM Sans', sans-serif !important;
-    cursor: pointer; transition: all 0.15s !important;
+    font-size: 13px !important; font-weight: 600 !important;
+    letter-spacing: 0.2px !important;
+    cursor: pointer; outline: none;
+    transition: all 0.15s ease !important;
 }
-.btn-secondary:hover { background: #532137 !important; color: white !important; }
+.btn-secondary:hover, .lan-btn-out:hover {
+    background: #faf4f7 !important;
+    box-shadow: 0 2px 8px rgba(83,33,55,0.08) !important;
+    color: #532137 !important;
+}
+.btn-secondary svg, .lan-btn-out svg { width: 14px; height: 14px; }
 
+/* GHOST / TEXTO — ação leve em linhas de tabela (Editar, Detalhes) */
 .btn-ghost {
+    display: inline-flex !important; align-items: center; gap: 6px;
     background: transparent !important;
-    color: #6b6660 !important;
-    border: 1px solid transparent !important;
-    border-radius: 6px !important;
-    padding: 6px 10px !important;
-    font-size: 12px !important;
+    color: #532137 !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 7px 12px !important;
     font-family: 'DM Sans', sans-serif !important;
-    cursor: pointer; transition: all 0.15s !important;
+    font-size: 12.5px !important; font-weight: 600 !important;
+    cursor: pointer; outline: none;
+    transition: all 0.15s !important;
 }
-.btn-ghost:hover { background: #f5efe6 !important; color: #532137 !important; }
+.btn-ghost:hover { background: #faf4f7 !important; color: #532137 !important; }
+.btn-ghost svg { width: 13px; height: 13px; }
+
+/* PERIGO — ações destrutivas (Excluir, Remover, Apagar) */
+.btn-danger {
+    display: inline-flex !important; align-items: center; justify-content: center; gap: 8px;
+    padding: 10px 18px;
+    background: linear-gradient(135deg, #a04848 0%, #8b3a3a 60%, #6e2929 100%);
+    color: white;
+    border: 1px solid rgba(139,58,58,0.4);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 600;
+    letter-spacing: 0.2px;
+    cursor: pointer; outline: none;
+    box-shadow: 0 1px 2px rgba(139,58,58,0.18), 0 4px 14px -4px rgba(139,58,58,0.32), inset 0 1px 0 rgba(255,255,255,0.12);
+    transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.15s ease;
+}
+.btn-danger:hover { transform: translateY(-1px); filter: brightness(1.05); box-shadow: 0 2px 4px rgba(139,58,58,0.22), 0 8px 22px -4px rgba(139,58,58,0.42); }
+.btn-danger:active { transform: translateY(0); }
+.btn-danger svg { width: 14px; height: 14px; }
+
+/* SUCESSO — confirmar pagamento, etapa concluída */
+.btn-success {
+    display: inline-flex !important; align-items: center; justify-content: center; gap: 8px;
+    padding: 10px 18px;
+    background: linear-gradient(135deg, #6e8e6e 0%, #5c7c5c 60%, #4a6a4a 100%);
+    color: white;
+    border: 1px solid rgba(92,124,92,0.4);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 600;
+    letter-spacing: 0.2px;
+    cursor: pointer; outline: none;
+    box-shadow: 0 1px 2px rgba(92,124,92,0.18), 0 4px 14px -4px rgba(92,124,92,0.32), inset 0 1px 0 rgba(255,255,255,0.12);
+    transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.15s ease;
+}
+.btn-success:hover { transform: translateY(-1px); filter: brightness(1.05); box-shadow: 0 2px 4px rgba(92,124,92,0.22), 0 8px 22px -4px rgba(92,124,92,0.42); }
+.btn-success:active { transform: translateY(0); }
+.btn-success svg { width: 14px; height: 14px; }
+
+/* GHOST com cor de perigo (usado em linhas de tabela: "Excluir" texto sem fundo) */
+.btn-ghost.danger, .btn-ghost-danger {
+    color: #8b3a3a !important;
+}
+.btn-ghost.danger:hover, .btn-ghost-danger:hover { background: #fdecec !important; color: #8b3a3a !important; }
+
+/* Alias dos antigos pra herdar do primário automaticamente */
+.btn-premium-bordo { /* mantém compat: vira primário padrão */ }
 
 /* CARDS DE KPI — formato VOAR sofisticado */
 .kpi-card {
@@ -1605,15 +1680,15 @@ textarea.md-inp { resize: vertical; min-height: 60px; line-height: 1.4; }
 .cadv2-subtab:hover { color: #532137; }
 .cadv2-subtab.ativo { background: white; color: #532137; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
 
-/* Botao premium bordo — gradiente sutil, sombra elegante, hover suave (cara de sistema premium) */
+/* .btn-premium-bordo virou alias de .btn-primary — herda o estilo unificado acima */
 .btn-premium-bordo {
-    display: inline-flex; align-items: center; gap: 8px;
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
     padding: 10px 18px;
     background: linear-gradient(135deg, #6a2a47 0%, #532137 60%, #3a1820 100%);
     color: white;
     border: 1px solid rgba(83,33,55,0.4);
     border-radius: 10px;
-    font-family: inherit; font-size: 13px; font-weight: 600;
+    font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
     letter-spacing: 0.2px;
     cursor: pointer;
     box-shadow: 0 1px 2px rgba(83,33,55,0.18), 0 4px 14px -4px rgba(83,33,55,0.35), inset 0 1px 0 rgba(255,255,255,0.12);
@@ -3270,7 +3345,7 @@ textarea.md-inp { resize: vertical; min-height: 60px; line-height: 1.4; }
                                  a sub-aba ativa ja indica visualmente em qual secao estamos. Mantemos apenas
                                  um subtitulo curto que muda com a sub-aba (texto via #cadv2HeaderSub no JS). -->
                             <span class="cadv2-tag" id="cadv2HeaderTag" style="display:none;"><span id="cadv2HeaderTagText"></span></span>
-                            <p class="lan-subtitulo" id="cadv2HeaderSub" style="margin:0; font-size:13.5px; color:#6b6660;">Categorias, parceiros, usuários e backup do sistema.</p>
+                            <p class="lan-subtitulo" id="cadv2HeaderSub" style="margin:0; font-size:13.5px; color:#6b6660;"></p>
                         </div>
                         <div style="display:flex; gap:8px; align-items:center;">
                             <button id="cadv2BotaoAcao" onclick="cadv2AdicionarAtual()" class="btn-premium-bordo">

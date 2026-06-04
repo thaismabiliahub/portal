@@ -12923,14 +12923,8 @@ async function salvarSenhaInicial() {
         return;
     }
 
-    // === GATE: Quem nao definiu senha pessoal (entrou via convite) e obrigado
-    // a definir antes de usar o sistema. Flag: user_metadata.password_set === true ===
-    const passwordSet = session.user?.user_metadata?.password_set === true;
-    if (!passwordSet) {
-        esconderSplash();
-        mostrarTelaDefinirSenha(session.user, u);
-        return;
-    }
+    // Gate "Defina senha" foi REMOVIDO temporariamente (Thais pediu pra voltar tela de login como estava).
+    // mostrarTelaDefinirSenha ainda existe abaixo caso queiramos reativar de outro jeito.
 
     // Garante que o nome em "usuarios" nao seja a parte do email (caso de cadastro auto via trigger)
     // Faz fallback pra "pessoas" pra trazer o nome real cadastrado pela Thais.

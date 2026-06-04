@@ -12836,6 +12836,72 @@ function esconderSplash() {
 }
 
 // =====================================================================
+// TELA "DEFINA SUA SENHA" — bloqueia quem entrou via convite ate definir
+// =====================================================================
+function mostrarTelaDefinirSenha(authUser, perfil) {
+    // Esconde tudo
+    document.querySelectorAll('body > *').forEach(el => { if (el.tagName !== 'SCRIPT' && el.id !== 'definirSenhaWrap') el.style.display = 'none'; });
+    const existente = document.getElementById('definirSenhaWrap');
+    if (existente) existente.remove();
+    const nome = perfil?.nome || perfil?.apelido || (authUser?.email ? authUser.email.split('@')[0] : '');
+    const wrap = document.createElement('div');
+    wrap.id = 'definirSenhaWrap';
+    wrap.style.cssText = 'position:fixed; inset:0; background:linear-gradient(135deg, #73304e 0%, #532137 60%, #3a1820 100%); display:flex; align-items:center; justify-content:center; padding:24px; z-index:99999; font-family:"DM Sans", system-ui, sans-serif;';
+    wrap.innerHTML = `
+      <div style="background:white; border-radius:18px; padding:40px 36px 32px; width:100%; max-width:440px; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+        <div style="text-align:center; margin-bottom:24px;">
+          <svg width="40" height="40" viewBox="0 0 100 100" fill="none" style="display:block; margin:0 auto 10px;"><path d="M50 32 Q35 18, 22 26 Q12 33, 16 50 Q22 65, 36 60 Q44 56, 50 50 M50 32 Q65 18, 78 26 Q88 33, 84 50 Q78 65, 64 60 Q56 56, 50 50 M50 50 Q40 62, 32 78 Q40 72, 50 64 M50 50 Q60 62, 68 78 Q60 72, 50 64" stroke="#532137" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+          <div style="font-family:'Fraunces', Georgia, serif; font-size:22px; font-weight:600; color:#1a1a18; line-height:1.3;">Bem-vinda${nome ? ', ' + nome : ''}.</div>
+          <div style="font-size:14px; color:#6b6660; margin-top:8px;">Pra continuar, defina uma senha pessoal. <br>Sera ela que voce usa nos proximos acessos.</div>
+        </div>
+        <div style="margin-bottom:12px;">
+          <label style="display:block; font-size:11px; font-weight:600; color:#6b6660; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Nova senha</label>
+          <div style="position:relative;">
+            <input type="password" id="senhaNova" placeholder="Mínimo 6 caracteres" style="width:100%; padding:11px 38px 11px 12px; border:1.5px solid #ebe5df; border-radius:8px; font-size:14px; font-family:inherit; box-sizing:border-box; outline:none;">
+            <button type="button" onclick="(function(b){const i=document.getElementById('senhaNova');i.type=i.type==='password'?'text':'password';})(this)" style="position:absolute; right:8px; top:50%; transform:translateY(-50%); background:transparent; border:none; cursor:pointer; padding:6px;"><svg viewBox="0 0 24 24" fill="none" stroke="#9a948c" stroke-width="2" width="18" height="18"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+        </div>
+        <div style="margin-bottom:8px;">
+          <label style="display:block; font-size:11px; font-weight:600; color:#6b6660; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:6px;">Confirme a senha</label>
+          <input type="password" id="senhaConfirma" placeholder="Digite de novo" style="width:100%; padding:11px 12px; border:1.5px solid #ebe5df; border-radius:8px; font-size:14px; font-family:inherit; box-sizing:border-box; outline:none;">
+        </div>
+        <div id="senhaErro" style="color:#8b3a3a; font-size:12.5px; min-height:18px; margin:4px 0 14px;"></div>
+        <button id="senhaSalvar" onclick="salvarSenhaInicial()" class="btn-primary" style="width:100%; padding:13px; font-size:14px;">Definir senha e entrar</button>
+        <p style="font-size:11px; color:#9a948c; text-align:center; margin:18px 0 0; line-height:1.5;">Use uma senha que so voce conheca. A Affection nunca pede sua senha.</p>
+      </div>
+    `;
+    document.body.appendChild(wrap);
+    setTimeout(() => document.getElementById('senhaNova')?.focus(), 100);
+    // Enter na confirma submete
+    wrap.querySelector('#senhaConfirma').addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); salvarSenhaInicial(); }
+    });
+}
+
+async function salvarSenhaInicial() {
+    const s1 = document.getElementById('senhaNova').value;
+    const s2 = document.getElementById('senhaConfirma').value;
+    const erro = document.getElementById('senhaErro');
+    const btn = document.getElementById('senhaSalvar');
+    erro.textContent = '';
+    if (s1.length < 6) { erro.textContent = 'A senha precisa ter pelo menos 6 caracteres.'; return; }
+    if (s1 !== s2) { erro.textContent = 'As senhas não batem.'; return; }
+    btn.disabled = true; btn.textContent = 'Salvando...';
+    try {
+        const { error } = await SB.auth.updateUser({
+            password: s1,
+            data: { password_set: true }
+        });
+        if (error) { erro.textContent = 'Erro: ' + error.message; btn.disabled = false; btn.textContent = 'Definir senha e entrar'; return; }
+        // Recarrega — agora password_set === true, bootstrap libera o app
+        window.location.reload();
+    } catch (e) {
+        erro.textContent = 'Erro inesperado: ' + (e?.message || e);
+        btn.disabled = false; btn.textContent = 'Definir senha e entrar';
+    }
+}
+
+// =====================================================================
 // BOOTSTRAP — detecta sessão; mostra LOGIN ou SISTEMA (mesmo arquivo)
 // =====================================================================
 (async () => {
@@ -12855,6 +12921,25 @@ function esconderSplash() {
         await SB.auth.signOut();
         window.location.reload();
         return;
+    }
+
+    // === GATE: Quem nao definiu senha pessoal (entrou via convite) e obrigado
+    // a definir antes de usar o sistema. Flag: user_metadata.password_set === true ===
+    const passwordSet = session.user?.user_metadata?.password_set === true;
+    if (!passwordSet) {
+        esconderSplash();
+        mostrarTelaDefinirSenha(session.user, u);
+        return;
+    }
+
+    // Garante que o nome em "usuarios" nao seja a parte do email (caso de cadastro auto via trigger)
+    // Faz fallback pra "pessoas" pra trazer o nome real cadastrado pela Thais.
+    if (u.email && u.nome && u.nome === u.email.split('@')[0]) {
+        const { data: p } = await SB.from('pessoas').select('nome, apelido').eq('auth_id', session.user.id).maybeSingle();
+        if (p && p.nome && p.nome !== u.email.split('@')[0]) {
+            u.nome = p.nome;
+            u.apelido = p.apelido || u.apelido;
+        }
     }
     usuarioLogadoSupabase = u;
     usuarioAtual = u.email.split('@')[0].split('.')[0];

@@ -3103,7 +3103,8 @@ textarea.md-inp { resize: vertical; min-height: 60px; line-height: 1.4; }
                         </div>
                         <div class="lan-btns" style="align-items:center;">
                             <div class="datas-toggle">
-                                <button onclick="trocarVisualDatas('kanban')" id="btnVisualKanban" class="datas-toggle-btn ativo">Kanban</button>
+                                <button onclick="trocarVisualDatas('lista')" id="btnVisualLista" class="datas-toggle-btn ativo">Lista</button>
+                                <button onclick="trocarVisualDatas('kanban')" id="btnVisualKanban" class="datas-toggle-btn">Kanban</button>
                                 <button onclick="trocarVisualDatas('calendario')" id="btnVisualCalendario" class="datas-toggle-btn">Calendário</button>
                             </div>
                             <button onclick="abrirModalData && abrirModalData()" class="lan-btn lan-btn-pri">
@@ -3112,13 +3113,23 @@ textarea.md-inp { resize: vertical; min-height: 60px; line-height: 1.4; }
                             </button>
                         </div>
                     </div>
-                <div id="datasKanban">
-                    <div style="display:inline-flex; align-items:center; gap:6px; margin-bottom:14px;">
+                <!-- LISTA — visualizacao default (mais util pra poucas datas) -->
+                <div id="datasLista"></div>
+                <div id="datasKanban" class="hidden">
+                    <!-- Navegador de periodo mais discreto: sem min-width fixo + fonte menor -->
+                    <div style="display:inline-flex; align-items:center; gap:4px; margin-bottom:14px;">
                         <button onclick="navegarKanban(-1)" class="lan-comp-nav" title="Mês anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
-                        <button id="kanbanRangeLabel" onclick="irMesAtualKanban()" class="lan-comp-atual-btn" title="Voltar pro mês atual" style="min-width:240px;">—</button>
+                        <button id="kanbanRangeLabel" onclick="irMesAtualKanban()" class="lan-comp-atual-btn" title="Voltar pro mês atual" style="font-size:12px; padding:6px 12px; min-width:0;">—</button>
                         <button onclick="navegarKanban(1)" class="lan-comp-nav" title="Próximo mês"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
                     </div>
                     <div id="kanbanColunas" class="kanban-board"></div>
+                    <!-- Empty state inteligente: aparece quando todas as colunas Kanban estao vazias -->
+                    <div id="kanbanVazio" class="hidden" style="text-align:center; padding:60px 24px; background:white; border:1px dashed #ebe5df; border-radius:14px; margin-top:14px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#cdc7be" stroke-width="1.5" style="width:48px; height:48px; margin-bottom:14px;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <div style="font-family:'Fraunces',serif; font-size:18px; font-weight:600; color:#1a1a18; margin-bottom:6px;">Nenhuma data nesse período</div>
+                        <p style="font-size:13px; color:#6b6660; margin:0 0 18px;">Cadastre aniversários, vencimentos e lembretes — eles aparecem aqui e no contador do Painel.</p>
+                        <button onclick="abrirModalData && abrirModalData()" class="btn-primary" style="display:inline-flex;">+ Cadastrar primeira data</button>
+                    </div>
                 </div>
                 <div id="datasCalendario" class="hidden">
                     <!-- Header rico do calendário -->
@@ -9221,7 +9232,7 @@ function deletarPrestadorReparo(id) {
 }
 
 // DATAS - KANBAN + CALENDÁRIO
-let visualDatasAtual = 'kanban';
+let visualDatasAtual = 'lista';
 let mesCalendarioAtual = null;
 let diaCalendarioSelecionado = null;
 let mesInicialKanban = null; // YYYY-MM do primeiro mês mostrado
@@ -9241,18 +9252,24 @@ function irMesAtualKanban() {
 
 function trocarVisualDatas(modo) {
     visualDatasAtual = modo;
+    const btnL = document.getElementById('btnVisualLista');
     const btnK = document.getElementById('btnVisualKanban');
     const btnC = document.getElementById('btnVisualCalendario');
-    if (modo === 'kanban') {
-        document.getElementById('datasKanban').classList.remove('hidden');
-        document.getElementById('datasCalendario').classList.add('hidden');
+    const elL = document.getElementById('datasLista');
+    const elK = document.getElementById('datasKanban');
+    const elC = document.getElementById('datasCalendario');
+    [btnL, btnK, btnC].forEach(b => b && b.classList.remove('ativo'));
+    [elL, elK, elC].forEach(e => e && e.classList.add('hidden'));
+    if (modo === 'lista') {
+        if (elL) elL.classList.remove('hidden');
+        if (btnL) btnL.classList.add('ativo');
+        renderizarDatasLista();
+    } else if (modo === 'kanban') {
+        if (elK) elK.classList.remove('hidden');
         if (btnK) btnK.classList.add('ativo');
-        if (btnC) btnC.classList.remove('ativo');
         renderizarDatasKanban();
     } else {
-        document.getElementById('datasKanban').classList.add('hidden');
-        document.getElementById('datasCalendario').classList.remove('hidden');
-        if (btnK) btnK.classList.remove('ativo');
+        if (elC) elC.classList.remove('hidden');
         if (btnC) btnC.classList.add('ativo');
         if (!mesCalendarioAtual) mesCalendarioAtual = mesAtual();
         renderizarCalendario();
@@ -9266,7 +9283,9 @@ function renderizarDatasView() {
         const total = (estado.datas || []).filter(d => podeVerData(d)).length;
         contEl.textContent = `${total} ${total === 1 ? 'data cadastrada' : 'datas cadastradas'}`;
     }
-    if (visualDatasAtual === 'kanban') renderizarDatasKanban();
+    if (visualDatasAtual === 'lista') renderizarDatasLista();
+    else if (visualDatasAtual === 'kanban') renderizarDatasKanban();
+    else renderizarCalendario && renderizarCalendario();
     else renderizarCalendario();
 }
 
@@ -9389,6 +9408,100 @@ function eventosDoMes(anoMes) {
     }).filter(x => x).sort((a,b) => a.data_efetiva.localeCompare(b.data_efetiva));
 }
 
+// ===== Lista vertical (visualizacao default) =====
+// Agrupa todas as datas (incluindo recorrentes anuais) por seções de proximidade:
+// Vencidas | Esta semana | Proximos 30 dias | Proximos 60 | Proximos 90 | Depois.
+// Cada item mostra dia/mes destacado + titulo + tipo (com dot colorido) + descricao.
+function renderizarDatasLista() {
+    const cont = document.getElementById('datasLista');
+    if (!cont) return;
+    const hoje = new Date(); hoje.setHours(0,0,0,0);
+    const cores = { aniversario: '#dd597d', comemoracao: '#f9a01b', lembrete: '#7c3aed', vencimento: '#dc2626' };
+    const labels = { aniversario: 'Aniversário', comemoracao: 'Comemoração', lembrete: 'Lembrete', vencimento: 'Vencimento' };
+
+    // Junta proximas ocorrencias (1 ano a frente pra cobrir anuais)
+    const itens = [];
+    (estado.datas || []).filter(d => podeVerData && podeVerData(d)).forEach(d => {
+        if (!d.data) return;
+        const orig = new Date(d.data + 'T00:00:00');
+        if (d.recorrente) {
+            // proxima ocorrencia anual a partir de hoje
+            let candidato = new Date(hoje.getFullYear(), orig.getMonth(), orig.getDate());
+            if (candidato < hoje) candidato.setFullYear(candidato.getFullYear() + 1);
+            itens.push({ ...d, data_efetiva: candidato.toISOString().slice(0,10), _dt: candidato });
+        } else {
+            itens.push({ ...d, data_efetiva: d.data, _dt: orig });
+        }
+    });
+    itens.sort((a, b) => a._dt - b._dt);
+
+    // Vazio total → estado convidativo
+    if (itens.length === 0) {
+        cont.innerHTML = `<div style="text-align:center; padding:60px 24px; background:white; border:1px dashed #ebe5df; border-radius:14px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#cdc7be" stroke-width="1.5" style="width:48px; height:48px; margin-bottom:14px;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <div style="font-family:'Fraunces',serif; font-size:18px; font-weight:600; color:#1a1a18; margin-bottom:6px;">Nenhuma data cadastrada</div>
+            <p style="font-size:13px; color:#6b6660; margin:0 0 18px;">Cadastre aniversários, vencimentos e lembretes — aparecem aqui e no contador do Painel.</p>
+            <button onclick="abrirModalData && abrirModalData()" class="btn-primary" style="display:inline-flex;">+ Cadastrar primeira data</button>
+        </div>`;
+        return;
+    }
+
+    // Agrupa por proximidade
+    const dia = 86400000;
+    const grupos = [
+        { titulo: 'Vencidas', filtro: i => i._dt < hoje, cor: '#8b3a3a' },
+        { titulo: 'Esta semana', filtro: i => (i._dt - hoje) <= 7 * dia && i._dt >= hoje, cor: '#dd597d' },
+        { titulo: 'Próximos 30 dias', filtro: i => (i._dt - hoje) > 7 * dia && (i._dt - hoje) <= 30 * dia, cor: '#c87f1f' },
+        { titulo: 'Próximos 60 dias', filtro: i => (i._dt - hoje) > 30 * dia && (i._dt - hoje) <= 60 * dia, cor: '#8b6e3a' },
+        { titulo: 'Próximos 90 dias', filtro: i => (i._dt - hoje) > 60 * dia && (i._dt - hoje) <= 90 * dia, cor: '#5c7c5c' },
+        { titulo: 'Depois', filtro: i => (i._dt - hoje) > 90 * dia, cor: '#6b6660' },
+    ];
+
+    const html = grupos.map(g => {
+        const lista = itens.filter(g.filtro);
+        if (lista.length === 0) return '';
+        return `<div style="margin-bottom:24px;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+                <span style="width:8px; height:8px; border-radius:50%; background:${g.cor};"></span>
+                <h3 style="font-family:'Fraunces',serif; font-size:15px; font-weight:600; color:#1a1a18; margin:0;">${g.titulo}</h3>
+                <span style="font-size:11px; color:#9a948c; background:#faf6f4; padding:2px 8px; border-radius:99px; font-weight:600;">${lista.length}</span>
+            </div>
+            <div style="background:white; border:1px solid #ebe5df; border-radius:12px; overflow:hidden;">
+                ${lista.map((d, i) => {
+                    const data = new Date(d.data_efetiva + 'T00:00:00');
+                    const dd = String(data.getDate()).padStart(2,'0');
+                    const mes = data.toLocaleDateString('pt-BR', { month: 'short' }).replace('.','').toUpperCase();
+                    const ano = data.getFullYear();
+                    const diasAte = Math.round((data - hoje) / dia);
+                    let badge = '';
+                    if (diasAte === 0) badge = '<span style="color:#dd597d; font-weight:700;">hoje</span>';
+                    else if (diasAte === 1) badge = '<span style="color:#c87f1f; font-weight:600;">amanhã</span>';
+                    else if (diasAte > 0 && diasAte <= 7) badge = `<span style="color:#c87f1f; font-weight:600;">em ${diasAte} dias</span>`;
+                    else if (diasAte < 0) badge = `<span style="color:#8b3a3a; font-weight:600;">há ${-diasAte} dia${-diasAte > 1 ? 's' : ''}</span>`;
+                    else badge = `<span style="color:#6b6660;">${data.toLocaleDateString('pt-BR', { weekday: 'short' })}</span>`;
+                    return `<div onclick="editarData('${d.id}')" style="display:flex; align-items:center; gap:14px; padding:14px 18px; ${i < lista.length-1 ? 'border-bottom:1px solid #f3efea;' : ''} cursor:pointer; transition:background 0.12s;" onmouseover="this.style.background='#faf8f6'" onmouseout="this.style.background=''">
+                        <div style="text-align:center; min-width:44px;">
+                            <div style="font-family:'Fraunces',serif; font-size:20px; font-weight:600; color:#1a1a18; line-height:1;">${dd}</div>
+                            <div style="font-size:10px; color:#9a948c; text-transform:uppercase; letter-spacing:0.06em; margin-top:2px;">${mes}</div>
+                        </div>
+                        <div style="flex:1; min-width:0;">
+                            <div style="display:flex; align-items:center; gap:8px; margin-bottom:3px;">
+                                <span style="width:6px; height:6px; border-radius:50%; background:${cores[d.tipo] || '#532137'};"></span>
+                                <span style="font-size:14px; font-weight:600; color:#1a1a18;">${d.titulo}</span>
+                                ${d.recorrente ? '<span style="font-size:10px; color:#9a948c; background:#faf6f4; padding:1px 6px; border-radius:99px;">anual</span>' : ''}
+                            </div>
+                            <div style="font-size:12px; color:#6b6660;">${labels[d.tipo] || d.tipo || '—'}${d.descricao ? ' · ' + d.descricao : ''}</div>
+                        </div>
+                        <div style="font-size:12px; text-align:right;">${badge}</div>
+                    </div>`;
+                }).join('')}
+            </div>
+        </div>`;
+    }).join('');
+
+    cont.innerHTML = html || `<div style="text-align:center; padding:40px; color:#9a948c; font-size:13px;">Nenhuma data em nenhum dos próximos períodos.</div>`;
+}
+
 function renderizarDatasKanban() {
     if (!mesInicialKanban) mesInicialKanban = mesAtual();
     const [anoBase, mesBase] = mesInicialKanban.split('-').map(Number);
@@ -9402,6 +9515,19 @@ function renderizarDatasKanban() {
     const primeiro = meses[0].label, ultimo = meses[5].label;
     document.getElementById('kanbanRangeLabel').textContent = `${primeiro} a ${ultimo}`;
     const cores = { aniversario: '#dd597d', comemoracao: '#f9a01b', lembrete: '#7c3aed', vencimento: '#dc2626' };
+
+    // Conta total de eventos. Se ZERO, mostra empty state em vez de 6 colunas vazias.
+    const totalEventos = meses.reduce((s, m) => s + eventosDoMes(m.ym).length, 0);
+    const elColunas = document.getElementById('kanbanColunas');
+    const elVazio = document.getElementById('kanbanVazio');
+    if (totalEventos === 0) {
+        if (elColunas) elColunas.classList.add('hidden');
+        if (elVazio) elVazio.classList.remove('hidden');
+        return;
+    } else {
+        if (elColunas) elColunas.classList.remove('hidden');
+        if (elVazio) elVazio.classList.add('hidden');
+    }
 
     document.getElementById('kanbanColunas').innerHTML = meses.map(m => {
         const eventos = eventosDoMes(m.ym);

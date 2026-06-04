@@ -10277,6 +10277,36 @@ function removerUsuario(id) {
     salvarEstado(); renderizarUsuarios(); toast('Removido');
 }
 
+// Reenvia o email de convite (gera link novo via Supabase Auth Admin + envia via Resend).
+// Util quando o convite original nao chegou (cair em spam, dominio Resend nao verificado,
+// email travado, etc) ou quando o usuario foi cadastrado antes da edge function existir.
+async function reenviarConvite(id) {
+    const u = (estado.usuarios_convite || []).find(x => x.id === id);
+    if (!u) { toast('Usuario nao encontrado'); return; }
+    if (!u.email) { toast('Usuario sem email cadastrado'); return; }
+    if (!confirm(`Reenviar email de convite pra ${u.nome} (${u.email})?`)) return;
+    toast('Enviando convite...');
+    try {
+        const { data: resp, error: err } = await SB.functions.invoke('convidar-usuario', {
+            body: { email: u.email, nome: u.nome }
+        });
+        if (err) {
+            toast('Falhou: ' + (err.message || err));
+            console.error('reenviarConvite erro:', err);
+            return;
+        }
+        if (resp?.status === 'error') {
+            toast('Falhou: ' + resp.message);
+            console.error('reenviarConvite resp erro:', resp);
+            return;
+        }
+        toast('Convite enviado pra ' + u.email + ' (peca pra olhar spam)');
+    } catch (e) {
+        toast('Falhou (rede): ' + (e.message || e));
+        console.error('reenviarConvite rede:', e);
+    }
+}
+
 function renderizarUsuarios() {
     // Filtros
     const fWs = document.getElementById('filtroUsuarioWorkspace')?.value || '';
@@ -10331,6 +10361,7 @@ function renderizarUsuarios() {
             <td class="text-xs">${u.ultimo_acesso ? dataFmt(u.ultimo_acesso) : 'Nunca'}</td>
             <td class="text-center text-xs">
                 <button onclick="editarUsuario('${u.id}')" class="btn-ghost" style="padding:2px 6px;">Editar</button>
+                ${!isMaster ? `<button onclick="reenviarConvite('${u.id}')" class="btn-ghost" style="padding:2px 6px; color:#532137;">Reenviar convite</button>` : ''}
                 ${!isMaster && u.status === 'ativo' ? `<button onclick="suspenderUsuario('${u.id}')" class="btn-ghost" style="padding:2px 6px; color:#d97706;">Suspender</button>` : ''}
                 ${!isMaster && u.status === 'suspenso' ? `<button onclick="reativarUsuario('${u.id}')" class="btn-ghost" style="padding:2px 6px; color:#059669;">Reativar</button>` : ''}
                 ${!isMaster ? `<button onclick="removerUsuario('${u.id}')" class="btn-ghost" style="padding:2px 6px; color:#dc2626;">Remover</button>` : ''}

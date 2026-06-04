@@ -9304,8 +9304,7 @@ function renderizarDatasView() {
     }
     if (visualDatasAtual === 'lista') renderizarDatasLista();
     else if (visualDatasAtual === 'kanban') renderizarDatasKanban();
-    else renderizarCalendario && renderizarCalendario();
-    else renderizarCalendario();
+    else if (typeof renderizarCalendario === 'function') renderizarCalendario();
 }
 
 // Lê se o chip de um tipo está marcado no calendário (true se nem existe o chip)

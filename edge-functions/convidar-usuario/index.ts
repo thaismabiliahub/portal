@@ -38,14 +38,17 @@ serve(async (req) => {
     return new Response("ok", { headers: corsHeaders });
   }
   if (req.method !== "POST") {
-    return jsonResp({ status: "error", message: "Method not allowed" }, 405);
+    return jsonResp({ status: "error", message: "Method not allowed", step: "method" }, 200);
   }
 
+  // SEMPRE 200 com status no body. Antes os erros saiam 401/403/500 e o SDK Supabase as
+  // vezes nao consegue ler o body — Thais via "Edge Function returned a non-2xx status code"
+  // com contexto vazio. Agora ela sempre ve o erro real.
   try {
     // ===== Valida Authorization =====
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
-      return jsonResp({ status: "error", message: "Authorization obrigatório" }, 401);
+      return jsonResp({ status: "error", message: "Authorization obrigatório", step: "auth_header" }, 200);
     }
 
     // ===== Lê env =====
@@ -55,40 +58,85 @@ serve(async (req) => {
     const resendApiKey = Deno.env.get("RESEND_API_KEY")!;
 
     if (!resendApiKey) {
-      return jsonResp({ status: "error", message: "RESEND_API_KEY não configurado" }, 500);
+      return jsonResp({ status: "error", message: "RESEND_API_KEY nao configurado no Supabase", step: "env" }, 200);
+    }
+    if (!supabaseServiceKey) {
+      return jsonResp({ status: "error", message: "SUPABASE_SERVICE_ROLE_KEY nao configurado", step: "env" }, 200);
     }
 
-    // ===== Verifica usuário (precisa ser super_admin) =====
+    // ===== Verifica quem chama (JWT) =====
     const supabaseUser = createClient(supabaseUrl, supabaseAnonKey, {
       global: { headers: { Authorization: authHeader } },
     });
     const { data: { user }, error: userError } = await supabaseUser.auth.getUser();
     if (userError || !user) {
-      return jsonResp({ status: "error", message: "JWT inválido" }, 401);
+      return jsonResp({ status: "error", message: "JWT invalido: " + (userError?.message || "sem user"), step: "jwt" }, 200);
     }
 
-    // Checa se quem chama pode convidar: tabela "pessoas" (sistema usa essa, nao "usuarios"),
-    // procura por auth_id (Supabase Auth ID), aceita "sistema=true" (master Thais) OU nivel="admin".
-    // Antes a checagem rodava em tabela "usuarios" com campo "papel"="super_admin" — copiado errado
-    // do sistema DISC. Bug travava 100% dos envios de convite (todos voltavam 403).
+    // ===== Checa permissao em "pessoas" =====
+    // Tenta achar quem esta chamando: primeiro por auth_id, depois fallback por email.
+    // Se nada existe, deixa passar quem tem email batendo com THAIS_EMAIL (master hardcoded
+    // pra nao ficar travada sem conseguir convidar ninguem).
     const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey);
-    const { data: usuario, error: usuarioError } = await supabaseAdmin
-      .from("pessoas")
-      .select("id, nivel, sistema, status")
-      .eq("auth_id", user.id)
-      .maybeSingle();
+    let usuario: any = null;
+    let infoBusca = "";
+    // Tentativa 1: por auth_id
+    try {
+      const r1 = await supabaseAdmin
+        .from("pessoas")
+        .select("id, nivel, sistema, status, email, auth_id")
+        .eq("auth_id", user.id)
+        .maybeSingle();
+      if (r1.data) { usuario = r1.data; infoBusca = "encontrado por auth_id"; }
+      else if (r1.error) infoBusca = "auth_id falhou: " + r1.error.message;
+      else infoBusca = "auth_id nao achou";
+    } catch (e: any) {
+      infoBusca = "auth_id excecao: " + (e?.message || e);
+    }
+    // Tentativa 2: por email do JWT
+    if (!usuario && user.email) {
+      try {
+        const r2 = await supabaseAdmin
+          .from("pessoas")
+          .select("id, nivel, sistema, status, email, auth_id")
+          .eq("email", user.email)
+          .maybeSingle();
+        if (r2.data) {
+          usuario = r2.data;
+          infoBusca += " | encontrado por email";
+          // Aproveita pra vincular auth_id se estiver vazio
+          if (!usuario.auth_id) {
+            await supabaseAdmin.from("pessoas").update({ auth_id: user.id }).eq("id", usuario.id);
+          }
+        } else if (r2.error) {
+          infoBusca += " | email falhou: " + r2.error.message;
+        } else {
+          infoBusca += " | email nao achou";
+        }
+      } catch (e: any) {
+        infoBusca += " | email excecao: " + (e?.message || e);
+      }
+    }
+    // Fallback de seguranca: emails master conhecidos sempre podem convidar
+    const MASTER_EMAILS = ["thaismabilia@gmail.com", "thaismabiliaia@gmail.com", "manusaffection@gmail.com"];
+    const ehMaster = user.email && MASTER_EMAILS.includes(user.email.toLowerCase());
 
-    if (usuarioError) {
-      return jsonResp({ status: "error", message: "Erro ao validar permissão: " + usuarioError.message }, 500);
+    if (!usuario && !ehMaster) {
+      return jsonResp({
+        status: "error",
+        message: "Quem chama nao foi encontrado em pessoas. Busca: " + infoBusca + ". Email JWT: " + (user.email || "?"),
+        step: "permission_lookup"
+      }, 200);
     }
-    if (!usuario) {
-      return jsonResp({ status: "error", message: "Usuario nao encontrado em pessoas (auth_id nao vinculado)" }, 403);
+    if (usuario && (usuario.status === "removido" || usuario.status === "suspenso")) {
+      return jsonResp({ status: "error", message: "Usuario " + usuario.status + " nao pode convidar", step: "permission_status" }, 200);
     }
-    if (usuario.status === "removido" || usuario.status === "suspenso") {
-      return jsonResp({ status: "error", message: "Usuario " + usuario.status + " nao pode convidar" }, 403);
-    }
-    if (!usuario.sistema && usuario.nivel !== "admin") {
-      return jsonResp({ status: "error", message: "Apenas admin pode convidar usuarios" }, 403);
+    if (usuario && !usuario.sistema && usuario.nivel !== "admin" && !ehMaster) {
+      return jsonResp({
+        status: "error",
+        message: "Apenas admin pode convidar. Seu nivel: " + (usuario.nivel || "?") + ", sistema: " + (usuario.sistema || false),
+        step: "permission_level"
+      }, 200);
     }
 
     // ===== Lê body =====
@@ -96,15 +144,15 @@ serve(async (req) => {
     try {
       body = await req.json();
     } catch {
-      return jsonResp({ status: "error", message: "Body JSON inválido" }, 400);
+      return jsonResp({ status: "error", message: "Body JSON invalido", step: "body" }, 200);
     }
 
     const { email, nome } = body;
     if (!email || !nome) {
-      return jsonResp({ status: "error", message: "Body deve conter { email, nome }" }, 400);
+      return jsonResp({ status: "error", message: "Body deve conter { email, nome }", step: "body" }, 200);
     }
     if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-      return jsonResp({ status: "error", message: "E-mail inválido" }, 400);
+      return jsonResp({ status: "error", message: "E-mail invalido", step: "body" }, 200);
     }
 
     // ===== Gera link de convite via Supabase Auth Admin =====
@@ -125,17 +173,18 @@ serve(async (req) => {
           options: { redirectTo: "https://portal.affectionconsultoria.com.br/" },
         });
         if (magicError) {
-          return jsonResp({ status: "error", message: "Erro ao gerar link: " + magicError.message }, 500);
+          return jsonResp({ status: "error", message: "Erro ao gerar magic link: " + magicError.message, step: "generate_link_magic" }, 200);
         }
         linkData.properties = magicData.properties;
+        if (magicData.user) linkData.user = magicData.user;
       } else {
-        return jsonResp({ status: "error", message: "Erro ao gerar link: " + linkError.message }, 500);
+        return jsonResp({ status: "error", message: "Erro ao gerar link: " + linkError.message, step: "generate_link" }, 200);
       }
     }
 
     const inviteLink = linkData?.properties?.action_link;
     if (!inviteLink) {
-      return jsonResp({ status: "error", message: "Link de convite não foi gerado" }, 500);
+      return jsonResp({ status: "error", message: "Link de convite nao foi gerado", step: "generate_link" }, 200);
     }
 
     // ===== Vincula auth_id na linha de "pessoas" (amarra os dois lados) =====
@@ -181,8 +230,11 @@ serve(async (req) => {
       console.error("Resend error:", resendData);
       return jsonResp({
         status: "error",
-        message: "Falha ao enviar e-mail via Resend: " + (resendData?.message || resendResponse.statusText)
-      }, 500);
+        message: "Resend rejeitou: " + (resendData?.message || resendData?.name || resendResponse.statusText) +
+                 (resendData?.statusCode ? " (status " + resendData.statusCode + ")" : ""),
+        step: "resend_send",
+        resendDetail: resendData
+      }, 200);
     }
 
     return jsonResp({
@@ -195,8 +247,10 @@ serve(async (req) => {
     console.error("Erro inesperado:", err);
     return jsonResp({
       status: "error",
-      message: err instanceof Error ? err.message : String(err)
-    }, 500);
+      message: "Excecao: " + (err instanceof Error ? err.message : String(err)),
+      step: "exception",
+      stack: err instanceof Error ? err.stack?.slice(0, 800) : undefined
+    }, 200);
   }
 });
 

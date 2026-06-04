@@ -3,97 +3,81 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Você foi convidada pra Affection Portal</title>
+<title>Affection Portal · Convite</title>
 </head>
 <body style="margin:0; padding:0; background:#faf8f6; font-family: 'Helvetica Neue', Arial, sans-serif; color:#1a1a18; -webkit-font-smoothing: antialiased;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#faf8f6; padding:32px 16px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#faf8f6; padding:48px 16px;">
     <tr>
       <td align="center">
-        <table role="presentation" width="560" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff; border-radius:18px; overflow:hidden; box-shadow:0 6px 24px rgba(83,33,55,0.08); border:1px solid #ebe5df;">
-          <!-- Topo bordo com borboleta -->
+
+        <!-- Header simples (sem header bordô gritante) -->
+        <table role="presentation" width="520" cellpadding="0" cellspacing="0" border="0">
           <tr>
-            <td align="center" style="background:linear-gradient(135deg, #73304e 0%, #532137 60%, #3a1820 100%); padding:36px 20px 28px;">
+            <td align="center" style="padding-bottom:32px;">
+              <!-- Borboleta SVG inline pequena e elegante -->
+              <div style="line-height:0; margin-bottom:12px;">
+                <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;">
+                  <path d="M50 32 Q35 18, 22 26 Q12 33, 16 50 Q22 65, 36 60 Q44 56, 50 50 M50 32 Q65 18, 78 26 Q88 33, 84 50 Q78 65, 64 60 Q56 56, 50 50 M50 50 Q40 62, 32 78 Q40 72, 50 64 M50 50 Q60 62, 68 78 Q60 72, 50 64" stroke="#532137" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                </svg>
+              </div>
+              <div style="font-family: Georgia, 'Times New Roman', serif; color:#532137; font-size:16px; font-weight:600; letter-spacing:0.4px;">Affection</div>
+            </td>
+          </tr>
+        </table>
+
+        <!-- Cartão principal -->
+        <table role="presentation" width="520" cellpadding="0" cellspacing="0" border="0" style="background:#ffffff; border-radius:14px; border:1px solid #ebe5df;">
+          <tr>
+            <td style="padding:40px 44px 12px;">
+              <div style="font-family: Georgia, 'Times New Roman', serif; font-size:22px; font-weight:600; color:#1a1a18; line-height:1.35; margin:0 0 18px;">
+                Seu acesso ao Affection Portal está pronto
+              </div>
+              <p style="font-size:15px; line-height:1.65; color:#3d3833; margin:0 0 14px;">
+                Olá. Você foi cadastrada no <strong>Affection Portal</strong> — o sistema de gestão financeira da Affection.
+              </p>
+              <p style="font-size:15px; line-height:1.65; color:#3d3833; margin:0 0 28px;">
+                Para ativar seu acesso, clique no botão abaixo e defina sua senha. Leva 30 segundos.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Botão centralizado, único elemento de ação -->
+          <tr>
+            <td align="center" style="padding:0 44px 8px;">
               <table role="presentation" cellpadding="0" cellspacing="0" border="0">
                 <tr>
-                  <td align="center">
-                    <!-- Borboleta SVG inline (linhas brancas elegantes) -->
-                    <div style="width:64px; height:64px; margin:0 auto 12px; line-height:0;">
-                      <svg width="64" height="64" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block;">
-                        <path d="M50 32 Q35 18, 22 26 Q12 33, 16 50 Q22 65, 36 60 Q44 56, 50 50 M50 32 Q65 18, 78 26 Q88 33, 84 50 Q78 65, 64 60 Q56 56, 50 50 M50 50 Q40 62, 32 78 Q40 72, 50 64 M50 50 Q60 62, 68 78 Q60 72, 50 64" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                      </svg>
-                    </div>
-                    <div style="font-family: Georgia, 'Times New Roman', serif; color:#ffffff; font-size:22px; font-weight:600; letter-spacing:0.5px;">Affection Portal</div>
-                    <div style="color:rgba(255,255,255,0.75); font-size:11px; text-transform:uppercase; letter-spacing:1.5px; margin-top:6px;">Gestão financeira da família</div>
+                  <td align="center" style="background:#532137; border-radius:8px;">
+                    <a href="{{ .ConfirmationURL }}" target="_blank" style="display:inline-block; padding:14px 36px; color:#ffffff; text-decoration:none; font-size:14px; font-weight:600; letter-spacing:0.3px; font-family: 'Helvetica Neue', Arial, sans-serif;">Ativar acesso</a>
                   </td>
                 </tr>
               </table>
             </td>
           </tr>
 
-          <!-- Corpo -->
+          <!-- Aviso seguranca (sem expor link bruto) -->
           <tr>
-            <td style="padding:36px 36px 8px;">
-              <div style="font-family: Georgia, 'Times New Roman', serif; font-size:24px; font-weight:600; color:#1a1a18; line-height:1.3; margin-bottom:14px;">
-                Você foi convidada para o Affection Portal
-              </div>
-              <p style="font-size:15px; line-height:1.6; color:#3d3833; margin:0 0 16px;">
-                Olá! A Thais te convidou para acessar o sistema financeiro da família — um espaço para acompanhar contas, cartões, documentos e tudo o que circula no dia a dia.
-              </p>
-              <p style="font-size:15px; line-height:1.6; color:#3d3833; margin:0 0 24px;">
-                Para começar, clique no botão abaixo, defina sua senha e pronto: você já entra.
-              </p>
-            </td>
-          </tr>
-
-          <!-- Botão -->
-          <tr>
-            <td align="center" style="padding:0 36px 8px;">
-              <table role="presentation" cellpadding="0" cellspacing="0" border="0">
-                <tr>
-                  <td align="center" style="background:#532137; border-radius:10px;">
-                    <a href="{{ .ConfirmationURL }}" target="_blank" style="display:inline-block; padding:14px 38px; color:#ffffff; text-decoration:none; font-size:15px; font-weight:600; letter-spacing:0.3px;">Aceitar convite e entrar</a>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-
-          <!-- Link alternativo -->
-          <tr>
-            <td style="padding:24px 36px 0;">
-              <p style="font-size:12px; line-height:1.5; color:#9a948c; margin:0 0 4px;">Se o botão não funcionar, copie e cole este link no navegador:</p>
-              <p style="font-size:12px; line-height:1.4; word-break:break-all; margin:0; color:#532137;">
-                <a href="{{ .ConfirmationURL }}" style="color:#532137; text-decoration:underline;">{{ .ConfirmationURL }}</a>
-              </p>
-            </td>
-          </tr>
-
-          <!-- Aviso seguranca -->
-          <tr>
-            <td style="padding:28px 36px 12px;">
-              <div style="background:#faf6f4; border:1px solid #ebe5df; border-radius:10px; padding:14px 16px;">
-                <p style="font-size:12.5px; line-height:1.55; color:#6b6660; margin:0;">
-                  <strong style="color:#532137;">Não esperava esse convite?</strong> Pode ignorar este e-mail — sua conta só é criada quando você clica no link.
-                </p>
-              </div>
-            </td>
-          </tr>
-
-          <!-- Rodape -->
-          <tr>
-            <td style="padding:24px 36px 32px;" align="center">
-              <p style="font-size:11px; line-height:1.5; color:#9a948c; margin:0 0 6px; text-transform:uppercase; letter-spacing:1.5px;">Affection Consultoria</p>
-              <p style="font-size:11px; line-height:1.5; color:#9a948c; margin:0;">
-                <a href="https://affectionconsultoria.com.br" style="color:#9a948c; text-decoration:none;">affectionconsultoria.com.br</a>
+            <td style="padding:28px 44px 36px;">
+              <p style="font-size:12.5px; line-height:1.55; color:#9a948c; margin:0; text-align:center;">
+                O link expira em 24 horas. Se não foi você quem solicitou, ignore este e-mail.
               </p>
             </td>
           </tr>
         </table>
 
-        <!-- Fora do card: micro disclaimer -->
-        <p style="font-size:10.5px; color:#b5ada4; margin:18px 0 0; line-height:1.5;">
-          Você recebeu este e-mail porque foi convidada para o Affection Portal.
-        </p>
+        <!-- Rodape minimal -->
+        <table role="presentation" width="520" cellpadding="0" cellspacing="0" border="0">
+          <tr>
+            <td align="center" style="padding:24px 0 0;">
+              <p style="font-size:11px; line-height:1.6; color:#b5ada4; margin:0; letter-spacing:1px; text-transform:uppercase;">
+                Affection Consultoria
+              </p>
+              <p style="font-size:11px; line-height:1.6; color:#cdc7be; margin:4px 0 0;">
+                <a href="https://affectionconsultoria.com.br" style="color:#cdc7be; text-decoration:none;">affectionconsultoria.com.br</a>
+              </p>
+            </td>
+          </tr>
+        </table>
+
       </td>
     </tr>
   </table>

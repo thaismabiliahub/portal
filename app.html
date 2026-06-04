@@ -2712,7 +2712,13 @@ textarea.md-inp { resize: vertical; min-height: 60px; line-height: 1.4; }
                             <span class="lan-tag" id="lanHeaderTag">Competência atual</span>
                             <p class="lan-subtitulo" id="lanSubtitulo" style="margin-top:6px; font-size:14px; color:#6b6660;">—</p>
                         </div>
-                        <div class="lan-btns">
+                        <div class="lan-btns" style="align-items:center;">
+                            <!-- Busca movida pra ca (do lado de Exportar/Importar) — antes ficava na toolbar com varios filtros, poluido. -->
+                            <div class="lan-busca" style="min-width:240px;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                <input type="search" id="filtroBusca" oninput="renderizarContas()" placeholder="Buscar..." autocomplete="off" name="busca-lancamentos-nofill" readonly onfocus="this.removeAttribute('readonly')">
+                                <span class="lan-busca-shortcut">Ctrl K</span>
+                            </div>
                             <button onclick="exportarExcel && exportarExcel()" class="lan-btn lan-btn-out" title="Exportar todos os lançamentos pra Excel">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                                 Exportar
@@ -2763,27 +2769,10 @@ textarea.md-inp { resize: vertical; min-height: 60px; line-height: 1.4; }
                                 <button onclick="navegarCompetencia(1)" class="lan-comp-nav" title="Próximo mês"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
                             </div>
 
-                            <div class="lan-busca">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                                <input type="search" id="filtroBusca" oninput="renderizarContas()" placeholder="Buscar em descrição, parceiro, observação..." autocomplete="off" name="busca-lancamentos-nofill" readonly onfocus="this.removeAttribute('readonly')">
-                                <span class="lan-busca-shortcut">Ctrl K</span>
-                            </div>
-                            <button class="lan-fpill" onclick="lanAbrirFiltro('tipo')" id="lanFpill-tipo">
-                                <span id="lanFpillLabel-tipo">Todos os tipos</span>
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-                            </button>
-                            <button class="lan-fpill" onclick="lanAbrirFiltro('categoria')" id="lanFpill-categoria">
-                                <span id="lanFpillLabel-categoria">Categoria</span>
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-                            </button>
-                            <button class="lan-fpill" onclick="lanAbrirFiltro('responsavel')" id="lanFpill-responsavel">
-                                <span id="lanFpillLabel-responsavel">Responsável</span>
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-                            </button>
-                            <button class="lan-fpill" onclick="lanAbrirFiltro('status')" id="lanFpill-status">
-                                <span id="lanFpillLabel-status">Status</span>
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-                            </button>
+                            <!-- Busca duplicada e os 4 dropdowns (Tipo / Categoria / Responsavel / Status) foram
+                                 removidos. Busca subiu pro topo (na lan-btns) e os filtros principais agora vivem
+                                 nos chips coloridos clicaveis da barra "MOSTRAR" embaixo (que Thais adorou).
+                                 Categoria e Responsavel ficam dentro de "Mais filtros" pra quem quiser detalhar. -->
                             <div class="lan-mais-wrap">
                                 <button class="lan-fpill" onclick="lanAbrirMaisFiltros()" id="lanFpill-mais">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
@@ -2792,6 +2781,9 @@ textarea.md-inp { resize: vertical; min-height: 60px; line-height: 1.4; }
                                 </button>
                                 <div id="lanMaisPainel" class="lan-mais-painel hidden">
                                     <div class="lan-mais-titulo">Filtros avançados</div>
+                                    <!-- Categoria e Responsavel mudaram pra ca (saiu da toolbar principal) -->
+                                    <div class="lan-mais-campo"><label>Categoria</label><select id="lanFiltroCategoria" onchange="if(document.getElementById('filtroCategoria')){document.getElementById('filtroCategoria').value=this.value;}renderizarContas()"><option value="">Todas as categorias</option></select></div>
+                                    <div class="lan-mais-campo"><label>Responsável</label><select id="lanFiltroResponsavel" onchange="if(document.getElementById('filtroResponsavel')){document.getElementById('filtroResponsavel').value=this.value;}renderizarContas()"><option value="">Todos os responsáveis</option></select></div>
                                     <div class="lan-mais-campo"><label>Espaço</label><select id="lanFiltroEspaco" onchange="renderizarContas()"><option value="">Todos os espaços</option></select></div>
                                     <div class="lan-mais-campo"><label>Forma de pagamento</label><select id="lanFiltroForma" onchange="renderizarContas()"><option value="">Todas</option><option value="pix">Pix</option><option value="boleto">Boleto</option><option value="cartao_proprio">Cartão crédito (próprio)</option><option value="cartao_terceiro">Cartão crédito (terceiro)</option><option value="debito">Cartão débito</option><option value="dinheiro">Dinheiro</option><option value="transferencia">Transferência</option><option value="debito_automatico">Débito automático</option></select></div>
                                     <div class="lan-mais-campo"><label>Valor mínimo (R$)</label><input type="number" step="0.01" id="lanFiltroValorMin" oninput="renderizarContas()" placeholder="0,00"></div>
@@ -7569,7 +7561,8 @@ function popularSeletorCompetencia() {
     sel.innerHTML = ordenados.map(ym => {
         const [a, m] = ym.split('-');
         const isAtual = ym === mesAtualStr;
-        const tag = isAtual ? ' (atual)' : '';
+        // (atual) removido — eh obvio que se nao tem nada, e o mes atual.
+        const tag = '';
         return `<option value="${ym}">${meses[parseInt(m) - 1]} ${a}${tag}</option>`;
     }).join('');
     competenciaSelecionada = valorAtual;

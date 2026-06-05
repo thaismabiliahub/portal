@@ -3266,7 +3266,27 @@ textarea.md-inp { resize: vertical; min-height: 60px; line-height: 1.4; }
                                 <span class="lm-ajuda" style="margin-left:6px;">?<span class="lm-tip">Guarde <strong>contratos</strong>, <strong>certidões</strong>, <strong>comprovantes</strong>, <strong>garantias</strong> e <strong>escrituras</strong>. Cada documento pode ser vinculado a um lançamento ou membro.</span></span>
                             </span>
                         </div>
-                        <div class="lan-btns">
+                        <div class="lan-btns" style="align-items:center; flex-wrap:wrap;">
+                            <!-- Busca + filtros movidos pra ca (Thais: subir tudo pro topo) -->
+                            <div class="lan-busca" style="min-width:200px;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                <input type="search" id="filtroDocBusca" oninput="renderizarDocumentos()" placeholder="Buscar..." autocomplete="off" name="busca-documentos-nofill" readonly onfocus="this.removeAttribute('readonly')">
+                            </div>
+                            <select id="filtroDocAno" onchange="renderizarDocumentos()" class="doc-toolbar-select" title="Filtrar por ano"></select>
+                            <select id="filtroDocOrdem" onchange="renderizarDocumentos()" class="doc-toolbar-select" title="Ordenar">
+                                <option value="recentes">Recentes</option>
+                                <option value="antigos">Mais antigos</option>
+                                <option value="nome">Nome A-Z</option>
+                                <option value="vence">Vencimento mais próximo</option>
+                            </select>
+                            <div class="doc-view-switcher">
+                                <button id="docViewCards" onclick="docTrocarView('cards')" class="doc-view-btn ativo" title="Cards">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                                </button>
+                                <button id="docViewLista" onclick="docTrocarView('lista')" class="doc-view-btn" title="Lista">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/></svg>
+                                </button>
+                            </div>
                             <button onclick="abrirModalDocumento && abrirModalDocumento()" class="lan-btn lan-btn-pri">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
                                 Subir documento
@@ -3274,16 +3294,14 @@ textarea.md-inp { resize: vertical; min-height: 60px; line-height: 1.4; }
                         </div>
                     </div>
 
-                    <!-- Toggle Documentos | Listas removido: Listas foi pra dentro de Anotacoes
-                         (tarefas/compras/checklists fazem mais sentido em "voce escreve pra si"). -->
-
                     <div id="docModoDocumentos">
-                    <!-- MÉTRICAS -->
+                    <!-- MÉTRICAS — sem "Adicionados no mes" (Thais tirou). 3 cards em vez de 4. -->
                     <div class="lan-resumo" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));">
                         <div class="lan-metric"><div class="lan-metric-label">Total guardado</div><div class="lan-metric-valor" id="docMetTotal">0</div><div class="lan-metric-meta" id="docMetTotalSub">documentos</div></div>
                         <div class="lan-metric"><div class="lan-metric-label">Vencendo em 30 dias</div><div class="lan-metric-valor" id="docMetVencendo" style="color:#8b6e3a;">0 docs</div><div class="lan-metric-meta" id="docMetVencendoSub">a renovar</div></div>
                         <div class="lan-metric"><div class="lan-metric-label">Vencidos</div><div class="lan-metric-valor" id="docMetVencidos" style="color:#8b3a3a;">0 docs</div><div class="lan-metric-meta" id="docMetVencidosSub">atualizar urgente</div></div>
-                        <div class="lan-metric"><div class="lan-metric-label" id="docMetMesLabel">Adicionados no mês</div><div class="lan-metric-valor" id="docMetMes" style="color:#16a34a;">0 novos</div><div class="lan-metric-meta" id="docMetMesSub">novos</div></div>
+                        <!-- Card "Adicionados no mes" removido (#docMetMesLabel, #docMetMes, #docMetMesSub
+                             continuam referenciados no JS mas inexistentes — JS tem guarda com setT). -->
                     </div>
 
                     <!-- LAYOUT 2 COLUNAS -->
@@ -3302,40 +3320,12 @@ textarea.md-inp { resize: vertical; min-height: 60px; line-height: 1.4; }
 
                         <!-- MAIN -->
                         <div class="doc-main">
-                            <!-- TOOLBAR -->
-                            <div class="doc-toolbar">
-                                <div class="lan-busca" style="flex:1; min-width:240px;">
-                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                                    <input type="search" id="filtroDocBusca" oninput="renderizarDocumentos()" placeholder="Buscar por nome, descrição..." autocomplete="off" name="busca-documentos-nofill" readonly onfocus="this.removeAttribute('readonly')">
-                                </div>
-                                <div style="display:inline-flex; align-items:center; gap:6px;">
-                                    <span style="font-size:11px; color:#9a948c; text-transform:uppercase; letter-spacing:0.06em; font-weight:700;">Ano</span>
-                                    <select id="filtroDocAno" onchange="renderizarDocumentos()" class="doc-toolbar-select"></select>
-                                </div>
-                                <div style="display:inline-flex; align-items:center; gap:6px;">
-                                    <span style="font-size:11px; color:#9a948c; text-transform:uppercase; letter-spacing:0.06em; font-weight:700;">Ordenar</span>
-                                    <select id="filtroDocOrdem" onchange="renderizarDocumentos()" class="doc-toolbar-select">
-                                        <option value="recentes">Recentes</option>
-                                        <option value="antigos">Mais antigos</option>
-                                        <option value="nome">Nome A-Z</option>
-                                        <option value="vence">Vencimento mais próximo</option>
-                                    </select>
-                                </div>
-                                <div class="doc-view-switcher">
-                                    <button id="docViewCards" onclick="docTrocarView('cards')" class="doc-view-btn ativo">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-                                        Cards
-                                    </button>
-                                    <button id="docViewLista" onclick="docTrocarView('lista')" class="doc-view-btn">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/></svg>
-                                        Lista
-                                    </button>
-                                </div>
-                                <!-- Selects ocultos pra retrocompat -->
-                                <select id="filtroDocTipo" onchange="renderizarDocumentos()" style="display:none;"><option value="">Todos</option></select>
-                                <select id="filtroDocPessoa" onchange="renderizarDocumentos()" style="display:none;"><option value="">Todas</option></select>
-                                <select id="filtroDocValidade" onchange="renderizarDocumentos()" style="display:none;"><option value="">Todas</option></select>
-                            </div>
+                            <!-- Toolbar (busca, filtros, view switcher) movida pra cima no .lan-btns
+                                 — Thais pediu pra subir tudo. Selects ocultos mantidos pra retrocompat
+                                 do JS que ainda referencia esses IDs. -->
+                            <select id="filtroDocTipo" onchange="renderizarDocumentos()" style="display:none;"><option value="">Todos</option></select>
+                            <select id="filtroDocPessoa" onchange="renderizarDocumentos()" style="display:none;"><option value="">Todas</option></select>
+                            <select id="filtroDocValidade" onchange="renderizarDocumentos()" style="display:none;"><option value="">Todas</option></select>
 
                             <!-- VIEW CARDS -->
                             <div id="documentosLista" class="doc-grid-cards"></div>

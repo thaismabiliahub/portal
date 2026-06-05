@@ -4762,10 +4762,14 @@ textarea.md-inp { resize: vertical; min-height: 60px; line-height: 1.4; }
         </div>
         <input type="hidden" id="dataIdEdicao" value="">
         <div style="padding:22px 24px; display:flex; flex-direction:column; gap:14px;">
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;">
                 <div>
                     <label class="md-lbl">Data</label>
                     <input type="date" id="dataData" class="md-inp">
+                </div>
+                <div>
+                    <label class="md-lbl">Hora <span style="color:#9a948c; font-weight:400; margin-left:4px;">opcional</span></label>
+                    <input type="time" id="dataHora" class="md-inp" placeholder="--:--">
                 </div>
                 <div>
                     <label class="md-lbl">Tipo</label>
@@ -6530,6 +6534,40 @@ function gerarTodosAlertas() {
 
     estado.documentos.filter(d => podeVerDocumento(d) && d.data_validade && d.data_validade <= diasAFrente(60) && d.data_validade >= hoje())
         .forEach(d => alertas.push({ id: `doc_${d.id}`, tipo: 'alerta', categoria: 'Documento', texto: `Documento ${d.tipo} (${d.titulo}) vence em ${dataFmt(d.data_validade)}`, data_alerta: hoje() }));
+
+    // Datas e Lembretes — hoje, amanha ou em ate 3 dias (com hora, se houver)
+    const hojeStr = hoje();
+    const ate3 = diasAFrente(3);
+    (estado.datas || []).filter(d => podeVerData && podeVerData(d) && d.data).forEach(d => {
+        // calcula proxima ocorrencia (considera recorrente)
+        let dataEfetiva = d.data;
+        if (d.recorrente) {
+            const o = new Date(d.data + 'T00:00:00');
+            const ag = new Date(); ag.setHours(0,0,0,0);
+            let cand = new Date(ag.getFullYear(), o.getMonth(), o.getDate());
+            if (cand < ag) cand.setFullYear(cand.getFullYear() + 1);
+            dataEfetiva = cand.toISOString().slice(0,10);
+        }
+        if (dataEfetiva < hojeStr || dataEfetiva > ate3) return;
+        const horaTxt = d.hora ? ' às ' + d.hora.slice(0,5) : '';
+        let quando = 'hoje';
+        if (dataEfetiva === hojeStr) quando = 'hoje';
+        else if (dataEfetiva === diasAFrente(1)) quando = 'amanhã';
+        else quando = dataFmt(dataEfetiva);
+        const tipoLbl = { aniversario: 'Aniversário', comemoracao: 'Comemoração', lembrete: 'Lembrete', vencimento: 'Vencimento' }[d.tipo] || 'Lembrete';
+        alertas.push({ id: `data_${d.id}_${dataEfetiva}`, tipo: dataEfetiva === hojeStr ? 'critico' : 'alerta', categoria: tipoLbl, texto: `${d.titulo} — ${quando}${horaTxt}`, data_alerta: hojeStr });
+    });
+
+    // Anotacoes tipo lembrete/tarefa com prazo proximo
+    (Array.isArray(anotacoesLista) ? anotacoesLista : []).filter(a => a && a.prazo && (a.tipo === 'lembrete' || a.tipo === 'tarefa')).forEach(a => {
+        if (a.prazo < hojeStr || a.prazo > ate3) return;
+        const horaTxt = a.prazo_hora ? ' às ' + a.prazo_hora.slice(0,5) : '';
+        let quando = 'hoje';
+        if (a.prazo === hojeStr) quando = 'hoje';
+        else if (a.prazo === diasAFrente(1)) quando = 'amanhã';
+        else quando = dataFmt(a.prazo);
+        alertas.push({ id: `anot_${a.id}_${a.prazo}`, tipo: a.prazo === hojeStr ? 'critico' : 'alerta', categoria: a.tipo === 'tarefa' ? 'Tarefa' : 'Lembrete', texto: `${a.titulo} — ${quando}${horaTxt}`, data_alerta: hojeStr });
+    });
 
     return alertas;
 }
@@ -9804,6 +9842,7 @@ function abrirModalData() {
     document.getElementById('modalDataTitulo').textContent = 'Nova data';
     document.getElementById('dataIdEdicao').value = '';
     document.getElementById('dataData').value = hoje();
+    document.getElementById('dataHora').value = '';
     document.getElementById('dataTipo').value = 'aniversario';
     ['dataTitulo', 'dataDesc'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('dataPessoa').value = 'familia';
@@ -9817,6 +9856,7 @@ function editarData(id) {
     document.getElementById('modalDataTitulo').textContent = 'Editar data';
     document.getElementById('dataIdEdicao').value = d.id;
     document.getElementById('dataData').value = d.data;
+    document.getElementById('dataHora').value = d.hora || '';
     document.getElementById('dataTipo').value = d.tipo;
     document.getElementById('dataTitulo').value = d.titulo;
     document.getElementById('dataDesc').value = d.descricao || '';
@@ -9835,7 +9875,8 @@ function editarData(id) {
 function salvarData() {
     const idEdicao = document.getElementById('dataIdEdicao').value;
     const corSel = document.querySelector('input[name="dataCor"]:checked');
-    const dados = { data: document.getElementById('dataData').value, tipo: document.getElementById('dataTipo').value, titulo: document.getElementById('dataTitulo').value.trim(), descricao: document.getElementById('dataDesc').value || null, recorrente: document.getElementById('dataRecorrente').checked, pessoa: document.getElementById('dataPessoa').value, visibilidade: document.getElementById('dataVisibilidade').value, cor: corSel ? corSel.value : null, criado_por: usuarioAtual };
+    const horaVal = document.getElementById('dataHora').value || null;
+    const dados = { data: document.getElementById('dataData').value, hora: horaVal, tipo: document.getElementById('dataTipo').value, titulo: document.getElementById('dataTitulo').value.trim(), descricao: document.getElementById('dataDesc').value || null, recorrente: document.getElementById('dataRecorrente').checked, pessoa: document.getElementById('dataPessoa').value, visibilidade: document.getElementById('dataVisibilidade').value, cor: corSel ? corSel.value : null, criado_por: usuarioAtual };
     if (!dados.titulo) { alert('Informe o título'); return; }
     if (idEdicao) { Object.assign(estado.datas.find(x => x.id === idEdicao), dados); toast('Atualizado'); }
     else { estado.datas.push({ id: uuidReal(), ...dados }); toast('Criado'); }

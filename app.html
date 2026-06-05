@@ -3685,7 +3685,12 @@ textarea.md-inp { resize: vertical; min-height: 60px; line-height: 1.4; }
                                 <span class="lm-ajuda" style="margin-left:6px;">?<span class="lm-tip">Aqui voce guarda <strong>anotações</strong> (lembretes da vida financeira que não cabem em lançamento — pode anexar a um lançamento, espaço ou pessoa) e <strong>listas</strong> (mercado, farmácia, afazeres da casa, lista de viagem...).</span></span>
                             </span>
                         </div>
-                        <div class="lan-btns">
+                        <div class="lan-btns" style="align-items:center;">
+                            <!-- Busca movida pra ca (Thais: quer no topo do lado de Nova anotacao) -->
+                            <div class="lan-busca" style="min-width:200px;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                <input type="search" id="anotBusca" oninput="renderizarAnotacoes()" placeholder="Buscar..." autocomplete="off" name="busca-anotacoes-nofill" readonly onfocus="this.removeAttribute('readonly')">
+                            </div>
                             <button id="anotBtnNova" onclick="abrirModalAnotacao()" class="lan-btn lan-btn-pri">
                                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                                 <span id="anotBtnNovaText">Nova anotação</span>
@@ -3703,10 +3708,7 @@ textarea.md-inp { resize: vertical; min-height: 60px; line-height: 1.4; }
                     <div id="anotModoAnotacoes">
 
                     <div class="anot-toolbar">
-                        <div class="lan-busca" style="flex:1; min-width:240px;">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                            <input type="search" id="anotBusca" oninput="renderizarAnotacoes()" placeholder="Buscar em todas as anotações..." autocomplete="off" name="busca-anotacoes-nofill" readonly onfocus="this.removeAttribute('readonly')">
-                        </div>
+                        <!-- Busca movida pro header (lan-btns). Aqui ficam só os filtros + view switcher. -->
                         <div class="anot-filtros" id="anotFiltros">
                             <button class="anot-filtro ativo" data-tipo="" onclick="anotSetFiltro('')">Todas</button>
                             <button class="anot-filtro" data-tipo="lembrete" onclick="anotSetFiltro('lembrete')">Lembretes</button>

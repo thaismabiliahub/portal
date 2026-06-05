@@ -3169,17 +3169,38 @@ textarea.md-inp { resize: vertical; min-height: 60px; line-height: 1.4; }
             .doc-modo-toggle{display:inline-flex;gap:4px;background:#f5efe6;border:1px solid #ebe5df;border-radius:10px;padding:4px;margin-bottom:16px;}
             .doc-modo-btn{padding:8px 18px;background:transparent;border:none;border-radius:7px;font-family:inherit;font-size:13px;font-weight:600;color:#6b6660;cursor:pointer;transition:all .12s;}
             .doc-modo-btn.ativo{background:#fff;color:#532137;box-shadow:0 1px 3px rgba(0,0,0,.08);}
-            .listas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;}
-            .lista-card{background:#fff;border:1px solid #ebe5df;border-radius:14px;padding:16px;cursor:pointer;transition:all .15s;}
-            .lista-card:hover{box-shadow:0 6px 18px rgba(0,0,0,.07);transform:translateY(-1px);border-color:#dcd3ca;}
-            .lista-card-top{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
-            .lista-card-ic{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:'Fraunces',serif;font-weight:600;font-size:14px;flex-shrink:0;}
-            .lista-card-nome{font-family:'Fraunces',serif;font-size:16px;font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-            .lista-card-prog{height:7px;background:#f5efe6;border-radius:4px;overflow:hidden;margin-bottom:6px;}
-            .lista-card-prog-fill{height:100%;background:#16a34a;border-radius:4px;transition:width .2s;}
-            .lista-card-meta{font-size:12px;color:#6b6660;}
-            .lista-card-novo{border:1.5px dashed #dcd3ca;background:#faf8f6;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#6b6660;min-height:120px;}
-            .lista-card-novo svg{width:22px;height:22px;}
+            /* === LISTAS ESTILO KANBAN/TRELLO (Thais aprovou demo) ===
+               Cada lista vira uma COLUNA horizontal. Cada item vira um CARD com
+               checkbox redondo. Scroll horizontal natural igual ao Trello. */
+            .listas-grid { display: flex; gap: 14px; padding-bottom: 12px; overflow-x: auto; align-items: flex-start; }
+            .listas-grid::-webkit-scrollbar { height: 8px; }
+            .listas-grid::-webkit-scrollbar-track { background: transparent; }
+            .listas-grid::-webkit-scrollbar-thumb { background: #c8c2bb; border-radius: 4px; }
+            .lk-coluna { flex: 0 0 280px; background: #f0eae5; border-radius: 14px; padding: 12px; }
+            .lk-col-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; padding: 4px 6px; }
+            .lk-col-titulo { font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; color: #1a1a18; flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+            .lk-col-contagem { font-size: 11px; color: #9a948c; background: white; padding: 2px 8px; border-radius: 99px; font-weight: 600; margin-left: 8px; flex-shrink: 0; }
+            .lk-col-menu { background: transparent; border: none; cursor: pointer; color: #6b6660; padding: 4px; font-size: 16px; line-height: 1; }
+            .lk-col-menu:hover { color: #1a1a18; }
+            .lk-card { background: white; border-radius: 10px; padding: 11px 13px; margin-bottom: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); transition: all 0.15s; cursor: grab; }
+            .lk-card:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+            .lk-card:active { cursor: grabbing; }
+            .lk-card.feito { opacity: 0.55; }
+            .lk-card.feito .lk-card-txt { text-decoration: line-through; }
+            .lk-card-header { display: flex; align-items: flex-start; gap: 9px; }
+            .lk-card-check { width: 18px; height: 18px; border: 1.5px solid #cdc7be; border-radius: 50%; flex-shrink: 0; margin-top: 2px; background: white; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; }
+            .lk-card.feito .lk-card-check { background: #532137; border-color: #532137; }
+            .lk-card.feito .lk-card-check::after { content: ''; width: 8px; height: 8px; background: white; border-radius: 50%; }
+            .lk-card-txt { flex: 1; font-size: 13.5px; font-weight: 500; color: #1a1a18; line-height: 1.4; word-break: break-word; }
+            .lk-card-x { background: transparent; border: none; cursor: pointer; color: #cdc7be; padding: 0 4px; font-size: 16px; line-height: 1; opacity: 0; transition: opacity 0.15s; }
+            .lk-card:hover .lk-card-x { opacity: 1; }
+            .lk-card-x:hover { color: #8b3a3a; }
+            .lk-add-card { background: transparent; border: 1.5px dashed #cdc7be; border-radius: 10px; width: 100%; padding: 9px; font-size: 12.5px; color: #6b6660; font-weight: 600; cursor: pointer; font-family: inherit; margin-top: 4px; }
+            .lk-add-card:hover { background: rgba(255,255,255,0.5); color: #532137; border-color: #532137; }
+            .lk-add-input { width: 100%; padding: 9px 11px; border: 1.5px solid #532137; border-radius: 10px; font-size: 13px; font-family: inherit; outline: none; margin-top: 4px; box-sizing: border-box; }
+            .lk-add-coluna { flex: 0 0 240px; background: rgba(0,0,0,0.04); border: 1.5px dashed #cdc7be; border-radius: 14px; padding: 14px; color: #6b6660; font-weight: 600; font-size: 13px; text-align: center; cursor: pointer; align-self: stretch; min-height: 80px; }
+            .lk-add-coluna:hover { background: rgba(83,33,55,0.04); border-color: #532137; color: #532137; }
+            @media (max-width: 540px) { .lk-coluna { flex: 0 0 260px; } .listas-grid { gap: 10px; } }
             .lista-item-row{display:flex;align-items:center;gap:10px;padding:9px 4px;border-bottom:1px solid #f0ebe5;}
             .lista-item-row input[type=checkbox]{width:18px;height:18px;accent-color:#16a34a;cursor:pointer;flex-shrink:0;}
             .lista-item-txt{flex:1;font-size:14px;}
@@ -8099,22 +8120,123 @@ function anotTrocarModo(modo){
     if (btnText) btnText.textContent = ehListas ? 'Nova lista' : 'Nova anotação';
     if (ehListas && typeof renderizarListas === 'function') renderizarListas();
 }
+// === LISTAS KANBAN (estilo Trello) ===
+// Cada lista vira uma coluna; cada item da lista vira um card com checkbox.
+// "+" no fim da coluna abre input inline pra adicionar item rapido.
+// Clique no titulo da coluna abre modal de edicao/renomeio. Clique no menu (...)
+// abre acoes da lista.
 function renderizarListas(){
     const grid = document.getElementById('listasGrid');
     if (!grid) return;
     const listas = (estado.listas || []).filter(l => podeVerLista(l));
-    const cards = listas.map(l => {
+    if (listas.length === 0) {
+        // Empty state — convida a criar primeira lista
+        grid.innerHTML = `<div style="margin:auto; text-align:center; padding:40px 20px; max-width:380px;">
+            <div style="font-family:'Fraunces',serif; font-size:18px; font-weight:600; color:#1a1a18; margin-bottom:6px;">Nenhuma lista ainda</div>
+            <p style="font-size:13px; color:#6b6660; margin:0 0 16px; line-height:1.55;">Crie listas tipo <strong>Mercado</strong>, <strong>Farmácia</strong>, <strong>Afazeres da casa</strong>. Cada lista é uma coluna com itens (com caixinha) pra marcar quando fizer.</p>
+            <button onclick="criarLista()" class="btn-primary" style="display:inline-flex;">+ Criar primeira lista</button>
+        </div>`;
+        return;
+    }
+    const colunas = listas.map(l => {
         const itens = Array.isArray(l.itens) ? l.itens : [];
         const feitos = itens.filter(i => i && i.feito).length;
-        const pct = itens.length ? Math.round((feitos/itens.length)*100) : 0;
-        const cor = l.cor_hex || '#532137';
-        return `<div class="lista-card" onclick="abrirLista('${l.id}')">
-            <div class="lista-card-top"><div class="lista-card-ic" style="background:${cor};">${listaIniciais(l.nome)}</div><div class="lista-card-nome">${listaEsc(l.nome)}</div></div>
-            <div class="lista-card-prog"><div class="lista-card-prog-fill" style="width:${pct}%;"></div></div>
-            <div class="lista-card-meta">${feitos} de ${itens.length} ${itens.length===1?'item':'itens'} feitos</div>
+        const cards = itens.map((it, idx) => {
+            const feito = it && it.feito;
+            return `<div class="lk-card${feito ? ' feito' : ''}" draggable="true" ondragstart="lkDragStart(event,'${l.id}',${idx})" ondragend="lkDragEnd(event)">
+                <div class="lk-card-header">
+                    <span class="lk-card-check" onclick="event.stopPropagation(); lkToggleItem('${l.id}', ${idx})"></span>
+                    <span class="lk-card-txt" onclick="abrirLista('${l.id}')">${listaEsc(it ? it.texto : '')}</span>
+                    <button class="lk-card-x" onclick="event.stopPropagation(); lkRemoverItem('${l.id}', ${idx})" title="Remover">&times;</button>
+                </div>
+            </div>`;
+        }).join('');
+        return `<div class="lk-coluna" ondragover="event.preventDefault(); this.style.background='#e8dfd8';" ondragleave="this.style.background='';" ondrop="lkDrop(event, '${l.id}'); this.style.background='';">
+            <div class="lk-col-header">
+                <span class="lk-col-titulo" onclick="abrirLista('${l.id}')" title="Editar lista">${listaEsc(l.nome)}</span>
+                <span class="lk-col-contagem">${itens.length}</span>
+                <button class="lk-col-menu" onclick="abrirLista('${l.id}')" title="Opções">⋮</button>
+            </div>
+            ${cards}
+            <button class="lk-add-card" onclick="lkAddItemInline('${l.id}', this)">+ Adicionar item</button>
         </div>`;
     }).join('');
-    grid.innerHTML = cards + `<div class="lista-card lista-card-novo" onclick="criarLista()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span style="font-size:13px;font-weight:600;">Nova lista</span></div>`;
+    grid.innerHTML = colunas + `<button class="lk-add-coluna" onclick="criarLista()">+ Nova lista</button>`;
+}
+
+// Adiciona item direto na coluna (sem abrir modal) — transforma o botao "+" em input
+function lkAddItemInline(listaId, btn) {
+    const col = btn.parentElement;
+    const inp = document.createElement('input');
+    inp.type = 'text';
+    inp.className = 'lk-add-input';
+    inp.placeholder = 'Item novo (Enter pra adicionar)';
+    btn.replaceWith(inp);
+    inp.focus();
+    const commit = () => {
+        const txt = inp.value.trim();
+        if (txt) {
+            const l = (estado.listas || []).find(x => x.id === listaId);
+            if (l) {
+                if (!Array.isArray(l.itens)) l.itens = [];
+                l.itens.push({ texto: txt, feito: false });
+                l.atualizado_em = new Date().toISOString();
+                salvarEstado();
+                renderizarListas();
+                return;
+            }
+        }
+        renderizarListas();
+    };
+    inp.addEventListener('keydown', e => {
+        if (e.key === 'Enter') { e.preventDefault(); commit(); }
+        else if (e.key === 'Escape') { renderizarListas(); }
+    });
+    inp.addEventListener('blur', () => { setTimeout(commit, 100); });
+}
+
+function lkToggleItem(listaId, idx) {
+    const l = (estado.listas || []).find(x => x.id === listaId);
+    if (!l || !Array.isArray(l.itens) || !l.itens[idx]) return;
+    l.itens[idx].feito = !l.itens[idx].feito;
+    l.atualizado_em = new Date().toISOString();
+    salvarEstado();
+    renderizarListas();
+}
+
+function lkRemoverItem(listaId, idx) {
+    const l = (estado.listas || []).find(x => x.id === listaId);
+    if (!l || !Array.isArray(l.itens)) return;
+    l.itens.splice(idx, 1);
+    l.atualizado_em = new Date().toISOString();
+    salvarEstado();
+    renderizarListas();
+}
+
+// Drag-and-drop entre colunas
+let _lkDragData = null;
+function lkDragStart(e, listaId, idx) {
+    _lkDragData = { listaId, idx };
+    e.dataTransfer.effectAllowed = 'move';
+    try { e.dataTransfer.setData('text/plain', listaId + ':' + idx); } catch (_) {}
+}
+function lkDragEnd(e) { _lkDragData = null; }
+function lkDrop(e, listaDestinoId) {
+    e.preventDefault();
+    if (!_lkDragData) return;
+    const { listaId, idx } = _lkDragData;
+    if (listaId === listaDestinoId) return;
+    const origem = (estado.listas || []).find(x => x.id === listaId);
+    const destino = (estado.listas || []).find(x => x.id === listaDestinoId);
+    if (!origem || !destino) return;
+    if (!Array.isArray(origem.itens) || !origem.itens[idx]) return;
+    if (!Array.isArray(destino.itens)) destino.itens = [];
+    const [item] = origem.itens.splice(idx, 1);
+    destino.itens.push(item);
+    origem.atualizado_em = new Date().toISOString();
+    destino.atualizado_em = new Date().toISOString();
+    salvarEstado();
+    renderizarListas();
 }
 function criarLista(){
     // Abre modal estilizado em vez de prompt() nativo

@@ -918,34 +918,36 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
    DASHBOARD NOVO · cara das demos
    ===================================================================== */
 .dash-wrap { max-width: 1680px; margin: 0 auto; }
-.dash-hero { margin-bottom: 24px; }
-/* Tag grande de saudação - cor muda por horário, nome ao lado */
+/* Saudacao discreta a esquerda — Thais pediu sem fundo gritante, sem ocupar
+   tanto espaco vertical, alinhada e funcionando como header. */
+.dash-hero { margin-bottom: 16px; padding: 0; }
 .dash-hero-tag {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 8px 16px; border-radius: 100px;
+    display: inline-block;
+    background: transparent !important; /* sem fundo rosa/bordo */
+    padding: 0; margin: 0 0 2px;
     font-family: 'Fraunces', serif;
-    font-size: 22px; font-weight: 600;
-    margin-bottom: 4px;
+    font-size: 19px; font-weight: 600;
+    color: #1a1a18 !important;
     letter-spacing: 0;
     text-transform: none;
+    border-radius: 0;
 }
-.dash-hero-tag.manha { background: rgba(249,160,27,0.12); color: #c87f1f; }
-.dash-hero-tag.tarde { background: rgba(221,89,125,0.12); color: #b8536f; }
-.dash-hero-tag.noite { background: rgba(83,33,55,0.10); color: #532137; }
-/* Título grande removido - a saudação+nome agora vivem na tag */
+.dash-hero-tag.manha,
+.dash-hero-tag.tarde,
+.dash-hero-tag.noite { background: transparent !important; color: #1a1a18 !important; }
 .dash-hero-titulo { display: none; }
 .dash-hero-sub {
-    font-family: 'Fraunces', serif;
-    font-size: 17px;
-    font-style: italic;
-    font-weight: 500;
-    margin-top: 10px;
-    line-height: 1.4;
-    color: #dd597d; /* default rosa; cor rotaciona via JS */
+    font-family: 'DM Sans', system-ui, sans-serif;
+    font-size: 12.5px;
+    font-style: normal;
+    font-weight: 400;
+    margin: 0;
+    line-height: 1.45;
+    color: #9a948c !important;
 }
-.dash-hero-sub.cor-rosa { color: #dd597d; }
-.dash-hero-sub.cor-verde { color: #16a34a; }
-.dash-hero-sub.cor-laranja { color: #c87f1f; }
+.dash-hero-sub.cor-rosa,
+.dash-hero-sub.cor-verde,
+.dash-hero-sub.cor-laranja { color: #9a948c !important; }
 
 /* RESPIRO - frase humana com saldo grande */
 .dash-respiro { background: linear-gradient(135deg, #fbf3f6, #fdf8f2); border: 1px solid #f0e2e8; border-radius: 18px; padding: 22px 26px; margin-bottom: 18px; display: flex; align-items: flex-start; gap: 18px; }

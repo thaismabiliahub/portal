@@ -8254,34 +8254,80 @@ function renderizarListas(){
 }
 
 // Adiciona item direto na coluna (sem abrir modal) — transforma o botao "+" em input
+// Modo "compras rápidas": no Enter adiciona o item, atualiza SO a coluna,
+// e MANTEM o input limpo e focado pra proximo item. Esc/blur fecha.
+// Suporta tambem multiplos itens separados por virgula: "Leite, Pao, Cafe"
 function lkAddItemInline(listaId, btn) {
-    const col = btn.parentElement;
     const inp = document.createElement('input');
     inp.type = 'text';
     inp.className = 'lk-add-input';
-    inp.placeholder = 'Item novo (Enter pra adicionar)';
+    inp.placeholder = 'Item (Enter = adicionar e continuar)';
+    inp.autocomplete = 'off';
     btn.replaceWith(inp);
     inp.focus();
-    const commit = () => {
-        const txt = inp.value.trim();
-        if (txt) {
-            const l = (estado.listas || []).find(x => x.id === listaId);
-            if (l) {
-                if (!Array.isArray(l.itens)) l.itens = [];
-                l.itens.push({ texto: txt, feito: false });
-                l.atualizado_em = new Date().toISOString();
-                salvarEstado();
-                renderizarListas();
-                return;
-            }
-        }
-        renderizarListas();
+    // flag pra ignorar blur quando ja foi disparado o renderizar (evita race)
+    let _closing = false;
+    const addItens = (txt) => {
+        if (!txt) return false;
+        const l = (estado.listas || []).find(x => x.id === listaId);
+        if (!l) return false;
+        if (!Array.isArray(l.itens)) l.itens = [];
+        // suporta multiplos itens separados por virgula
+        const itens = txt.split(',').map(s => s.trim()).filter(Boolean);
+        itens.forEach(t => l.itens.push({ texto: t, feito: false }));
+        l.atualizado_em = new Date().toISOString();
+        salvarEstado();
+        return true;
+    };
+    const atualizarColunaSemRender = () => {
+        // re-renderiza so essa lista pra mostrar os itens novos, mantendo o input
+        const l = (estado.listas || []).find(x => x.id === listaId);
+        if (!l) return;
+        const colAtual = inp.closest('.lk-coluna');
+        if (!colAtual) { renderizarListas(); return; }
+        // recria os cards dentro da coluna, sem mexer no input
+        const cards = (l.itens || []).map((it, idx) => {
+            const feito = it && it.feito;
+            return `<div class="lk-card${feito ? ' feito' : ''}" draggable="true" ondragstart="lkDragStart(event,'${l.id}',${idx})" ondragend="lkDragEnd(event)">
+                <div class="lk-card-header">
+                    <span class="lk-card-check" onclick="event.stopPropagation(); lkToggleItem('${l.id}', ${idx})"></span>
+                    <span class="lk-card-txt" onclick="abrirLista('${l.id}')">${listaEsc(it ? it.texto : '')}</span>
+                    <button class="lk-card-x" onclick="event.stopPropagation(); lkRemoverItem('${l.id}', ${idx})" title="Remover">&times;</button>
+                </div>
+            </div>`;
+        }).join('');
+        // atualiza header (contagem)
+        const cont = colAtual.querySelector('.lk-col-contagem');
+        if (cont) cont.textContent = (l.itens || []).length;
+        // limpa cards antigos e poe novos antes do input
+        Array.from(colAtual.querySelectorAll('.lk-card')).forEach(c => c.remove());
+        inp.insertAdjacentHTML('beforebegin', cards);
     };
     inp.addEventListener('keydown', e => {
-        if (e.key === 'Enter') { e.preventDefault(); commit(); }
-        else if (e.key === 'Escape') { renderizarListas(); }
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const txt = inp.value.trim();
+            if (addItens(txt)) {
+                inp.value = '';
+                atualizarColunaSemRender();
+                inp.focus(); // mantem focado pra continuar
+            }
+        } else if (e.key === 'Escape') {
+            _closing = true;
+            renderizarListas();
+        }
     });
-    inp.addEventListener('blur', () => { setTimeout(commit, 100); });
+    inp.addEventListener('blur', () => {
+        if (_closing) return;
+        // commit final do que estiver digitado e fecha
+        setTimeout(() => {
+            if (_closing) return;
+            _closing = true;
+            const txt = inp.value.trim();
+            if (txt) addItens(txt);
+            renderizarListas();
+        }, 150);
+    });
 }
 
 function lkToggleItem(listaId, idx) {

@@ -948,6 +948,10 @@ details[open] summary { background: #f5efe6 !important; border-color: #532137 !i
 .dash-hero-sub.cor-rosa { color: #dd597d !important; }
 .dash-hero-sub.cor-verde { color: #16a34a !important; }
 .dash-hero-sub.cor-laranja { color: #c87f1f !important; }
+/* Icone SVG fino ao lado da frase (Opcao 1 que Thais aprovou) */
+.dash-hero-sub { display: inline-flex !important; align-items: center; gap: 8px; }
+.dhs-icone { width: 17px; height: 17px; flex-shrink: 0; opacity: 0.8; stroke: currentColor; }
+.dhs-frase-txt { display: inline; }
 
 /* RESPIRO - frase humana com saldo grande */
 .dash-respiro { background: linear-gradient(135deg, #fbf3f6, #fdf8f2); border: 1px solid #f0e2e8; border-radius: 18px; padding: 22px 26px; margin-bottom: 18px; display: flex; align-items: flex-start; gap: 18px; }
@@ -5830,9 +5834,22 @@ function renderizarDashboard() {
     // Sub = FRASE DIVERTIDA · Data + lembretes vai pro elemento dashHeroData abaixo
     const elSub = document.getElementById('dashHeroSub');
     if (elSub) {
-        elSub.textContent = sortearFraseDashboard(h, parcelas);
+        const frase = sortearFraseDashboard(h, parcelas);
         const cores = ['cor-rosa', 'cor-verde', 'cor-laranja'];
         const corSorteada = cores[Math.floor(Math.random() * cores.length)];
+        // Icone SVG fino mono conforme horario: sol (manha), xicara (tarde), lua (noite)
+        let iconSvg;
+        if (h < 12) {
+            // sol
+            iconSvg = '<svg class="dhs-icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>';
+        } else if (h < 18) {
+            // xicara
+            iconSvg = '<svg class="dhs-icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>';
+        } else {
+            // lua
+            iconSvg = '<svg class="dhs-icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+        }
+        elSub.innerHTML = iconSvg + '<span class="dhs-frase-txt">' + frase.replace(/</g,'&lt;') + '</span>';
         elSub.className = 'dash-hero-sub ' + corSorteada;
     }
     const horaAgora = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });

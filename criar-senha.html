@@ -97,7 +97,7 @@ input:focus { border-color: #532137; }
     const { data: { session } } = await SB.auth.getSession();
     if (!session) {
         document.getElementById('card').innerHTML = `
-            <svg class="borboleta" width="40" height="40" viewBox="0 0 100 100" fill="none"><path d="M50 32 Q35 18, 22 26 Q12 33, 16 50 Q22 65, 36 60 Q44 56, 50 50 M50 32 Q65 18, 78 26 Q88 33, 84 50 Q78 65, 64 60 Q56 56, 50 50 M50 50 Q40 62, 32 78 Q40 72, 50 64 M50 50 Q60 62, 68 78 Q60 72, 50 64" stroke="#532137" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div style="text-align:center; font-family:'Fraunces',Georgia,serif; color:#532137; font-size:15px; font-weight:600; letter-spacing:0.4px; margin-bottom:20px;">Affection</div>
             <div class="titulo">Esse link já foi usado ou expirou.</div>
             <p class="sub">Volta no e-mail e clica de novo, ou pede um novo convite pra quem te cadastrou.</p>
             <a href="https://portal.affectionconsultoria.com.br/" style="display:block; text-align:center; margin-top:14px; color:#532137; text-decoration:underline; font-size:13px;">Ir pro portal</a>
@@ -110,9 +110,9 @@ input:focus { border-color: #532137; }
     const nome = pessoa?.apelido || pessoa?.nome || (pessoa ? '' : (session.user.email || '').split('@')[0]);
     const primeiroNome = nome ? String(nome).split(' ')[0] : '';
 
-    // Monta tela de criar senha
+    // Monta tela de criar senha (sem borboleta inventada — Thais nao gostou)
     document.getElementById('card').innerHTML = `
-        <svg class="borboleta" width="40" height="40" viewBox="0 0 100 100" fill="none"><path d="M50 32 Q35 18, 22 26 Q12 33, 16 50 Q22 65, 36 60 Q44 56, 50 50 M50 32 Q65 18, 78 26 Q88 33, 84 50 Q78 65, 64 60 Q56 56, 50 50 M50 50 Q40 62, 32 78 Q40 72, 50 64 M50 50 Q60 62, 68 78 Q60 72, 50 64" stroke="#532137" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div style="text-align:center; font-family:'Fraunces',Georgia,serif; color:#532137; font-size:15px; font-weight:600; letter-spacing:0.4px; margin-bottom:20px;">Affection</div>
         <div class="titulo">Que bom ter você aqui${primeiroNome ? ', ' + primeiroNome : ''}.</div>
         <p class="sub">Cria uma senha sua — vai ser ela que você usa nos próximos acessos. Fica só com você.</p>
 

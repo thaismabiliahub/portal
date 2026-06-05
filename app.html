@@ -8616,7 +8616,7 @@ async function salvarConta() {
         cartao_id: (f === 'cartao_proprio' || f === 'cartao_terceiro') ? document.getElementById('contaCartao').value : null,
         observacao: document.getElementById('contaObs').value || null,
         recorrencia: document.getElementById('contaRecorrencia').value, visibilidade: document.getElementById('contaVisibilidade').value,
-        prioridade: document.getElementById('contaPrioridade').value, divisao: divisao, criado_por: usuarioAtual,
+        prioridade: document.getElementById('contaPrioridade').value, divisao: divisao, criado_por: (usuarioLogadoSupabase && usuarioLogadoSupabase.id) || null,
         responsavel: document.getElementById('contaResponsavel')?.value || usuarioAtual
     };
     if (!dados.descricao || !dados.valor_total || !dados.data_emissao) { alert('Preencha descrição, valor e data'); return; }
@@ -9926,7 +9926,7 @@ function salvarData() {
     const idEdicao = document.getElementById('dataIdEdicao').value;
     const corSel = document.querySelector('input[name="dataCor"]:checked');
     const horaVal = document.getElementById('dataHora').value || null;
-    const dados = { data: document.getElementById('dataData').value, hora: horaVal, tipo: document.getElementById('dataTipo').value, titulo: document.getElementById('dataTitulo').value.trim(), descricao: document.getElementById('dataDesc').value || null, recorrente: document.getElementById('dataRecorrente').checked, pessoa: document.getElementById('dataPessoa').value, visibilidade: document.getElementById('dataVisibilidade').value, cor: corSel ? corSel.value : null, criado_por: usuarioAtual };
+    const dados = { data: document.getElementById('dataData').value, hora: horaVal, tipo: document.getElementById('dataTipo').value, titulo: document.getElementById('dataTitulo').value.trim(), descricao: document.getElementById('dataDesc').value || null, recorrente: document.getElementById('dataRecorrente').checked, pessoa: document.getElementById('dataPessoa').value, visibilidade: document.getElementById('dataVisibilidade').value, cor: corSel ? corSel.value : null, criado_por: (usuarioLogadoSupabase && usuarioLogadoSupabase.id) || null };
     if (!dados.titulo) { alert('Informe o título'); return; }
     if (idEdicao) { Object.assign(estado.datas.find(x => x.id === idEdicao), dados); toast('Atualizado'); }
     else { estado.datas.push({ id: uuidReal(), ...dados }); toast('Criado'); }
@@ -10222,7 +10222,7 @@ function editarDocumento(id) {
 }
 async function salvarDocumento() {
     const idEdicao = document.getElementById('docIdEdicao').value;
-    const dados = { tipo: document.getElementById('docTipo').value, pessoa: document.getElementById('docPessoa').value, titulo: document.getElementById('docTitulo').value.trim(), cliente: document.getElementById('docCliente').value.trim() || null, data_emissao: document.getElementById('docDataEmissao').value || null, data_validade: document.getElementById('docDataValidade').value || null, visibilidade: document.getElementById('docVisibilidade').value, observacao: document.getElementById('docObs').value || null, criado_por: usuarioAtual };
+    const dados = { tipo: document.getElementById('docTipo').value, pessoa: document.getElementById('docPessoa').value, titulo: document.getElementById('docTitulo').value.trim(), cliente: document.getElementById('docCliente').value.trim() || null, data_emissao: document.getElementById('docDataEmissao').value || null, data_validade: document.getElementById('docDataValidade').value || null, visibilidade: document.getElementById('docVisibilidade').value, observacao: document.getElementById('docObs').value || null, criado_por: (usuarioLogadoSupabase && usuarioLogadoSupabase.id) || null };
     const arquivo = document.getElementById('docArquivo').files[0];
     if (arquivo) {
         if (arquivo.size > 5 * 1024 * 1024) { alert('Arquivo maior que 5MB. No demo o navegador tem limite. No Supabase real isso não acontecerá.'); return; }

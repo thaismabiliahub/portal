@@ -299,8 +299,16 @@ body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif; }
 }
 
 @media (max-width: 540px) {
-    .lan-resumo { grid-template-columns: 1fr; }
+    .lan-resumo { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+    .repv2-metricas { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
     .lan-tabela2 { font-size: 12px; }
+    /* Numero dos cards em grid 2x2 menor pra caber */
+    .lan-metric-valor, .repv2-metric-valor { font-size: 18px !important; line-height: 1.1 !important; }
+    .lan-metric, .repv2-metric { padding: 10px 12px !important; min-height: 0 !important; }
+    .lan-metric-label, .repv2-metric-label { font-size: 9.5px !important; }
+    .lan-metric-meta, .repv2-metric-meta { font-size: 10px !important; }
+    .repv2-metric-ic { width: 24px !important; height: 24px !important; top: 10px !important; right: 10px !important; }
+    .repv2-metric-ic svg { width: 11px !important; height: 11px !important; }
     /* Mobile: encolhe os paddings da pagina pra conteudo nao vazar pra direita */
     .content-scroll { padding: 10px 10px !important; overflow-x: hidden; }
     .tab-content { padding: 6px 10px !important; }
@@ -651,7 +659,7 @@ html[data-tema="escuro"] .lm-check-row { background: #2a2a27; }
    =================================================================== */
 
 /* PRIMÁRIO — ação principal (Salvar, Nova, Confirmar) */
-.btn-primary, .lan-btn-pri, .btn-affection {
+.btn-primary, .lan-btn-pri, .btn-affection, .md-btn-pri, .btn-apl, .cfg-btn-pri {
     display: inline-flex !important; align-items: center; justify-content: center; gap: 8px;
     padding: 10px 18px !important;
     background: linear-gradient(135deg, #6a2a47 0%, #532137 60%, #3a1820 100%) !important;
@@ -666,7 +674,7 @@ html[data-tema="escuro"] .lm-check-row { background: #2a2a27; }
     transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.15s ease !important;
     text-decoration: none;
 }
-.btn-primary:hover, .lan-btn-pri:hover, .btn-affection:hover {
+.btn-primary:hover, .lan-btn-pri:hover, .btn-affection:hover, .md-btn-pri:hover, .btn-apl:hover, .cfg-btn-pri:hover {
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(83,33,55,0.22), 0 8px 22px -4px rgba(83,33,55,0.45), inset 0 1px 0 rgba(255,255,255,0.18) !important;
     filter: brightness(1.05);
@@ -675,7 +683,7 @@ html[data-tema="escuro"] .lm-check-row { background: #2a2a27; }
 .btn-primary svg, .lan-btn-pri svg { width: 14px; height: 14px; }
 
 /* SECUNDÁRIO — ação alternativa (Cancelar, Voltar) */
-.btn-secondary, .lan-btn-out {
+.btn-secondary, .lan-btn-out, .md-btn-out, .btn-lim, .cfg-btn {
     display: inline-flex !important; align-items: center; justify-content: center; gap: 8px;
     padding: 10px 18px !important;
     background: white !important;
@@ -688,7 +696,7 @@ html[data-tema="escuro"] .lm-check-row { background: #2a2a27; }
     cursor: pointer; outline: none;
     transition: all 0.15s ease !important;
 }
-.btn-secondary:hover, .lan-btn-out:hover {
+.btn-secondary:hover, .lan-btn-out:hover, .md-btn-out:hover, .btn-lim:hover, .cfg-btn:hover {
     background: #faf4f7 !important;
     box-shadow: 0 2px 8px rgba(83,33,55,0.08) !important;
     color: #532137 !important;
@@ -712,7 +720,7 @@ html[data-tema="escuro"] .lm-check-row { background: #2a2a27; }
 .btn-ghost svg { width: 13px; height: 13px; }
 
 /* PERIGO — ações destrutivas (Excluir, Remover, Apagar) */
-.btn-danger {
+.btn-danger, .cfg-btn-perigo {
     display: inline-flex !important; align-items: center; justify-content: center; gap: 8px;
     padding: 10px 18px;
     background: linear-gradient(135deg, #a04848 0%, #8b3a3a 60%, #6e2929 100%);
@@ -726,7 +734,7 @@ html[data-tema="escuro"] .lm-check-row { background: #2a2a27; }
     box-shadow: 0 1px 2px rgba(139,58,58,0.18), 0 4px 14px -4px rgba(139,58,58,0.32), inset 0 1px 0 rgba(255,255,255,0.12);
     transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.15s ease;
 }
-.btn-danger:hover { transform: translateY(-1px); filter: brightness(1.05); box-shadow: 0 2px 4px rgba(139,58,58,0.22), 0 8px 22px -4px rgba(139,58,58,0.42); }
+.btn-danger:hover, .cfg-btn-perigo:hover { transform: translateY(-1px); filter: brightness(1.05); box-shadow: 0 2px 4px rgba(139,58,58,0.22), 0 8px 22px -4px rgba(139,58,58,0.42); }
 .btn-danger:active { transform: translateY(0); }
 .btn-danger svg { width: 14px; height: 14px; }
 
@@ -1794,8 +1802,9 @@ textarea.md-inp { resize: vertical; min-height: 60px; line-height: 1.4; }
 .cadv2-tipo-pill.despesa { background: #f6e8e8; color: #8b3a3a; }
 .cadv2-item-acoes { display: flex; gap: 2px; }
 
-.cadv2-empty { padding: 40px 20px; text-align: center; color: #9a948c; font-size: 13px; }
-.cadv2-empty-titulo { font-family: 'Fraunces', serif; font-size: 16px; color: #6b6660; margin-bottom: 6px; }
+.cadv2-empty { padding: 36px 24px; text-align: center; color: #6b6660; font-size: 13px; background: white; border: 1.5px dashed #ebe5df; border-radius: 14px; max-width: 480px; margin: 8px auto; line-height: 1.55; }
+.cadv2-empty::before { content: ''; display: block; width: 44px; height: 44px; background: #faf6f4; border-radius: 12px; margin: 0 auto 12px; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23532137' stroke-width='1.8'><rect x='3' y='3' width='7' height='7' rx='1'/><rect x='14' y='3' width='7' height='7' rx='1'/><rect x='3' y='14' width='7' height='7' rx='1'/><rect x='14' y='14' width='7' height='7' rx='1'/></svg>"); background-repeat: no-repeat; background-position: center; background-size: 22px; }
+.cadv2-empty-titulo { font-family: 'Fraunces', serif; font-size: 17px; font-weight: 600; color: #1a1a18; margin-bottom: 6px; }
 
 .cadv2-bkp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px; }
 .cadv2-bkp-card { background: white; border: 1px solid #ebe5df; border-radius: 12px; padding: 20px; }

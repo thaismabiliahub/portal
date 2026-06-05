@@ -9471,12 +9471,18 @@ function trocarVisualDatas(modo) {
     }
 }
 
-function renderizarDatasView() {
-    // Atualiza contador no header
+async function renderizarDatasView() {
+    // Garante que anotacoes (com prazo) estejam carregadas pra aparecer junto com as datas
+    if (typeof carregarAnotacoes === 'function') {
+        try { await carregarAnotacoes(); } catch (e) { console.warn('carregarAnotacoes em DatasView falhou:', e); }
+    }
+    // Atualiza contador no header (conta datas + anotacoes com prazo)
     const contEl = document.getElementById('datasContador');
     if (contEl) {
-        const total = (estado.datas || []).filter(d => podeVerData(d)).length;
-        contEl.textContent = `${total} ${total === 1 ? 'data cadastrada' : 'datas cadastradas'}`;
+        const totalDatas = (estado.datas || []).filter(d => podeVerData(d)).length;
+        const totalAnots = (Array.isArray(anotacoesLista) ? anotacoesLista : []).filter(a => a && a.prazo && (a.tipo === 'lembrete' || a.tipo === 'tarefa')).length;
+        const total = totalDatas + totalAnots;
+        contEl.textContent = `${total} ${total === 1 ? 'data' : 'datas'} · ${totalAnots} ${totalAnots === 1 ? 'vem de Anotações' : 'vêm de Anotações'}`;
     }
     if (visualDatasAtual === 'lista') renderizarDatasLista();
     else if (visualDatasAtual === 'kanban') renderizarDatasKanban();
@@ -9585,10 +9591,31 @@ function selecionarDiaCalendario(dataStr) {
     document.getElementById('diaSelecionadoBox').classList.remove('hidden');
 }
 
+// Coleta TODAS as anotacoes (tipo lembrete/tarefa) com prazo, mapeando pra estrutura
+// de "data" pra serem renderizadas junto. Marca origem='anotacao' pra UI poder
+// diferenciar e clique abrir a anotacao em vez do modal de data.
+function eventosAnotacoesComoData() {
+    if (!Array.isArray(anotacoesLista) || anotacoesLista.length === 0) return [];
+    return anotacoesLista
+        .filter(a => a && a.prazo && (a.tipo === 'lembrete' || a.tipo === 'tarefa'))
+        .map(a => ({
+            id: 'anot:' + a.id,
+            _anotacao_id: a.id,
+            _origem: 'anotacao',
+            tipo: a.tipo === 'tarefa' ? 'lembrete' : 'lembrete', // mapeado pro tipo "lembrete" do calendario
+            titulo: a.titulo,
+            descricao: (a.corpo || '').slice(0, 120),
+            data: a.prazo,
+            recorrente: false,
+            visibilidade: a.visibilidade || 'compartilhada',
+            pessoa: a.criado_por || 'familia',
+        }));
+}
+
 function eventosDoMes(anoMes) {
-    // Retorna eventos que caem no mês YYYY-MM (considerando recorrentes)
+    // Retorna eventos que caem no mês YYYY-MM (datas + anotacoes com prazo, considerando recorrentes)
     const [ano, mes] = anoMes.split('-').map(Number);
-    return estado.datas.filter(d => podeVerData(d)).map(d => {
+    const datasNormais = (estado.datas || []).filter(d => podeVerData(d)).map(d => {
         if (d.recorrente) {
             const orig = new Date(d.data + 'T00:00:00');
             if (orig.getMonth() + 1 === mes) {
@@ -9599,7 +9626,11 @@ function eventosDoMes(anoMes) {
         }
         if (d.data && d.data.startsWith(anoMes)) return { ...d, data_efetiva: d.data };
         return null;
-    }).filter(x => x).sort((a,b) => a.data_efetiva.localeCompare(b.data_efetiva));
+    }).filter(x => x);
+    const anotsDoMes = eventosAnotacoesComoData()
+        .filter(a => a.data && a.data.startsWith(anoMes))
+        .map(a => ({ ...a, data_efetiva: a.data }));
+    return [...datasNormais, ...anotsDoMes].sort((a,b) => (a.data_efetiva || '').localeCompare(b.data_efetiva || ''));
 }
 
 // ===== Lista vertical (visualizacao default) =====
@@ -9613,9 +9644,10 @@ function renderizarDatasLista() {
     const cores = { aniversario: '#dd597d', comemoracao: '#f9a01b', lembrete: '#7c3aed', vencimento: '#dc2626' };
     const labels = { aniversario: 'Aniversário', comemoracao: 'Comemoração', lembrete: 'Lembrete', vencimento: 'Vencimento' };
 
-    // Junta proximas ocorrencias (1 ano a frente pra cobrir anuais)
+    // Junta proximas ocorrencias (1 ano a frente pra cobrir anuais) + anotacoes com prazo
     const itens = [];
-    (estado.datas || []).filter(d => podeVerData && podeVerData(d)).forEach(d => {
+    const datasETambemAnots = [...(estado.datas || []).filter(d => podeVerData && podeVerData(d)), ...eventosAnotacoesComoData()];
+    datasETambemAnots.forEach(d => {
         if (!d.data) return;
         const orig = new Date(d.data + 'T00:00:00');
         if (d.recorrente) {

@@ -4448,10 +4448,14 @@ textarea.md-inp { resize: vertical; min-height: 60px; line-height: 1.4; }
                 <label class="esp-label">Conteúdo</label>
                 <textarea id="anotCorpo" class="esp-input" rows="4" placeholder="Detalhes da anotação..."></textarea>
             </div>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-bottom:14px;">
+            <div style="display:grid; grid-template-columns: 1fr 110px 1fr; gap:12px; margin-bottom:14px;">
                 <div>
                     <label class="esp-label">Prazo (opcional)</label>
                     <input type="date" id="anotPrazo" class="esp-input">
+                </div>
+                <div>
+                    <label class="esp-label">Hora</label>
+                    <input type="time" id="anotPrazoHora" class="esp-input" placeholder="--:--">
                 </div>
                 <div>
                     <label class="esp-label">Espaço (opcional)</label>
@@ -11312,6 +11316,7 @@ function abrirModalAnotacao() {
     document.getElementById('anotCorpo').value = '';
     document.getElementById('anotTagContexto').value = '';
     document.getElementById('anotPrazo').value = '';
+    const phNew = document.getElementById('anotPrazoHora'); if (phNew) phNew.value = '';
     document.getElementById('anotFixada').checked = false;
     document.getElementById('anotBtnExcluir').style.display = 'none';
     anotChecklistTemp = [];
@@ -11330,6 +11335,7 @@ function editarAnotacao(id) {
     document.getElementById('anotCorpo').value = a.corpo || '';
     document.getElementById('anotTagContexto').value = a.tag_contexto || '';
     document.getElementById('anotPrazo').value = a.prazo || '';
+    const phEdit = document.getElementById('anotPrazoHora'); if (phEdit) phEdit.value = a.prazo_hora || '';
     document.getElementById('anotFixada').checked = !!a.fixada;
     document.getElementById('anotBtnExcluir').style.display = '';
     anotChecklistTemp = Array.isArray(a.checklist) ? JSON.parse(JSON.stringify(a.checklist)) : [];
@@ -11413,6 +11419,7 @@ async function salvarAnotacao() {
         corpo: document.getElementById('anotCorpo').value.trim() || null,
         tag_contexto: document.getElementById('anotTagContexto').value.trim() || null,
         prazo: document.getElementById('anotPrazo').value || null,
+        prazo_hora: document.getElementById('anotPrazoHora')?.value || null,
         espaco_id: document.getElementById('anotEspaco').value || null,
         fixada: document.getElementById('anotFixada').checked,
         checklist: anotChecklistTemp.filter(c => c.texto && c.texto.trim()),

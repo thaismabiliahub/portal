@@ -288,9 +288,14 @@ body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif; }
     .fab { bottom: 84px; right: 18px; width: 52px; height: 52px; }
     .fab-tooltip { display: none; }
     .lan-resumo { grid-template-columns: 1fr 1fr; }
-    .voar-topbar { padding-left: 8px !important; padding-right: 12px !important; }
+    .voar-topbar { padding-left: 8px !important; padding-right: 12px !important; gap: 4px; }
     .header-right .voar-user-nome { display: none; }
     .header-right #userBadge { display: none !important; }
+    /* Pílula de data fica menor pra não cortar o "Sair" */
+    .header-right .topbar-data { display: none !important; }
+    .header-right { gap: 6px !important; }
+    /* Botao "Sair" garante que cabe inteiro */
+    .voar-btn-sair { padding: 6px 10px !important; font-size: 12px !important; flex-shrink: 0; }
 }
 
 @media (max-width: 540px) {
@@ -330,6 +335,15 @@ body { font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif; }
     .lan-header h1, .lan-titulo { font-size: 22px !important; }
     /* Tabelas largas viram scroll horizontal interno (em vez de empurrar a tela) */
     .lan-tabela, .doc-lista-table, .tabela-wrapper { overflow-x: auto; }
+    /* Lancamentos: botoes mais compactos pra Exportar/Importar nao ocuparem linha inteira */
+    .lan-header .lan-btns { gap: 6px !important; }
+    .lan-header .lan-btn { padding: 8px 12px !important; font-size: 12px !important; }
+    .lan-header .lan-btn svg { width: 12px !important; height: 12px !important; }
+    /* Em telas muito apertadas, Exportar e Importar viram so icone (texto some) */
+    .lan-header .lan-btn-out span,
+    .lan-header .lan-btn-out:not(:hover):not(:active) { /* mantido pra compat */ }
+    /* Descricao de "Proximos vencimentos" e "Movimentacoes" usa ellipsis em vez de quebrar linha */
+    .dash-venc-desc, .dash-tx-desc { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
     /* Proximos vencimentos: reorganiza em 2 linhas pro valor nao ser cortado */
     .dash-venc-rico {
         display: grid !important;

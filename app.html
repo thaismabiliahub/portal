@@ -10998,7 +10998,7 @@ function esp2DeletarEspaco(id) {
 // ANOTAÇÕES — lembretes, tarefas, pesquisas, etc.
 // =====================================================================
 let anotacoesLista = [];
-let anotViewAtual = 'cards';
+let anotViewAtual = 'kanban';
 let anotFiltroAtual = '';
 let anotChecklistTemp = []; // checklist em edição no modal
 
@@ -11090,12 +11090,47 @@ async function renderizarAnotacoes() {
         cont.className = 'anot-grid-cards';
         cont.innerHTML = lista.map(a => anotMontarCard(a)).join('');
     } else if (anotViewAtual === 'kanban') {
-        cont.className = 'anot-kanban';
+        // Kanban estilo Trello — reusa classes .lk-* das Listas (Thais aprovou)
+        cont.className = 'listas-grid';
         cont.innerHTML = anotTiposTodos().map(tipo => {
             const desse = lista.filter(a => a.tipo === tipo);
-            return `<div class="anot-kanban-col">
-                <div class="anot-kanban-header">${anotTipoLabel(tipo)} <span class="anot-kanban-count">${desse.length}</span></div>
-                ${desse.map(a => anotMontarCard(a)).join('')}
+            const cards = desse.map(a => {
+                const corpoCurto = (a.corpo || '').slice(0, 100);
+                const prazoTxt = a.prazo ? (() => {
+                    const hoje = new Date(); hoje.setHours(0,0,0,0);
+                    const p = new Date(a.prazo + 'T00:00:00');
+                    const diff = Math.round((p - hoje) / 86400000);
+                    if (diff < 0) return `Atrasada · ${Math.abs(diff)}d`;
+                    if (diff === 0) return 'Hoje';
+                    if (diff <= 7) return `Em ${diff}d`;
+                    return p.toLocaleDateString('pt-BR');
+                })() : null;
+                return `<div class="lk-card" draggable="true"
+                    ondragstart="anotDragStart(event, '${a.id}')"
+                    onclick="editarAnotacao('${a.id}')">
+                    <div style="display:flex; align-items:flex-start; gap:6px;">
+                        <div style="flex:1; min-width:0;">
+                            <div style="font-size:13.5px; font-weight:600; color:#1a1a18; line-height:1.35; word-break:break-word;">${escapeHtmlSimples(a.titulo)}</div>
+                            ${corpoCurto ? `<div style="font-size:12px; color:#6b6660; margin-top:4px; line-height:1.4; word-break:break-word;">${escapeHtmlSimples(corpoCurto)}${a.corpo && a.corpo.length > 100 ? '...' : ''}</div>` : ''}
+                            <div style="display:flex; gap:6px; align-items:center; margin-top:8px; flex-wrap:wrap;">
+                                ${a.tag_contexto ? `<span style="font-size:10px; color:#6b6660; background:#faf6f4; padding:2px 7px; border-radius:99px;">${escapeHtmlSimples(a.tag_contexto)}</span>` : ''}
+                                ${prazoTxt ? `<span style="font-size:10px; color:#c87f1f; background:rgba(200,127,31,0.1); padding:2px 7px; border-radius:99px; font-weight:600;">${prazoTxt}</span>` : ''}
+                            </div>
+                        </div>
+                        ${a.fixada ? '<svg viewBox="0 0 24 24" fill="#f9a01b" stroke="#f9a01b" stroke-width="2" style="width:13px; height:13px; flex-shrink:0;"><path d="M12 2l3 7 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>' : ''}
+                    </div>
+                </div>`;
+            }).join('');
+            return `<div class="lk-coluna"
+                ondragover="event.preventDefault(); this.style.background='#e8dfd8';"
+                ondragleave="this.style.background='';"
+                ondrop="anotDrop(event, '${tipo}'); this.style.background='';">
+                <div class="lk-col-header">
+                    <span class="lk-col-titulo">${anotTipoLabel(tipo)}</span>
+                    <span class="lk-col-contagem">${desse.length}</span>
+                </div>
+                ${cards}
+                <button class="lk-add-card" onclick="anotNovaNoTipo('${tipo}')">+ Nova anotação</button>
             </div>`;
         }).join('');
     } else {
@@ -11158,6 +11193,37 @@ function anotTempoRelativo(ts) {
     if (diff === 0) return 'hoje';
     if (diff === 1) return '1 dia';
     return diff + ' dias';
+}
+
+// Drag-and-drop entre colunas do kanban — solta em outro tipo, atualiza tipo da anotacao
+let _anotDragId = null;
+function anotDragStart(e, id) { _anotDragId = id; e.dataTransfer.effectAllowed = 'move'; }
+async function anotDrop(e, novoTipo) {
+    e.preventDefault();
+    if (!_anotDragId) return;
+    const a = (anotacoesLista || []).find(x => x.id === _anotDragId);
+    if (!a || a.tipo === novoTipo) return;
+    const idCopy = _anotDragId; _anotDragId = null;
+    a.tipo = novoTipo;
+    try {
+        const { error } = await SB.from('anotacoes').update({ tipo: novoTipo }).eq('id', idCopy);
+        if (error) console.warn('drag tipo update falhou:', error.message);
+    } catch (err) { console.warn('drag erro:', err); }
+    renderizarAnotacoes();
+}
+
+// Abre o modal de nova anotacao ja com o tipo pre-selecionado
+function anotNovaNoTipo(tipo) {
+    if (typeof abrirModalAnotacao === 'function') {
+        abrirModalAnotacao();
+        setTimeout(() => {
+            const sel = document.getElementById('anotTipo');
+            if (sel) {
+                sel.value = tipo;
+                if (typeof anotTipoChange === 'function') anotTipoChange();
+            }
+        }, 60);
+    }
 }
 
 function anotTrocarView(v) {

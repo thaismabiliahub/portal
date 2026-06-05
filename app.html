@@ -8399,7 +8399,7 @@ function renderizarCartoes() {
     cs = cs.filter(c => ents.find(e => e.id === c.entidade_id));
     if (entidadeAtual !== 'todos') cs = cs.filter(c => c.entidade_id === entidadeAtual);
     const subEl = document.getElementById('cartSubtitulo');
-    if (subEl) subEl.textContent = `${cs.length} cartão${cs.length !== 1 ? 'ões' : ''} cadastrado${cs.length !== 1 ? 's' : ''}`;
+    if (subEl) subEl.textContent = cs.length === 1 ? '1 cartão cadastrado' : `${cs.length} cartões cadastrados`;
     const container = document.getElementById('listaCartoes');
     if (cs.length === 0) {
         container.innerHTML = '<div class="lan-vazio" style="grid-column:1/-1;">Nenhum cartão cadastrado. Clique em + Novo cartão.</div>';

@@ -126,7 +126,7 @@ serve(async (req) => {
     // Convida via Supabase Auth (cria em auth.users + envia email built-in)
     const inviteResp = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
       data: { nome: nome },
-      redirectTo: "https://portal.affectionconsultoria.com.br/criar-senha.html",
+      redirectTo: "https://portal.affectionconsultoria.com.br/criar-senha",
     });
     const inviteData = inviteResp.data;
     const inviteError = inviteResp.error;
@@ -147,7 +147,7 @@ serve(async (req) => {
           },
           body: JSON.stringify({
             email: email,
-            options: { redirectTo: "https://portal.affectionconsultoria.com.br/criar-senha.html" }
+            options: { redirectTo: "https://portal.affectionconsultoria.com.br/criar-senha" }
           }),
         });
         if (!recoverResp.ok) {
